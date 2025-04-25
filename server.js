@@ -6,6 +6,8 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// Use dynamic port for Railway
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -20,8 +22,8 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB Atlas connected'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+  .then(() => console.log('✅ MongoDB Atlas connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Schema
 const receiptSchema = new mongoose.Schema({

@@ -65,44 +65,33 @@
     </div>
 
     <script>
-        function goBack() {
-            window.location.href = "index.html";
-        }
+ const urlParams = new URLSearchParams(window.location.search);
+const customerId = urlParams.get("customerId");
 
-        function toggleMenu() {
-            document.getElementById("nav-links").classList.toggle("active");
-        }
+if (customerId) {
+  fetch(`https://ysg-qr-scanner-production.up.railway.app/api/receipts?customerId=${customerId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        document.getElementById("receipt-data").innerHTML = "<p>No receipt found for this ID.</p>";
+        return;
+      }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const customerId = urlParams.get("customerId");
+      const receipt = data[0]; // Use the first (or only) match
+      document.getElementById("receipt-data").innerHTML = `
+        <p><strong>Customer ID:</strong> ${receipt.customerId}</p>
+        <p><strong>Name:</strong> ${receipt.customerName}</p>
+        <p><strong>Phone:</strong> ${receipt.phoneNumber}</p>
+        <p><strong>Machine:</strong> ${receipt.machineName}</p>
+        <p><strong>Purchase Date:</strong> ${new Date(receipt.purchaseDate).toLocaleDateString()}</p>
+      `;
+    })
+    .catch(error => {
+      console.error("Error fetching receipt:", error);
+      document.getElementById("receipt-data").innerHTML = "<p>Error loading receipt data.</p>";
+    });
+}
 
-            if (!customerId) {
-                document.getElementById("no-data-message").style.display = "block";
-                document.getElementById("receipt-table").style.display = "none";
-                return;
-            }
-
-            fetch(`/api/receipts/${customerId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Receipt not found.");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById("customer-id").textContent = data.customerId;
-                    document.getElementById("customer-name").textContent = data.customerName;
-                    document.getElementById("phone-number").textContent = data.phoneNumber;
-                    document.getElementById("machine-name").textContent = data.machineName;
-                    document.getElementById("purchase-date").textContent = data.purchaseDate;
-                })
-                .catch(error => {
-                    console.error(error);
-                    document.getElementById("no-data-message").style.display = "block";
-                    document.getElementById("receipt-table").style.display = "none";
-                });
-        });
     </script>
 </body>
 

@@ -67,25 +67,25 @@
      </div>
     
    
-     <script>
+     
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const generateBtn = document.getElementById("generate-btn");
-            const searchIdButton = document.getElementById("search-id-button");
-        
-            // Handle 'Generate QR' button click
+            const receiptLink = document.getElementById("receipt-link");
+    
+            // Handle form submission and store data in database
             generateBtn.addEventListener("click", function() {
                 const customerId = document.getElementById("customer-id").value.trim();
                 const customerName = document.getElementById("customer-name").value.trim();
                 const phoneNumber = document.getElementById("phone-number").value.trim();
                 const machineName = document.getElementById("machine-name").value.trim();
                 const purchaseDate = document.getElementById("purchase-date").value;
-        
-                // Check if all fields are filled
+    
                 if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
                     alert("Please enter all information.");
                     return;
                 }
-        
+    
                 const receiptData = {
                     customerId,
                     customerName,
@@ -93,8 +93,8 @@
                     machineName,
                     purchaseDate
                 };
-        
-                // Send data to the server to store it
+    
+                // Send data to the server to store it in the database
                 fetch('https://ysg-qr-scanner-production.up.railway.app/api/receipts', {
                     method: 'POST',
                     headers: {
@@ -119,8 +119,8 @@
                     console.error('Error storing receipt data:', error);
                     alert(error.message || 'Error saving receipt data.');
                 });
-        
-                // Generate QR code
+    
+                // Generate the QR code with the customerId in the URL
                 const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
                 document.getElementById("qrcode").innerHTML = "";
                 new QRCode(document.getElementById("qrcode"), {
@@ -128,26 +128,14 @@
                     width: 150,
                     height: 150,
                 });
-        
-                // Make the "View Receipt Data" link visible
-                const receiptLink = document.getElementById("receipt-link");
+    
+                // Set the link to view the receipt data
                 receiptLink.href = url;
                 receiptLink.style.display = "inline";
                 receiptLink.innerText = "View Receipt Data";
             });
-        
-            // Search functionality for customer ID
-            searchIdButton.addEventListener("click", function() {
-                const searchCustomerId = document.getElementById("search-customer-id").value.trim();
-                console.log("searchCustomerId:", searchCustomerId); // Debug
-                if (searchCustomerId) {
-                    window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
-                } else {
-                    alert("Please enter a Customer ID to search.");
-                }
-            });
-        
-            // Clear the form after successful submission
+    
+            // Clear the form after submission
             function clearForm() {
                 document.getElementById("customer-id").value = "";
                 document.getElementById("customer-name").value = "";
@@ -157,7 +145,6 @@
             }
         });
         </script>
-        
 
   </body>
   </html>

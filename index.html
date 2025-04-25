@@ -68,92 +68,96 @@
     
    
      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const generateBtn = document.getElementById("generate-btn");
-          const searchIdButton = document.getElementById("search-id-button");
-      
-          generateBtn.addEventListener("click", function () {
-            const customerId = document.getElementById("customer-id").value.trim();
-            const customerName = document.getElementById("customer-name").value.trim();
-            const phoneNumber = document.getElementById("phone-number").value.trim();
-            const machineName = document.getElementById("machine-name").value.trim();
-            const purchaseDate = document.getElementById("purchase-date").value;
-      
-            if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
-              alert("Please enter all information.");
-              return;
-            }
-      
-            const receiptData = {
-              customerId,
-              customerName,
-              phoneNumber,
-              machineName,
-              purchaseDate
-            };
-      
-            // ✅ Send data to Railway-hosted backend
-            fetch('https://ysg-qr-scanner-production.up.railway.app/api/receipts', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(receiptData),
-            })
-              .then(response => {
-                if (!response.ok) {
-                  return response.json().then(err => {
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${err.error}`);
-                  });
+        document.addEventListener("DOMContentLoaded", function() {
+            const generateBtn = document.getElementById("generate-btn");
+            const searchIdButton = document.getElementById("search-id-button");
+        
+            // Handle 'Generate QR' button click
+            generateBtn.addEventListener("click", function() {
+                const customerId = document.getElementById("customer-id").value.trim();
+                const customerName = document.getElementById("customer-name").value.trim();
+                const phoneNumber = document.getElementById("phone-number").value.trim();
+                const machineName = document.getElementById("machine-name").value.trim();
+                const purchaseDate = document.getElementById("purchase-date").value;
+        
+                // Check if all fields are filled
+                if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
+                    alert("Please enter all information.");
+                    return;
                 }
-                return response.json();
-              })
-              .then(data => {
-                console.log('Receipt data stored successfully:', data);
-                alert('Receipt data saved!');
-                clearForm();
-      
+        
+                const receiptData = {
+                    customerId,
+                    customerName,
+                    phoneNumber,
+                    machineName,
+                    purchaseDate
+                };
+        
+                // Send data to the server to store it
+                fetch('https://ysg-qr-scanner-production.up.railway.app/api/receipts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(receiptData),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(`HTTP error! status: ${response.status}, message: ${err.error}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Receipt data stored successfully:', data);
+                    alert('Receipt data saved!');
+                    clearForm(); // Clear the form after success
+                })
+                .catch(error => {
+                    console.error('Error storing receipt data:', error);
+                    alert(error.message || 'Error saving receipt data.');
+                });
+        
                 // Generate QR code
-                const url = `https://ysg-qr-scanner-production.up.railway.app/product.html?customerId=${encodeURIComponent(customerId)}`;
+                const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
                 document.getElementById("qrcode").innerHTML = "";
                 new QRCode(document.getElementById("qrcode"), {
-                  text: url,
-                  width: 150,
-                  height: 150,
+                    text: url,
+                    width: 150,
+                    height: 150,
                 });
-      
+        
+                // Make the "View Receipt Data" link visible
                 const receiptLink = document.getElementById("receipt-link");
                 receiptLink.href = url;
                 receiptLink.style.display = "inline";
                 receiptLink.innerText = "View Receipt Data";
-              })
-              .catch(error => {
-                console.error('Error storing receipt data:', error);
-                alert(error.message || 'Error saving receipt data.');
-              });
-          });
-      
-          // 🔍 Search for existing receipt by ID
-          searchIdButton.addEventListener("click", function () {
-            const searchCustomerId = document.getElementById("search-customer-id").value.trim();
-            if (searchCustomerId) {
-              window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
-            } else {
-              alert("Please enter a Customer ID to search.");
+            });
+        
+            // Search functionality for customer ID
+            searchIdButton.addEventListener("click", function() {
+                const searchCustomerId = document.getElementById("search-customer-id").value.trim();
+                console.log("searchCustomerId:", searchCustomerId); // Debug
+                if (searchCustomerId) {
+                    window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
+                } else {
+                    alert("Please enter a Customer ID to search.");
+                }
+            });
+        
+            // Clear the form after successful submission
+            function clearForm() {
+                document.getElementById("customer-id").value = "";
+                document.getElementById("customer-name").value = "";
+                document.getElementById("phone-number").value = "";
+                document.getElementById("machine-name").value = "";
+                document.getElementById("purchase-date").value = "";
             }
-          });
-      
-          // 🧼 Clear the input form after submission
-          function clearForm() {
-            document.getElementById("customer-id").value = "";
-            document.getElementById("customer-name").value = "";
-            document.getElementById("phone-number").value = "";
-            document.getElementById("machine-name").value = "";
-            document.getElementById("purchase-date").value = "";
-          }
         });
-      </script>
-      
+        </script>
+        
 
   </body>
   </html>

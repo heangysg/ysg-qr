@@ -1,0 +1,309 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    text-align: center;
+}
+
+/* Header & Navigation */
+header {
+    background-color: #002d5d; /* Dark, professional header */
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.logo img {
+    height: 60px;
+    margin-left: 40px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+#nav-links {
+    margin-right: 80px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-top: 5px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Hamburger Icon (Three horizontal lines) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-right: 30px;
+}
+
+.hamburger .bar {
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* Responsive Dropdown for Mobile */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    nav ul.active {
+        display: flex;
+        flex-direction: column;
+        background: #002d5d;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        border-radius: 5px;
+        text-align: left;
+        padding: 10px 0;
+    }
+
+    nav ul li {
+        padding: 10px;
+        text-align: left;
+    }
+
+    nav ul li a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    nav ul li a:hover {
+        text-decoration: underline;
+    }
+}
+
+/* Main Container */
+.container {
+    background: white;
+    padding: 30px;
+    width: 80%;
+    max-width: 500px;
+    margin: 50px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Responsive Form */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
+/* Form Styling */
+h2 {
+    color: #0057b3;
+    font-size: 24px;
+    margin-bottom: 20px; /* Add some space below the heading */
+}
+
+.receipt-input-group {
+    margin-bottom: 15px;
+    text-align: left; /* Align labels to the left */
+}
+
+.receipt-input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-family: Battambang;
+    font-size: 20px;
+    font-weight: bold; /* Make labels bold for better readability */
+    color: #333; /* Darker text for labels */
+}
+
+.receipt-input-group input[type="text"],
+.receipt-input-group input[type="date"] {
+    width: calc(100% - 12px);
+    padding: 10px; /* Increase padding for better touch targets */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    margin-top: 5px; /* Add some space below the label */
+}
+
+/* Button */
+button {
+    margin-top: 25px; /* Increase top margin for better spacing */
+    padding: 14px 24px; /* Increase padding */
+    font-size: 18px; /* Increase font size */
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+button:hover {
+    background-color: #0057b3;
+}
+
+/* QR Code Section */
+#qrcode {
+    margin: 25px auto; /* Increase margin */
+    display: flex;
+    justify-content: center;
+    border: 1px solid #eee; /* Add a light border around the QR code */
+    padding: 10px; /* Add some padding inside the border */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Light background for contrast */
+}
+
+/* Product Link */
+a#receipt-link {
+    display: block;
+    margin-top: 25px; /* Increase margin */
+    text-decoration: none;
+    font-size: 16px;
+    color: #007bff;
+    font-weight: bold;
+}
+
+a#receipt-link:hover {
+    color: #0057b3;
+    text-decoration: underline;
+}
+
+/* Search Bar Styles */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+    height: 100%;
+}
+
+#search-input {
+    padding: 10px 12px; /* Increase padding */
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+    height: auto;
+    transition: border-color 0.2s ease-in-out;
+    width: 200px;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#search-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 18px; /* Increase padding */
+    border-radius: 0 4px 4px;
+    cursor: pointer;
+    font-size: 16px; /* Increase font size */
+    transition: background-color 0.3s ease;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto; /* Adjust width to content */
+    margin-left: 5px;
+    align-items: center;
+    margin-top: 0; /* Adjust vertical alignment */
+    margin-bottom: 0; /* Adjust vertical alignment */
+}
+
+#search-button:hover {
+    background-color: #0056b3;
+}
+
+.fas.fa-search {
+    margin-right: 0;
+    display: inline-block;
+}
+
+/* Adjustments for Mobile (if needed) */
+@media (max-width: 768px) {
+    .search-container {
+        margin: 10px auto; /* Center and add some top/bottom margin */
+        width: 90%;
+        justify-content: center;
+    }
+
+    #search-input {
+        width: 70%;
+        max-width: none; /* Remove max-width */
+    }
+
+    #search-button {
+        width: auto; /* Adjust width to content */
+        margin-left: 5px;
+    }
+}
+#search-customer-id {
+    padding: 10px; /* Adjust padding as needed */
+    font-size: 16px; /* Adjust font size as needed */
+    border: 2px solid #ccc; /* Set border style, width, and color */
+    border-radius: 5px; /* Round the corners */
+    width: 250px; /* Set the width */
+    box-sizing: border-box; /* Include padding and border in the width */
+    margin-top: 10px; /* Add some spacing above */
+    margin-bottom: 10px; /* Add some spacing below */
+    transition: border-color 0.3s ease-in-out; /* Smooth transition for focus */
+   }
+  
+   #search-customer-id:focus {
+    outline: none; /* Remove the default focus outline */
+    border-color: #007bff; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
+   }

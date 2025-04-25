@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator | YSG</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  crossorigin="anonymous" />
+  <link rel="stylesheet" href="style.css" />
+ </head>
+ <body>
+  <header>
+  <div class="logo">
+  <img src="img/Y S G_ (2).png" alt="YSG Logo" />
+  </div>
+  <nav>
+  <div class="hamburger" onclick="toggleMenu()">
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  </div>
+  <ul id="nav-links">
+  <li><a href="index.html">Generate QR</a></li>
+  <li><a href="contact.html">Contact</a></li>
+  </ul>
+  </nav>
+  </header>
+ 
+
+  <body>
+ 
+
+   <div class="container">
+     <h2>Generate Receipt QR Code</h2>
+     <div class="receipt-input-group">
+     <label for="customer-id">ID អតិថិជន:</label>
+     <input type="text" id="customer-id" placeholder="Enter Customer ID" />
+     </div>
+     <div class="receipt-input-group">
+     <label for="customer-name">ឈ្មោះអតិថិជន:</label>
+     <input type="text" id="customer-name" placeholder="Enter Customer Name" />
+     </div>
+     <div class="receipt-input-group">
+     <label for="phone-number">លេខទូរស័ព្ទ:</label>
+     <input type="text" id="phone-number" placeholder="Enter Phone Number" />
+     </div>
+     <div class="receipt-input-group">
+     <label for="machine-name">ឈ្មោះម៉ាស៊ីន:</label>
+     <input type="text" id="machine-name" placeholder="Enter Machine Name" />
+     </div>
+     <div class="receipt-input-group">
+     <label for="purchase-date">កាលបរិច្ឆេទទិញ:</label>
+     <input type="date" id="purchase-date" />
+     </div>
+     <button id="generate-btn">បង្កើត QR Code</button>
+     <div id="qrcode"></div>
+     <br />
+     <a id="receipt-link" href="#" style="display: none" target="_blank">មើលទិន្នន័យ QRCode</a>
+    
+   
+     <div class="search-id-container">
+     <h3>ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន</h3>
+     <input type="text" id="search-customer-id" placeholder="Enter Customer ID to Search" />
+     <button id="search-id-button">Search</button>
+     </div>
+     </div>
+    
+   
+     <script>
+    document.addEventListener("DOMContentLoaded", function() {
+     const generateBtn = document.getElementById("generate-btn");
+     const searchIdButton = document.getElementById("search-id-button");
+ 
+
+     generateBtn.addEventListener("click", function() {
+         const customerId = document.getElementById("customer-id").value.trim();
+         const customerName = document.getElementById("customer-name").value.trim();
+         const phoneNumber = document.getElementById("phone-number").value.trim();
+         const machineName = document.getElementById("machine-name").value.trim();
+         const purchaseDate = document.getElementById("purchase-date").value;
+         if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
+         alert("Please enter all information.");
+         return;
+         }
+    
+         const receiptData = {
+         customerId,
+         customerName,
+         phoneNumber,
+         machineName,
+         purchaseDate
+         };
+         // Send data to the server to store
+         fetch('/api/receipts', {
+         method: 'POST',
+         headers: {
+         'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(receiptData),
+         })
+         .then(response => {
+         if (!response.ok) {
+         return response.json().then(err => {
+         throw new Error(`HTTP error! status: ${response.status}, message: ${err.error}`);
+         });
+         }
+         return response.json();
+         })
+         .then(data => {
+         console.log('Receipt data stored successfully:', data);
+         alert('Receipt data saved!');
+         clearForm(); // Clear the form after success
+         })
+         .catch(error => {
+         console.error('Error storing receipt data:', error);
+         alert(error.message || 'Error saving receipt data.'); // Show server error or generic message
+         });
+         const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
+    
+         document.getElementById("qrcode").innerHTML = "";
+         new QRCode(document.getElementById("qrcode"), {
+         text: url,
+         width: 150,
+         height: 150,
+         });
+         const receiptLink = document.getElementById("receipt-link");
+         receiptLink.href = url;
+         receiptLink.style.display = "inline";
+         receiptLink.innerText = "View Receipt Data";
+         });
+ 
+
+     // Search functionality
+     searchIdButton.addEventListener("click", function() {
+         const searchCustomerId = document.getElementById("search-customer-id").value.trim();
+         console.log("searchCustomerId:", searchCustomerId); // Debug
+         if (searchCustomerId) {
+             window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
+         } else {
+             alert("Please enter a Customer ID to search.");
+         }
+     });
+ 
+
+     // **ADD THIS FUNCTION:**
+     function clearForm() {
+         document.getElementById("customer-id").value = "";
+         document.getElementById("customer-name").value = "";
+         document.getElementById("phone-number").value = "";
+         document.getElementById("machine-name").value = "";
+         document.getElementById("purchase-date").value = "";
+     }
+ 
+
+    });
+     </script>
+ 
+
+  </body>
+  </html>

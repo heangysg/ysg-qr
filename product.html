@@ -77,16 +77,19 @@
                 return response.json();
               })
               .then(data => {
-                if (data) {
-                  document.getElementById('customer-id').textContent = data.customerId || '';
-                  document.getElementById('customer-name').textContent = data.customerName || '';
-                  document.getElementById('phone-number').textContent = data.phoneNumber || '';
-                  document.getElementById('machine-name').textContent = data.machineName || '';
-                  document.getElementById('purchase-date').textContent = new Date(data.purchaseDate).toLocaleDateString();
-                } else {
-                  document.getElementById('no-data-message').style.display = 'block';
-                }
-              })
+  const receipt = Array.isArray(data) ? data[0] : data;
+
+  if (receipt) {
+    document.getElementById('customer-id').textContent = receipt.customerId || '';
+    document.getElementById('customer-name').textContent = receipt.customerName || '';
+    document.getElementById('phone-number').textContent = receipt.phoneNumber || '';
+    document.getElementById('machine-name').textContent = receipt.machineName || '';
+    document.getElementById('purchase-date').textContent = new Date(receipt.purchaseDate).toLocaleDateString();
+  } else {
+    document.getElementById('no-data-message').style.display = 'block';
+  }
+})
+
               .catch(error => {
                 console.error('Error fetching receipt:', error);
                 alert('Failed to fetch receipt data.');
@@ -95,7 +98,7 @@
             alert('Customer ID is missing in the URL!');
           }
         });
-            
+
         // For Back Button
         function goBack() {
           window.location.href = "/";

@@ -65,46 +65,45 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const customerId = new URLSearchParams(window.location.search).get('customerId');
-        
-          if (customerId) {
-            fetch(`https://ysg-qr-scanner-production.up.railway.app/api/receipts/${customerId}`)
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error('Receipt not found');
-                }
-                return response.json();
-              })
-              .then(data => {
-  const receipt = Array.isArray(data) ? data[0] : data;
-
-  if (receipt) {
-    document.getElementById('customer-id').textContent = receipt.customerId || '';
-    document.getElementById('customer-name').textContent = receipt.customerName || '';
-    document.getElementById('phone-number').textContent = receipt.phoneNumber || '';
-    document.getElementById('machine-name').textContent = receipt.machineName || '';
-    document.getElementById('purchase-date').textContent = new Date(receipt.purchaseDate).toLocaleDateString();
-  } else {
-    document.getElementById('no-data-message').style.display = 'block';
-  }
-})
-
-              .catch(error => {
-                console.error('Error fetching receipt:', error);
-                alert('Failed to fetch receipt data.');
-              });
-          } else {
-            alert('Customer ID is missing in the URL!');
-          }
-        });
-
-        // For Back Button
         function goBack() {
-          window.location.href = "/";
+            window.location.href = "index.html";
         }
-        </script>
-        
+
+        function toggleMenu() {
+            document.getElementById("nav-links").classList.toggle("active");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get("customerId");
+
+            if (!customerId) {
+                document.getElementById("no-data-message").style.display = "block";
+                document.getElementById("receipt-table").style.display = "none";
+                return;
+            }
+
+            fetch(`/api/receipts/${customerId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Receipt not found.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("customer-id").textContent = data.customerId;
+                    document.getElementById("customer-name").textContent = data.customerName;
+                    document.getElementById("phone-number").textContent = data.phoneNumber;
+                    document.getElementById("machine-name").textContent = data.machineName;
+                    document.getElementById("purchase-date").textContent = data.purchaseDate;
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById("no-data-message").style.display = "block";
+                    document.getElementById("receipt-table").style.display = "none";
+                });
+        });
+    </script>
 </body>
 
 </html>

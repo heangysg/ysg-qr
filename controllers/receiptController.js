@@ -1,6 +1,5 @@
 const Receipt = require("../models/Receipt");
 
-// CREATE Receipt
 const createReceipt = async (req, res) => {
   try {
     const receipt = new Receipt(req.body);
@@ -12,7 +11,6 @@ const createReceipt = async (req, res) => {
   }
 };
 
-// GET Receipt by customerId
 const getReceiptByCustomerId = async (req, res) => {
   try {
     const customerId = req.params.customerId;

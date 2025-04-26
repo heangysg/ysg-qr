@@ -92,27 +92,28 @@
             const receiptData = { customerId, customerName, phoneNumber, machineName, purchaseDate };
       
             // Send data to server
-            fetch("https://ysg-qr-scanner-production.up.railway.app/api/receipts", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(receiptData),
-            })
-              .then((response) => {
+                            fetch('https://ysg-qr-scanner-production.up.railway.app/api/receipts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(receiptData),
+                })
+                .then(response => {
                 if (!response.ok) {
-                  return response.json().then((err) => {
+                    return response.json().then(err => {
                     throw new Error(`HTTP error! ${err.message}`);
-                  });
+                    });
                 }
                 return response.json();
-              })
-              .then((data) => {
-                alert("Receipt data saved!");
+                })
+                .then(data => {
+                alert('Receipt data saved!');
                 clearForm();
-              })
-              .catch((error) => {
-                console.error("Error saving receipt:", error);
-                alert(error.message || "Error saving receipt data.");
-              });
+                })
+                .catch(error => {
+                console.error('Error saving receipt:', error);
+                alert(error.message || 'Error saving receipt data.');
+                });
+
       
             // Generate QR Code
             const url = `product.html?customerId=${encodeURIComponent(customerId)}`;

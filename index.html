@@ -68,86 +68,97 @@
    
   
     <script>
-    document
-    .getElementById("generate-btn")
-    .addEventListener("click", function () {
-    const customerId = document.getElementById("customer-id").value.trim();
-    const customerName = document.getElementById("customer-name").value.trim();
-    const phoneNumber = document.getElementById("phone-number").value.trim();
-    const machineName = document.getElementById("machine-name").value.trim();
-    const purchaseDate = document.getElementById("purchase-date").value;
-   
-  
-    if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
-    alert("Please enter all information.");
-    return;
-    }
-   
-  
-    const receiptData = {
-    customerId,
-    customerName,
-    phoneNumber,
-    machineName,
-    purchaseDate
-    };
-    // Send data to the server to store
-    fetch('/api/receipts', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(receiptData),
-    })
-    .then(response => {
-    if (!response.ok) {
-    return response.json().then(err => {throw new Error(`HTTP error! status: ${response.status}, message: ${err.error}`)});
-    }
-    return response.json();
-    })
-    .then(data => {
-    console.log('Receipt data stored successfully:', data);
-    alert('Receipt data saved!'); // Basic success message
-    clearForm(); // Clear the form after success
-    })
-    .catch(error => {
-    console.error('Error storing receipt data:', error);
-    alert(error.message || 'Error saving receipt data.'); // Show server error or generic message
-    });
-    const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
-   
-  
-    document.getElementById("qrcode").innerHTML = "";
-    new QRCode(document.getElementById("qrcode"), {
-    text: url,
-    width: 150,
-    height: 150,
-    });
-    const receiptLink = document.getElementById("receipt-link");
-    receiptLink.href = url;
-    receiptLink.style.display = "inline";
-    receiptLink.innerText = "View Receipt Data";
-    });
-    function toggleMenu() {
-    document.getElementById("nav-links").classList.toggle("active");
-    }
-   
-  
-    document.addEventListener("DOMContentLoaded", () => {
-    // New Search by ID functionality
-    const searchIdButton = document.getElementById("search-id-button");
-    if (searchIdButton) {
-    searchIdButton.addEventListener("click", function() {
-    const searchCustomerId = document.getElementById("search-customer-id").value.trim();
-    if (searchCustomerId) {
-    window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
-    } else {
-    alert("Please enter a Customer ID to search.");
-    }
-    });
-    }
-    });
-    </script>
+      document.getElementById("generate-btn").addEventListener("click", function () {
+          const customerId = document.getElementById("customer-id").value.trim();
+          const customerName = document.getElementById("customer-name").value.trim();
+          const phoneNumber = document.getElementById("phone-number").value.trim();
+          const machineName = document.getElementById("machine-name").value.trim();
+          const purchaseDate = document.getElementById("purchase-date").value;
+      
+          if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
+              alert("Please enter all information.");
+              return;
+          }
+      
+          const receiptData = {
+              customerId,
+              customerName,
+              phoneNumber,
+              machineName,
+              purchaseDate
+          };
+      
+          // ✅ Send data to the server to store
+          fetch('/api/receipts', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(receiptData),
+          })
+          .then(response => {
+              if (!response.ok) {
+                  return response.json().then(err => {
+                      throw new Error(`HTTP error! status: ${response.status}, message: ${err.error}`);
+                  });
+              }
+              return response.json();
+          })
+          .then(data => {
+              console.log('Receipt data stored successfully:', data);
+              alert('🎉 Receipt data saved successfully!');
+      
+              // ✅ ✅ ✅ Only now generate the QR code!
+              const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
+      
+              document.getElementById("qrcode").innerHTML = "";
+              new QRCode(document.getElementById("qrcode"), {
+                  text: url,
+                  width: 150,
+                  height: 150,
+              });
+      
+              const receiptLink = document.getElementById("receipt-link");
+              receiptLink.href = url;
+              receiptLink.style.display = "inline";
+              receiptLink.innerText = "View Receipt Data";
+      
+              clearForm(); // Optional: Clear the form after success
+          })
+          .catch(error => {
+              console.error('Error storing receipt data:', error);
+              alert(error.message || 'Error saving receipt data.');
+          });
+      });
+      
+      function toggleMenu() {
+          document.getElementById("nav-links").classList.toggle("active");
+      }
+      
+      document.addEventListener("DOMContentLoaded", () => {
+          const searchIdButton = document.getElementById("search-id-button");
+          if (searchIdButton) {
+              searchIdButton.addEventListener("click", function() {
+                  const searchCustomerId = document.getElementById("search-customer-id").value.trim();
+                  if (searchCustomerId) {
+                      window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
+                  } else {
+                      alert("Please enter a Customer ID to search.");
+                  }
+              });
+          }
+      });
+      
+      // ✅ Optional: Clear form fields after saving
+      function clearForm() {
+          document.getElementById("customer-id").value = "";
+          document.getElementById("customer-name").value = "";
+          document.getElementById("phone-number").value = "";
+          document.getElementById("machine-name").value = "";
+          document.getElementById("purchase-date").value = "";
+      }
+      </script>
+      
 
  </body>
  </html>

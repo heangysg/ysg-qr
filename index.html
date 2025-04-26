@@ -66,85 +66,101 @@
      </div>
      </div>
     
-   
-     
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const generateBtn = document.getElementById("generate-btn");
-            const receiptLink = document.getElementById("receipt-link");
-    
-            // Handle form submission and store data in database
-            generateBtn.addEventListener("click", function() {
-                const customerId = document.getElementById("customer-id").value.trim();
-                const customerName = document.getElementById("customer-name").value.trim();
-                const phoneNumber = document.getElementById("phone-number").value.trim();
-                const machineName = document.getElementById("machine-name").value.trim();
-                const purchaseDate = document.getElementById("purchase-date").value;
-    
-                if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
-                    alert("Please enter all information.");
-                    return;
-                }
-    
-                const receiptData = {
-                    customerId,
-                    customerName,
-                    phoneNumber,
-                    machineName,
-                    purchaseDate
-                };
-    
-                // Send data to the server to store it in the database
-                fetch('https://ysg-qr-scanner-production.up.railway.app/api/receipts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(receiptData),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => {
-                            throw new Error(`HTTP error! status: ${response.status}, message: ${err.error}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Receipt data stored successfully:', data);
-                    alert('Receipt data saved!');
-                    clearForm(); // Clear the form after success
-                })
-                .catch(error => {
-                    console.error('Error storing receipt data:', error);
-                    alert(error.message || 'Error saving receipt data.');
-                });
-    
-                // Generate the QR code with the customerId in the URL
-                const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
-                document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), {
-                    text: url,
-                    width: 150,
-                    height: 150,
-                });
-    
-                // Set the link to view the receipt data
-                receiptLink.href = url;
-                receiptLink.style.display = "inline";
-                receiptLink.innerText = "View Receipt Data";
-            });
-    
-            // Clear the form after submission
-            function clearForm() {
-                document.getElementById("customer-id").value = "";
-                document.getElementById("customer-name").value = "";
-                document.getElementById("phone-number").value = "";
-                document.getElementById("machine-name").value = "";
-                document.getElementById("purchase-date").value = "";
+     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const generateBtn = document.getElementById("generate-btn");
+          const receiptLink = document.getElementById("receipt-link");
+          const hamburger = document.querySelector(".hamburger");
+          const navLinks = document.getElementById("nav-links");
+      
+          const searchButton = document.getElementById("search-id-button");
+          const searchInput = document.getElementById("search-customer-id");
+      
+          // Handle QR generation & data saving
+          generateBtn.addEventListener("click", function () {
+            const customerId = document.getElementById("customer-id").value.trim();
+            const customerName = document.getElementById("customer-name").value.trim();
+            const phoneNumber = document.getElementById("phone-number").value.trim();
+            const machineName = document.getElementById("machine-name").value.trim();
+            const purchaseDate = document.getElementById("purchase-date").value;
+      
+            if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
+              alert("Please enter all information.");
+              return;
             }
+      
+            const receiptData = { customerId, customerName, phoneNumber, machineName, purchaseDate };
+      
+            // Send data to server
+            fetch("https://ysg-qr-scanner-production.up.railway.app/api/receipts", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(receiptData),
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  return response.json().then((err) => {
+                    throw new Error(`HTTP error! ${err.message}`);
+                  });
+                }
+                return response.json();
+              })
+              .then((data) => {
+                alert("Receipt data saved!");
+                clearForm();
+              })
+              .catch((error) => {
+                console.error("Error saving receipt:", error);
+                alert(error.message || "Error saving receipt data.");
+              });
+      
+            // Generate QR Code
+            const url = `product.html?customerId=${encodeURIComponent(customerId)}`;
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+              text: url,
+              width: 150,
+              height: 150,
+            });
+      
+            // Set link to receipt
+            receiptLink.href = url;
+            receiptLink.style.display = "inline";
+            receiptLink.innerText = "មើលទិន្នន័យ QRCode";
+          });
+      
+          // Clear form fields
+          function clearForm() {
+            document.getElementById("customer-id").value = "";
+            document.getElementById("customer-name").value = "";
+            document.getElementById("phone-number").value = "";
+            document.getElementById("machine-name").value = "";
+            document.getElementById("purchase-date").value = "";
+          }
+      
+          // Hamburger menu toggle
+          if (hamburger) {
+            hamburger.addEventListener("click", function () {
+              navLinks.classList.toggle("active");
+            });
+          }
+      
+          // Search button
+          if (searchButton && searchInput) {
+            searchButton.addEventListener("click", function (event) {
+              event.preventDefault();
+              const customerId = searchInput.value.trim();
+              if (customerId) {
+                window.location.href = `product.html?customerId=${customerId}`;
+              } else {
+                alert("Please enter a Customer ID.");
+              }
+            });
+          }
         });
-        </script>
+      </script>
+      
+        
 
   </body>
   </html>

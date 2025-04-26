@@ -65,34 +65,41 @@
     </div>
 
     <script>
+        function toggleMenu() {
+          const navLinks = document.getElementById('nav-links');
+          navLinks.classList.toggle('active');
+        }
+        
+        function goBack() {
+          window.location.href = "/";
+        }
+        
         document.addEventListener("DOMContentLoaded", function() {
-            const customerId = new URLSearchParams(window.location.search).get('customerId');
-    
-            if (customerId) {
-                // Fetch receipt data based on customerId from the backend API
-                fetch(`https://ysg-qr-scanner-production.up.railway.app/api/receipts?customerId=${customerId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data) {
-                            // Show the fetched data
-                            document.getElementById('customer-name').textContent = data.customerName;
-                            document.getElementById('phone-number').textContent = data.phoneNumber;
-                            document.getElementById('machine-name').textContent = data.machineName;
-                            document.getElementById('purchase-date').textContent = data.purchaseDate;
-                        } else {
-                            alert("No data found for this customer.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                        alert('Failed to fetch receipt data.');
-                    });
-            } else {
-                alert("Customer ID is missing.");
-            }
+          const customerId = new URLSearchParams(window.location.search).get('customerId');
+        
+          if (customerId) {
+            fetch(`https://ysg-qr-scanner-production.up.railway.app/api/receipts/${customerId}`)
+              .then(response => response.json())
+              .then(data => {
+                if (data) {
+                  document.getElementById('customer-id').textContent = data.customerId;
+                  document.getElementById('customer-name').textContent = data.customerName;
+                  document.getElementById('phone-number').textContent = data.phoneNumber;
+                  document.getElementById('machine-name').textContent = data.machineName;
+                  document.getElementById('purchase-date').textContent = new Date(data.purchaseDate).toLocaleDateString();
+                } else {
+                  document.getElementById('no-data-message').style.display = "block";
+                }
+              })
+              .catch(error => {
+                console.error('Error fetching data:', error);
+                alert('Failed to fetch receipt data.');
+              });
+          } else {
+            alert("Customer ID is missing.");
+          }
         });
         </script>
-        
 </body>
 
 </html>

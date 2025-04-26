@@ -6,7 +6,8 @@ const path = require('path');
 require('dotenv').config();
 
 // Import controller functions
-const { createReceipt, getReceiptByCustomerId } = require('./receiptController');
+const { createReceipt, getReceiptByCustomerId } = require('./controllers/receiptController');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;

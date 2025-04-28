@@ -8,8 +8,9 @@ body {
 }
 
 /* Header & Navigation */
+/* Header & Navigation (unchanged, assuming you want to keep it) */
 header {
-    background-color: #002d5d; /* Dark, professional header */
+    background-color: #002d5d;
     padding: 15px 0;
     display: flex;
     justify-content: space-between;
@@ -18,7 +19,7 @@ header {
     top: 0;
     width: 100%;
     z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logo img {
@@ -47,24 +48,21 @@ nav ul li {
     margin: 0 15px;
     display: flex;
     align-items: center;
+    margin: 10px 0; /* Add vertical space between items */
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 16px;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    margin-top: 5px;
+    padding: 10px 20px; /* Add padding inside links */
+    display: block; /* Make entire area clickable */
 }
 
 nav ul li a:hover {
     text-decoration: underline;
 }
 
-/* Hamburger Icon (Three horizontal lines) */
 .hamburger {
     display: none;
     flex-direction: column;
@@ -83,7 +81,6 @@ nav ul li a:hover {
     transition: 0.3s;
 }
 
-/* Responsive Dropdown for Mobile */
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
@@ -98,16 +95,16 @@ nav ul li a:hover {
         flex-direction: column;
         background: #002d5d;
         position: absolute;
-        top: 60px;
-        right: 0;
-        width: 200px;
-        border-radius: 5px;
+        top: 80px;
+        right: -80px;
+        width: 150px;
         text-align: left;
-        padding: 10px 0;
+        padding: 1px 0;
+    
     }
 
     nav ul li {
-        padding: 10px;
+        padding: 1px;
         text-align: left;
     }
 

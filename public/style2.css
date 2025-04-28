@@ -8,6 +8,7 @@ body {
 }
 
 /* Header & Navigation (unchanged, assuming you want to keep it) */
+/* Header & Navigation (unchanged, assuming you want to keep it) */
 header {
     background-color: #002d5d;
     padding: 15px 0;
@@ -47,17 +48,15 @@ nav ul li {
     margin: 0 15px;
     display: flex;
     align-items: center;
+    margin: 10px 0; /* Add vertical space between items */
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 16px;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    margin-top: 5px;
+    padding: 10px 20px; /* Add padding inside links */
+    display: block; /* Make entire area clickable */
 }
 
 nav ul li a:hover {
@@ -96,16 +95,16 @@ nav ul li a:hover {
         flex-direction: column;
         background: #002d5d;
         position: absolute;
-        top: 60px;
-        right: 0;
-        width: 200px;
-        border-radius: 5px;
+        top: 80px;
+        right: -80px;
+        width: 150px;
         text-align: left;
-        padding: 10px 0;
+        padding: 1px 0;
+    
     }
 
     nav ul li {
-        padding: 10px;
+        padding: 1px;
         text-align: left;
     }
 

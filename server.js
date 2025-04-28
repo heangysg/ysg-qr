@@ -1,38 +1,37 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
-const dotenv = require('dotenv');
-const receiptController = require('./controllers/receiptController');
-
-dotenv.config();
+const Receipt = require('./models/Receipt'); // ADD THIS if not yet
+const receiptRoutes = require('./controllers/receiptController');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
-// Middleware
-app.use(cors());
-app.use(express.json()); // No need body-parser, express has built-in
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(express.static('public'));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB connected'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+app.use('/api/receipts', receiptRoutes);
 
-// API Routes
-app.post('/api/receipts', receiptController.createReceipt);
-app.get('/api/receipts/:customerId', receiptController.getReceiptByCustomerId);
+// ⭐ ADD THIS new route for deleting
+app.delete('/api/receipts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Receipt.findByIdAndDelete(id);
 
-// Default route for SPA (Single Page Application)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    if (!result) {
+      return res.status(404).json({ message: 'Receipt not found' });
+    }
+
+    res.json({ message: 'Receipt deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting receipt:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('MongoDB Connected');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch(err => console.error('MongoDB connection error:', err));

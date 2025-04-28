@@ -29,7 +29,7 @@ app.delete('/api/receipts/:id', async (req, res) => {
   }
 });
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGO_URI)  // ✅ correct here
   .then(() => {
     console.log('MongoDB Connected');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

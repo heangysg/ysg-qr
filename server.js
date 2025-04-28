@@ -3,33 +3,28 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static files from the root folder (where your HTML files are)
-app.use(express.static(path.join(__dirname)));
+// Serve static files (HTML, CSS, JS) from 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Schema
-const receiptSchema = new mongoose.Schema({
-  customerId: String,
-  customerName: String,
-  phoneNumber: String,
-  machineName: String,
-  purchaseDate: String
-});
-
-const Receipt = mongoose.model('Receipt', receiptSchema);
+const Receipt = require('./Receipt');
 
 // API to store data
 app.post('/api/receipts', async (req, res) => {
@@ -43,7 +38,7 @@ app.post('/api/receipts', async (req, res) => {
   }
 });
 
-// API to get data by ID
+// API to get data by Customer ID
 app.get('/api/receipts/:customerId', async (req, res) => {
   try {
     const receipt = await Receipt.findOne({ customerId: req.params.customerId });
@@ -57,9 +52,9 @@ app.get('/api/receipts/:customerId', async (req, res) => {
   }
 });
 
-// Redirect root to index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Default route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start server

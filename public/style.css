@@ -304,3 +304,19 @@ a#receipt-link:hover {
     border-color: #007bff; /* Change border color on focus */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
    }
+   #download-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #28a745; /* Green color */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  #download-link:hover {
+    background-color: #218838; /* Darker green when hover */
+  }
+  

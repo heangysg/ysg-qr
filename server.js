@@ -24,7 +24,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Schema
-const Receipt = require('./Receipt');
+const Receipt = require('./models/Receipt');
+
 
 // API to store data
 app.post('/api/receipts', async (req, res) => {

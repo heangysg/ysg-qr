@@ -20,13 +20,16 @@ header {
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .navbar {
   background-color: #003366;
-  padding: 15px 0px; /* Normal size for desktop */
+  padding: 15px 0px;
+  /* Normal size for desktop */
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .logo img {
   height: 60px;
   margin-left: 40px;
@@ -53,15 +56,18 @@ nav ul li {
   margin: 0 15px;
   display: flex;
   align-items: center;
-  margin: 10px 0; /* Add vertical space between items */
+  margin: 10px 0;
+  /* Add vertical space between items */
 }
 
 nav ul li a {
   color: white;
   text-decoration: none;
   font-weight: bold;
-  padding: 10px 20px; /* Add padding inside links */
-  display: block; /* Make entire area clickable */
+  padding: 10px 20px;
+  /* Add padding inside links */
+  display: block;
+  /* Make entire area clickable */
 }
 
 nav ul li a:hover {
@@ -90,9 +96,12 @@ nav ul li a:hover {
   .hamburger {
       display: flex;
   }
+
   .navbar {
-      padding: 40px 30px; /* <-- Make navbar taller on phone */
-    }
+      padding: 40px 30px;
+      /* <-- Make navbar taller on phone */
+  }
+
   nav ul {
       display: none;
   }
@@ -107,7 +116,7 @@ nav ul li a:hover {
       width: 150px;
       text-align: left;
       padding: 1px 0;
-  
+
   }
 
   nav ul li {
@@ -124,6 +133,13 @@ nav ul li a:hover {
 
   nav ul li a:hover {
       text-decoration: underline;
+  }
+  .delete-btn,
+  .download-btn { /* Apply to both buttons */
+    padding: 4px 8px; /* Smaller padding */
+    font-size: 12px;  /* Smaller font size */
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -150,7 +166,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 8px;
   text-align: center;
   border: 1px solid #ccc;
@@ -177,44 +194,83 @@ th {
 
 /* Responsive for smaller devices */
 @media screen and (max-width: 600px) {
-  table, thead, tbody, th, td, tr {
-    display: block;
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+      display: block;
   }
 
   thead {
-    display: none;
+      display: none;
   }
 
   tr {
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    background: #fff;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background: #fff;
   }
 
   td {
-    text-align: left;
-    position: relative;
-    padding-left: 50%;
+      text-align: left;
+      position: relative;
+      padding-left: 50%;
   }
 
   td::before {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 45%;
-    padding-right: 10px;
-    font-weight: bold;
-    white-space: nowrap;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 45%;
+      padding-right: 10px;
+      font-weight: bold;
+      white-space: nowrap;
   }
 
-  td:nth-child(1)::before { content: "Customer ID"; }
-  td:nth-child(2)::before { content: "Customer Name"; }
-  td:nth-child(3)::before { content: "Phone Number"; }
-  td:nth-child(4)::before { content: "Machine Name"; }
-  td:nth-child(5)::before { content: "Purchase Date"; }
-  td:nth-child(6)::before { content: "Price"; }
-  td:nth-child(7)::before { content: "Action"; }
+  td:nth-child(1)::before {
+      content: "Customer ID";
+  }
+
+  td:nth-child(2)::before {
+      content: "Customer Name";
+  }
+
+  td:nth-child(3)::before {
+      content: "Phone Number";
+  }
+
+  td:nth-child(4)::before {
+      content: "Machine Name";
+  }
+
+  td:nth-child(5)::before {
+      content: "Purchase Date";
+  }
+
+  td:nth-child(6)::before {
+      content: "Action";
+  }
+  td:nth-child(6) { /* Target the 'Action' cell */
+    display: flex;       /* Enable flexbox for centering */
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center; /* Center items horizontally */
+    gap: 5px;            /* Add some space between buttons */
+    padding-top: 10px;   /* Add some top padding for spacing */
+    padding-bottom: 10px; /* Add some bottom padding */
+  }
+
+  .delete-btn,
+  .download-btn {
+    padding: 6px 10px; /* Slightly adjust padding */
+    font-size: 12px;
+    width: 80%;        /* Make buttons take up a reasonable width */
+    box-sizing: border-box; /* Include padding in the width */
+    margin: 0;          /* Remove default button margins */
+  }
 }
 
 /* Login Form Styles */
@@ -224,7 +280,7 @@ th {
   background: white;
   padding: 30px 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
@@ -235,7 +291,8 @@ th {
 
 /* Login Form Styling */
 .input-group {
-  position: relative; /* Add this to make the input group a positioning context */
+  position: relative;
+  /* Add this to make the input group a positioning context */
   margin-bottom: 15px;
 }
 
@@ -253,7 +310,8 @@ th {
 
 .input-group input {
   padding: 10px;
-  padding-left: 35px; /* Adjust padding to accommodate the left icon */
+  padding-left: 35px;
+  /* Adjust padding to accommodate the left icon */
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #ccc;
@@ -291,11 +349,13 @@ th {
 #login-container button:hover {
   background-color: #0055aa;
 }
+
 .button-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px; /* spacing between buttons */
+  gap: 10px;
+  /* spacing between buttons */
   margin-top: 15px;
 }
 
@@ -304,6 +364,7 @@ th {
   max-width: 300px;
   font-size: 16px;
 }
+
 button#generate-btn {
   background-color: #003366;
   color: white;
@@ -318,12 +379,167 @@ button.clear-button {
   background-color: crimson;
   color: white;
   padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 button.clear-button:hover {
-  background-color: darkred;
+    background-color: darkred;
+}
+
+/* Receipt Styles */
+.receipt-content {
+  background: white;
+  padding: 20px;
+  border: 2px solid #000; /* Strong black border */
+  width: 400px;        /* Fixed width for consistency */
+  margin: 20px auto;   /* Centered receipt */
+  font-family: Arial, sans-serif;
+  font-size: 12px;      /* Smaller font size for receipt */
+  line-height: 1.4;    /* Adjust line height for readability */
+}
+
+.receipt-content h2 {
+  font-size: 1.2em;   /* Smaller heading */
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.receipt-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.receipt-content th, .receipt-content td {
+  border-bottom: 1px solid #000; /* Only bottom border for rows */
+  padding: 8px;
+  text-align: left;
+}
+
+.receipt-content th {
+  font-weight: bold;
+}
+
+.receipt-content img {
+  height: 50px;       /* Smaller logo */
+  margin-bottom: 5px;
+}
+
+.receipt-content p {
+  font-size: 0.9em;   /* Smaller paragraph text */
+  margin: 5px 0;
+}
+
+.receipt-content .center {
+  text-align: center;
+}
+
+.receipt-content .right {
+  text-align: right;
+}
+
+.receipt-content .bold {
+  font-weight: bold;
+}
+
+/* Add styles for dotted lines */
+.receipt-content .dotted-line {
+  border-bottom: 1px dashed #000;
+  margin: 10px 0;
+}
+
+.download-btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.download-btn:hover {
+  background-color: #3e8e41; /* Darker green */
+}
+
+.download-btn:active {
+  background-color: #3e8e41;
+  box-shadow: 0 1px #666;
+  transform: translateY(1px);
+}
+
+/* refresh */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  /* Make sure it's on top */
+  display: none;
+  /* Initially hidden */
+}
+
+.loading-spinner {
+  border: 5px solid #f3f3f3;
+  /* Light grey */
+  border-top: 5px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+#refresh-btn {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background-color: #4CAF50;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-bottom: -30px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#refresh-btn:hover {
+  background-color: #3e8e41;
+}
+#admin-panel h2 {
+  margin-top: 10px;
+  font-size: 1.5em;          /* Larger font size */
+  color: #003366;           /* Dark blue color */
+  text-align: center;         /* Align to the left */
+  margin-bottom: 10px;      /* Add some spacing below */
+  border-bottom: 2px solid #003366; /* Underline with a dark blue line */
+  padding-bottom: 5px;       /* Spacing between text and underline */
 }

@@ -1,140 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin | YSG</title>
-  <link rel="stylesheet" href="style3.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | YSG</title>
+    <link rel="stylesheet" href="style3.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">
-    <img src="img/Y S G_ (2).png" alt="YSG Logo" />
-  </div>
-  <nav>
-    <div class="hamburger" onclick="toggleMenu()">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
+    <header>
+        <div class="logo">
+            <img src="img/Y S G_ (2).png" alt="YSG Logo" />
+        </div>
+        <nav>
+            <div class="hamburger" onclick="toggleMenu()">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul id="nav-links">
+                <li><a href="index.html">Generate QR</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <div id="login-container">
+            <h2>Admin Login</h2>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="Enter Username" />
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Enter Password" />
+                <i class="far fa-eye" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+            </div>
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div id="admin-panel" style="display: none;">
+            <h2>All Receipts (Admin)</h2>
+            <button id="refresh-btn" onclick="refreshReceipts()">Refresh Receipts</button>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Customer Name</th>
+                            <th>Phone Number</th>
+                            <th>Machine Name</th>
+                            <th>Purchase Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipts-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
-    <ul id="nav-links">
-      <li><a href="index.html">Generate QR</a></li>
-      <li><a href="admin.html">Admin</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
-</header>
 
-<div class="container">
-
-  <div id="login-container">
-    <h2>Admin Login</h2>
-    <div class="input-group">
-      <i class="fas fa-user"></i>
-      <input type="text" id="username" placeholder="Enter Username" />
-      <i class="far fa-eye" id="toggleUsername" onclick="toggleUsernameVisibility()"></i>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
     </div>
-    <div class="input-group">
-      <i class="fas fa-lock"></i>
-      <input type="password" id="password" placeholder="Enter Password" />
-      <i class="far fa-eye" id="togglePassword" onclick="togglePasswordVisibility()"></i>
-    </div>
-    <button onclick="login()">Login</button>
-  </div>
 
-  <div id="admin-panel" style="display: none;">
-    <h2>All Receipts (Admin)</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Customer ID</th>
-            <th>Customer Name</th>
-            <th>Phone Number</th>
-            <th>Machine Name</th>
-            <th>Purchase Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="receipts-body">
-          </tbody>
-      </table>
-    </div>
-  </div>
+    <script>
+        function toggleMenu() {
+            document.getElementById("nav-links").classList.toggle("active");
+        }
 
-</div>
+        function togglePasswordVisibility() {
+            const password = document.getElementById("password");
+            const icon = document.getElementById("togglePassword");
+            password.type = password.type === "password" ? "text" : "password";
+            icon.classList.toggle("fa-eye-slash");
+        }
 
-<script>
-function toggleMenu() {
-  document.getElementById("nav-links").classList.toggle("active");
-}
+        function login() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            if (username === "admin" && password === "Heang123") {
+                document.getElementById("login-container").style.display = "none";
+                document.getElementById("admin-panel").style.display = "block";
+                loadReceipts();
+            } else {
+                alert("Incorrect Username or Password!");
+            }
+        }
 
-function togglePasswordVisibility() {
-  const password = document.getElementById("password");
-  const icon = document.getElementById("togglePassword");
-  password.type = password.type === "password" ? "text" : "password";
-  icon.classList.toggle("fa-eye-slash");
-}
-
-function toggleUsernameVisibility() {
-  const username = document.getElementById("username");
-  const icon = document.getElementById("toggleUsername");
-  username.type = username.type === "text" ? "password" : "text";
-  icon.classList.toggle("fa-eye-slash");
-}
-
-function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  if (username === "admin" && password === "Heang123") {
-    document.getElementById("login-container").style.display = "none";
-    document.getElementById("admin-panel").style.display = "block";
-    loadReceipts();
-  } else {
-    alert("Incorrect Username or Password!");
-  }
-}
-
-function loadReceipts() {
-  fetch("/api/receipts")
-    .then(res => res.json())
-    .then(data => {
-      const body = document.getElementById("receipts-body");
-      body.innerHTML = "";
-      data.forEach(receipt => {
-        body.innerHTML += `
-          <tr>
+        function loadReceipts() {
+            fetch("/api/receipts")
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById("receipts-body");
+                    body.innerHTML = "";
+                    data.forEach(receipt => {
+                        body.innerHTML += `
+          <tr id="receipt-${receipt._id}">
             <td>${receipt.customerId}</td>
             <td>${receipt.customerName}</td>
             <td>${receipt.phoneNumber}</td>
             <td>${receipt.machineName}</td>
             <td>${receipt.purchaseDate}</td>
-            <td><button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">Delete</button></td>
+            <td>
+              <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">Delete</button>
+              <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">Download</button>
+            </td>
           </tr>`;
-      });
-    });
-}
-
-function deleteReceipt(id) {
-  if (confirm("Are you sure you want to delete this receipt?")) {
-    fetch(`/api/receipts/${id}`, { method: "DELETE" })
-      .then(res => {
-        if (res.ok) {
-          alert("✅ Deleted successfully!");
-          loadReceipts();
-        } else {
-          alert("❌ Failed to delete.");
+                    });
+                });
         }
-      })
-      .catch(err => {
-        console.error(err);
-        alert("❌ Error deleting receipt.");
-      });
-  }
-}
-</script>
+
+        function deleteReceipt(id) {
+            if (confirm("Are you sure you want to delete this receipt?")) {
+                fetch(`/api/receipts/${id}`, {
+                        method: "DELETE"
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("✅ Deleted successfully!");
+                            loadReceipts();
+                        } else {
+                            alert("❌ Failed to delete.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("❌ Error deleting receipt.");
+                    });
+            }
+        }
+
+        function downloadReceipt(id) {
+            const row = document.getElementById(`receipt-${id}`);
+            if (!row) {
+                alert("Receipt not found!");
+                return;
+            }
+
+            const container = document.createElement('div');
+            container.className = 'receipt-content';
+            container.innerHTML = `
+        <div class="center">
+            <img src="img/Y S G_ (2).png" alt="YSG Logo">
+            <p class="bold">Yeung Shi Group Co.,Ltd</p>
+            <p>Phnom Penh, Cambodia</p>
+            <div class="dotted-line"></div>
+            <h2>Receipt Product</h2>
+        </div>
+        <table>
+            <tr><th>Item</th><th>Details</th></tr>
+            <tr><th>Customer ID</th><td>${row.cells[0].textContent}</td></tr>
+            <tr><th>Customer Name</th><td>${row.cells[1].textContent}</td></tr>
+            <tr><th>Phone Number</th><td>${row.cells[2].textContent}</td></tr>
+            <tr><th>Machine Name</th><td>${row.cells[3].textContent}</td></tr>
+            <tr><th>Purchase Date</th><td>${row.cells[4].textContent}</td></tr>
+        </table>
+        <div class="dotted-line"></div>
+        <p class="center">Thank you for your purchase!</p>
+    `;
+
+            document.body.appendChild(container);
+            html2canvas(container).then(canvas => {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = `receipt-${id}.png`;
+                link.click();
+                document.body.removeChild(container);
+            });
+        }
+
+        function refreshReceipts() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex'; // Show the loading overlay
+
+            setTimeout(() => {
+                loadReceipts();
+                loadingOverlay.style.display = 'none'; // Hide the loading overlay
+            }, 2000); // Simulate 2 seconds of loading
+        }
+    </script>
 
 </body>
+
 </html>

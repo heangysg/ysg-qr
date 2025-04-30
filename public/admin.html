@@ -149,15 +149,15 @@
         }
 
         function downloadReceipt(id) {
-    const row = document.getElementById(`receipt-${id}`);
-    if (!row) {
-        alert("Receipt not found!");
-        return;
-    }
+            const row = document.getElementById(`receipt-${id}`);
+            if (!row) {
+                alert("Receipt not found!");
+                return;
+            }
 
-    const container = document.createElement('div');
-    container.className = 'receipt-content';
-    container.innerHTML = `
+            const container = document.createElement('div');
+            container.className = 'receipt-content';
+            container.innerHTML = `
         <div class="center">
             <img src="img/Y S G_ (2).png" alt="YSG Logo">
             <p class="bold">Yeung Shi Group Co.,Ltd</p>
@@ -172,28 +172,31 @@
             <tr><th>ឈ្មោះផលិតផល</th><td>${row.cells[3].textContent}</td></tr>
             <tr><th>កាលបរិច្ឆេទទិញ</th><td>${row.cells[4].textContent}</td></tr>
           </table>
+
         <div class="dotted-line"></div>
         <p class="center">Thank you for your purchase!</p>
     `;
 
-    document.body.appendChild(container);
-    html2canvas(container).then(canvas => {
-        const image = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = image;
-        link.download = `receipt-${id}.png`;
-        document.body.appendChild(link); // Ensure link is in the DOM
+            document.body.appendChild(container);
+            html2canvas(container).then(canvas => {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = `receipt-${id}.png`;
+                link.click();
+                document.body.removeChild(container);
+            });
+        }
 
-        // Programmatically trigger the click event
-        link.dispatchEvent(new MouseEvent('click'));
+        function refreshReceipts() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex'; // Show the loading overlay
 
-        // Clean up after a short delay
-        setTimeout(() => {
-            document.body.removeChild(link);
-            document.body.removeChild(container);
-        }, 100);
-    });
-}
+            setTimeout(() => {
+                loadReceipts();
+                loadingOverlay.style.display = 'none'; // Hide the loading overlay
+            }, 2000); // Simulate 2 seconds of loading
+        }
     </script>
 
 </body>

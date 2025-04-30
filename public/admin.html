@@ -37,6 +37,7 @@
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" id="username" placeholder="Enter Username" />
+                <i class="far fa-eye" id="toggleUsername" onclick="toggleUsernameVisibility()"></i>
             </div>
             <div class="input-group">
                 <i class="fas fa-lock"></i>
@@ -53,12 +54,12 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID អតិថិជន</th>
-                            <th>ឈ្មោះអតិថិជន</th>
-                            <th>លេខទូរស័ព្ទ</th>
-                            <th>ឈ្មោះផលិតផល</th>
-                            <th>កាលបរិច្ឆេទទិញ</th>
-                            <th>ផ្សេងៗ</th>
+                            <th>Customer ID</th>
+                            <th>Customer Name</th>
+                            <th>Phone Number</th>
+                            <th>Machine Name</th>
+                            <th>Purchase Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="receipts-body">
@@ -82,6 +83,13 @@
             const password = document.getElementById("password");
             const icon = document.getElementById("togglePassword");
             password.type = password.type === "password" ? "text" : "password";
+            icon.classList.toggle("fa-eye-slash");
+        }
+
+        function toggleUsernameVisibility() {
+            const username = document.getElementById("username");
+            const icon = document.getElementById("toggleUsername");
+            username.type = username.type === "text" ? "password" : "text";
             icon.classList.toggle("fa-eye-slash");
         }
 

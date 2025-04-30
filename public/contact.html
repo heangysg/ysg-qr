@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | YSG</title>
+  <link rel="stylesheet" href="contact3.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    crossorigin="anonymous" />
+  <script defer src="menu.js"></script>
+  <link rel="icon" href="img/smalllicon.png" type="image/x-icon">
+  <style>
+
+  </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+          <img src="img/Y S G_ (2).png" alt="YSG Logo" />
+        </div>
+        <nav>
+          <div class="hamburger" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <ul id="nav-links">
+            <li><a href="index.html">Generate QR</a></li>
+            <li><a href="admin.html">Admin</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+
+  <div class="contact-container">
+    <div class="contact-form">
+      <h2>Send Us a Message</h2>
+      <form action="https://formsubmit.co/hakchhaiheang0@gmail.com" method="post">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea name="message" placeholder="Your Message" required></textarea>
+        <button type="submit" style="font-weight: bold">Send Message</button>
+      </form>
+    </div>
+
+    <div class="contact-details">
+      <h2 style="align-items: center; text-align: center; font-weight: bold">
+        Our Contact Details
+      </h2>
+      <p>
+        <strong>Address:</strong> building230, st271, Toul Tompong I2,
+        Chomkarmon, Phnom Penh
+      </p>
+      <p><strong>Phone:</strong> 010 / 011 / 012 / 070 : 309 302</p>
+      <p><strong>Email:</strong> yeungshigroup123@gmail.com</p>
+    </div>
+    <div class="map-container">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3909.2261019304406!2d104.9087854740979!3d11.53563194473341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310950e6f508d97f%3A0x3fe425c8d8a84794!2sYeung%20Shi%20Group%20(YSG)!5e0!3m2!1sen!2skh!4v1742372716201!5m2!1sen!2skh" width="100%" height="350px" style="border: 0"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <h4>Who We Are?</h4>
+      <p>Yeung Shi Group company was establish in china at GuangZhou city since 1990s, and we started to process the company in Cambodia in 2005, our passion is trying to figure out a target market in Cambodia.</p>
+    </div>
+    <div>
+      <h4>Term & Policy</h4>
+      <p>If you have any feature inquiry or you are interested in products from our website, please don't hesitate to contact us through phone number or our email. We truly appreciate for your interested with our products.</p>
+    </div>
+    <div class="contact-us-now">
+      <h4>Contact Us Now!</h4>
+      <p>Address : Building 230 , St. 271 , Sangkat Toul Tompong II , Khan Chamkamon , Phnom Penh.</p>
+      <p>Working Hours : 8: 00 am - 5:30pm ( Mon - Sat )</p>
+      <p>Phone : 010 / 011 / 012 / 070 : 309 302</p>
+      <p>Email : yeungshigroup123@gmail.com</p>
+      <p>Website : www.ysg-group.com</p>
+      <div class="social-icons">
+        <a href="https://www.facebook.com/ysgheadoffice" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.tiktok.com/@ysg.online?is_from_webapp=1&sender_device=pc" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <hr>  <p class="copyright">© 2025 Heang YSG | All Rights Reserved</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("nav-links").classList.toggle("active");
+    }
+
+    
+
+    // refresh animation
+window.addEventListener("beforeunload", function () {
+    document.body.style.opacity = "0";
+    document.body.style.transition = "opacity 0.5s ease-in-out";
+});
+  </script>
+</body>
+
+</html>

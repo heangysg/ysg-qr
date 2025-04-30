@@ -57,17 +57,26 @@
     <input type="date" id="purchase-date" />
   </div>
 
-  <button id="generate-btn">បង្កើត QR Code</button>
+  <div class="button-group">
+    <button id="generate-btn">បង្កើត QR Code</button>
+    <button id="clear-btn" class="clear-button">Clear Form</button>
+  </div>
+  
+  
+  <div id="qrcode" style="margin-top: 20px;"></div>
 
-  <div id="qrcode"></div>
   <a id="receipt-link" href="#" style="display: none;" target="_blank">មើលទិន្នន័យ QRCode</a>
-  <br />
+
+  <br /><br>
+
   <a id="download-link" style="display: none;" download>Download QR Code</a>
+
   <div class="search-id-container">
     <h3>ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន</h3>
     <input type="text" id="search-customer-id" placeholder="Enter Customer ID to Search" />
     <button id="search-id-button">Search</button>
   </div>
+
 </div>
 
 <script>
@@ -85,7 +94,6 @@ document.getElementById("generate-btn").addEventListener("click", function () {
 
   const receiptData = { customerId, customerName, phoneNumber, machineName, purchaseDate };
 
-  // Send data to server
   fetch('/api/receipts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -99,19 +107,21 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   })
   .then(data => {
     console.log('Receipt data stored successfully:', data);
-    alert('Receipt data saved!');
-    clearForm();
   })
   .catch(error => {
     console.error('Error storing receipt data:', error);
-    alert(error.message || 'Error saving receipt data.');
+    if (error.message.includes("E11000 duplicate key")) {
+      alert("⚠️ Customer ID already exists. Please use a unique ID.");
+    } else {
+      alert(error.message || 'Error saving receipt data.');
+    }
   });
 
-  const baseUrl = "https://ysg-qr-scanner-production.up.railway.app"; // ✅ Your full deployed URL
+  const baseUrl = "https://ysg-qr-scanner-production.up.railway.app"; // ✅ your deployed URL
   const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(customerId)}`;
 
   document.getElementById("qrcode").innerHTML = "";
-  const qr = new QRCode(document.getElementById("qrcode"), {
+  new QRCode(document.getElementById("qrcode"), {
     text: url,
     width: 200,
     height: 200,
@@ -122,16 +132,26 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   receiptLink.style.display = "inline";
   receiptLink.innerText = "View Receipt Data";
 
-  // Add download link
   setTimeout(() => {
     const qrCanvas = document.querySelector('#qrcode canvas');
     if (qrCanvas) {
-      const downloadLink = document.getElementById("download-link");
+      const downloadLink = document.getElementById('download-link');
       downloadLink.href = qrCanvas.toDataURL("image/png");
-      downloadLink.download = `${customerId}_qr.png`; // ✅ Set download filename
-      downloadLink.style.display = "inline";
+      downloadLink.download = `${customerId}_qr.png`;
+      downloadLink.style.display = "inline-block";
     }
   }, 500);
+});
+
+document.getElementById("clear-btn").addEventListener("click", function () {
+  document.getElementById("customer-id").value = "";
+  document.getElementById("customer-name").value = "";
+  document.getElementById("phone-number").value = "";
+  document.getElementById("machine-name").value = "";
+  document.getElementById("purchase-date").value = "";
+  document.getElementById("qrcode").innerHTML = "";
+  document.getElementById("receipt-link").style.display = "none";
+  document.getElementById("download-link").style.display = "none";
 });
 
 function toggleMenu() {

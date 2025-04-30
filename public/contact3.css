@@ -1,0 +1,368 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7f9;
+  color: #333;
+  line-height: 1.6;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 隼 Header & Navbar */
+header {
+  background-color: #002d5d;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar {
+  background-color: #003366;
+  padding: 15px 0px; /* Normal size for desktop */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  height: 60px;
+  margin-left: 40px;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+#nav-links {
+  margin-right: 80px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+nav ul li {
+  margin: 0 15px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0; /* Add vertical space between items */
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px 20px; /* Add padding inside links */
+  display: block; /* Make entire area clickable */
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin-right: 30px;
+}
+
+.hamburger .bar {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .navbar {
+    padding: 40px 30px; /* <-- Make navbar taller on phone */
+  }
+
+  nav ul {
+    display: none;
+  }
+
+  nav ul.active {
+    display: flex;
+    flex-direction: column;
+    background: #002d5d;
+    position: absolute;
+    top: 80px;
+    right: -80px;
+    width: 150px;
+    text-align: left;
+    padding: 1px 0;
+  }
+
+  nav ul li {
+    padding: 1px;
+    text-align: left;
+  }
+
+  nav ul li a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+  nav ul li a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* 隼 Contact Page Container (unchanged) */
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* 隼 Contact Form (unchanged) */
+.contact-form {
+  padding: 20px;
+}
+
+.contact-form h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: calc(100% - 32px);
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #1abc9c;
+}
+
+.contact-form textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+.contact-form button {
+  background-color: #002d5d;
+  color: #fff;
+  font-size: 18px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+  background-color: #16a085;
+}
+
+/* 隼 Contact Details (unchanged) */
+.contact-details {
+  padding: 20px;
+  text-align: left;
+  margin-top: 30px;
+}
+
+.contact-details h2 {
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.contact-details p {
+  margin: 10px 0;
+}
+
+.contact-details strong {
+  font-weight: 600;
+}
+
+/* 隼 Map Container (unchanged) */
+.map-container {
+  margin-top: 30px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 350px;
+  border: none;
+}
+
+/* 隼 Footer */
+footer {
+  background-color: #002d5d;
+  color: #fff;
+  text-align: center;
+  padding: 30px 40px;
+  margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+footer div {
+  flex: 1 1 300px;
+  text-align: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+footer div:last-child {
+  margin-right: 0;
+}
+
+footer h4 {
+  font-weight: bold;
+  color: #ff9900;
+  margin-bottom: 10px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 20px;
+  margin-right: 10px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #ccc;
+}
+
+.copyright {
+  flex-basis: 100%;
+  text-align: center; /* Keep this here for general centering */
+  margin-top: 20px;
+}
+
+hr {
+  border: 1px solid #ccc;
+  width: 100%;
+  margin: 10px 0;
+}
+
+/* Search Bar Styles (unchanged) */
+.search-container {
+  display: flex;
+  align-items: center;
+  margin: 10px auto;
+  max-width: 300px;
+}
+
+#search-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#search-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-left: 5px;
+}
+
+#search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Mobile Footer Adjustments */
+@media (max-width: 767px) {
+  footer {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px 20px;
+  }
+
+  footer div {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+    flex: none;
+    text-align: left; /* Override footer's center alignment for divs */
+  }
+
+  footer div:last-child {
+    margin-bottom: 10px;
+  }
+
+  footer p {
+    margin-bottom: 5px;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+
+  .copyright {
+    padding: 10px 0;
+    margin-top: 10px; 
+    margin: auto;
+  }
+}

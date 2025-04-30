@@ -1,61 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Receipts (Admin)</title>
-  <link rel="stylesheet" href="style3.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | YSG</title>
+  <link rel="stylesheet" href="style3.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-     <img src="img/Y S G_ (2).png" alt="YSG Logo" />
-    </div>
-    <nav>
+<header>
+  <div class="logo">
+    <img src="img/Y S G_ (2).png" alt="YSG Logo" />
+  </div>
+  <nav>
     <div class="hamburger" onclick="toggleMenu()">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
     </div>
     <ul id="nav-links">
-    <li><a href="index.html">Generate QR</a></li>
-     <li><a href="admin.html">Admin</a></li>
-    <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html">Generate QR</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
-    </nav>
-    </header>
+  </nav>
+</header>
 
-  <div class="container">
-    <h1>All Receipts (Admin)</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Customer ID</th>
-          <th>Customer Name</th>
-          <th>Phone Number</th>
-          <th>Machine Name</th>
-          <th>Purchase Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="receipts-body">
-        <!-- Dynamic rows will be inserted here -->
-      </tbody>
-    </table>
+<div class="container">
+
+  <div id="login-container">
+    <h2>Admin Login</h2>
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" id="username" placeholder="Enter Username" />
+      <i class="far fa-eye" id="toggleUsername" onclick="toggleUsernameVisibility()"></i>
+    </div>
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="password" placeholder="Enter Password" />
+      <i class="far fa-eye" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+    </div>
+    <button onclick="login()">Login</button>
   </div>
 
-  <!-- Your Admin Page JavaScript -->
-  <script>
- function loadReceipts() {
-  fetch('/api/receipts')  <!-- ✅ FIXED -->
-    .then(response => response.json())
-    .then(data => {
-      const tableBody = document.getElementById('receipts-body');
-      tableBody.innerHTML = '';
+  <div id="admin-panel" style="display: none;">
+    <h2>All Receipts (Admin)</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer ID</th>
+            <th>Customer Name</th>
+            <th>Phone Number</th>
+            <th>Machine Name</th>
+            <th>Purchase Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="receipts-body">
+          </tbody>
+      </table>
+    </div>
+  </div>
 
+</div>
+
+<script>
+function toggleMenu() {
+  document.getElementById("nav-links").classList.toggle("active");
+}
+
+function togglePasswordVisibility() {
+  const password = document.getElementById("password");
+  const icon = document.getElementById("togglePassword");
+  password.type = password.type === "password" ? "text" : "password";
+  icon.classList.toggle("fa-eye-slash");
+}
+
+function toggleUsernameVisibility() {
+  const username = document.getElementById("username");
+  const icon = document.getElementById("toggleUsername");
+  username.type = username.type === "text" ? "password" : "text";
+  icon.classList.toggle("fa-eye-slash");
+}
+
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if (username === "admin" && password === "Heang123") {
+    document.getElementById("login-container").style.display = "none";
+    document.getElementById("admin-panel").style.display = "block";
+    loadReceipts();
+  } else {
+    alert("Incorrect Username or Password!");
+  }
+}
+
+function loadReceipts() {
+  fetch("/api/receipts")
+    .then(res => res.json())
+    .then(data => {
+      const body = document.getElementById("receipts-body");
+      body.innerHTML = "";
       data.forEach(receipt => {
-        const row = `
+        body.innerHTML += `
           <tr>
             <td>${receipt.customerId}</td>
             <td>${receipt.customerName}</td>
@@ -63,49 +112,29 @@
             <td>${receipt.machineName}</td>
             <td>${receipt.purchaseDate}</td>
             <td><button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">Delete</button></td>
-          </tr>
-        `;
-        tableBody.innerHTML += row;
+          </tr>`;
       });
-    })
-    .catch(error => {
-      console.error('Error fetching receipts:', error);
     });
 }
 
-    // Delete a receipt
-    function deleteReceipt(id) {
-  if (confirm('Are you sure you want to delete this receipt?')) {
-    fetch(`/api/receipts/${id}`, {  // ✅ Fixed here
-      method: 'DELETE',
-    })
-    .then(response => {
-      if (response.ok) {
-        alert('✅ Deleted successfully!');
-        loadReceipts();
-      } else {
-        alert('❌ Failed to delete receipt.');
-      }
-    })
-    .catch(error => {
-      console.error('Error deleting receipt:', error);
-      alert('❌ Failed to delete receipt.');
-    });
+function deleteReceipt(id) {
+  if (confirm("Are you sure you want to delete this receipt?")) {
+    fetch(`/api/receipts/${id}`, { method: "DELETE" })
+      .then(res => {
+        if (res.ok) {
+          alert("✅ Deleted successfully!");
+          loadReceipts();
+        } else {
+          alert("❌ Failed to delete.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("❌ Error deleting receipt.");
+      });
   }
 }
-
-
-    // Password protection
-    document.addEventListener('DOMContentLoaded', function() {
-      var password = prompt("Enter Admin Password:");
-      if (password !== "Heang123") {
-        alert("Access denied!");
-        window.location.href = "index.html";
-      } else {
-        loadReceipts(); // Load receipts only after correct password
-      }
-    });
-  </script>
+</script>
 
 </body>
 </html>

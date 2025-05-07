@@ -73,7 +73,7 @@
 
   <div class="search-id-container">
     <h3>ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន</h3>
-    <input type="text" id="search-customer-id" placeholder="Enter Customer ID to Search" />
+    <input type="text" id="search-customer-id" placeholder="សូមបញ្ចូលIDអតិថិជនដើម្បីស្វែងរក" />
     <button id="search-id-button">Search</button>
   </div>
 
@@ -88,7 +88,7 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   const purchaseDate = document.getElementById("purchase-date").value;
 
   if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
-    alert("Please enter all information.");
+    alert("សូមបញ្ចូលព័ត៌មានទាំងអស់។");
     return;
   }
 
@@ -106,12 +106,12 @@ document.getElementById("generate-btn").addEventListener("click", function () {
     return response.json();
   })
   .then(data => {
-    console.log('Receipt data stored successfully:', data);
+    console.log('ទិន្នន័យបង្កាន់ដៃត្រូវបានរក្សាទុកដោយជោគជ័យ', data);
   })
   .catch(error => {
     console.error('Error storing receipt data:', error);
     if (error.message.includes("E11000 duplicate key")) {
-      alert("⚠️ Customer ID already exists. Please use a unique ID.");
+      alert("⚠️ IDអតិថិជនមានរួចហើយ។ សូមប្រើIDផ្សេង!");
     } else {
       alert(error.message || 'Error saving receipt data.');
     }
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (searchCustomerId) {
         window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
       } else {
-        alert("Please enter a Customer ID to search.");
+        alert("សូមIDអតិថិជនដើម្បីស្វែងរក!");
       }
     });
   }

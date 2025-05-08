@@ -5,10 +5,11 @@ body {
   padding: 0;
   background-color: #f5f5f5;
   text-align: center;
-}
+ }
+ 
 
-/* Header & Navigation (unchanged, assuming you want to keep it) */
-header {
+ /* Header & Navigation */
+ header {
   background-color: #002d5d;
   padding: 15px 0;
   display: flex;
@@ -19,62 +20,67 @@ header {
   width: 100%;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+ }
+ 
 
-.navbar {
+ .navbar {
   background-color: #003366;
   padding: 15px 0px;
-  /* Normal size for desktop */
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+ }
+ 
 
-.logo img {
+ .logo img {
   height: 60px;
   margin-left: 40px;
-}
+ }
+ 
 
-nav {
+ nav {
   display: flex;
   align-items: center;
-}
+ }
+ 
 
-#nav-links {
+ #nav-links {
   margin-right: 80px;
-}
+ }
+ 
 
-nav ul {
+ nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   align-items: center;
-}
+ }
+ 
 
-nav ul li {
+ nav ul li {
   margin: 0 15px;
   display: flex;
   align-items: center;
   margin: 10px 0;
-  /* Add vertical space between items */
-}
+ }
+ 
 
-nav ul li a {
+ nav ul li a {
   color: white;
   text-decoration: none;
   font-weight: bold;
   padding: 10px 20px;
-  /* Add padding inside links */
   display: block;
-  /* Make entire area clickable */
-}
+ }
+ 
 
-nav ul li a:hover {
+ nav ul li a:hover {
   text-decoration: underline;
-}
+ }
+ 
 
-.hamburger {
+ .hamburger {
   display: none;
   flex-direction: column;
   justify-content: space-between;
@@ -82,199 +88,229 @@ nav ul li a:hover {
   width: 20px;
   height: 20px;
   margin-right: 30px;
-}
+ }
+ 
 
-.hamburger .bar {
+ .hamburger .bar {
   width: 100%;
   height: 3px;
   background-color: white;
   border-radius: 2px;
   transition: 0.3s;
-}
+ }
+ 
 
-@media (max-width: 768px) {
+ @media (max-width: 768px) {
   .hamburger {
-      display: flex;
+  display: flex;
   }
+ 
 
   .navbar {
-      padding: 40px 30px;
-      /* <-- Make navbar taller on phone */
+  padding: 40px 30px;
   }
+ 
 
   nav ul {
-      display: none;
+  display: none;
   }
+ 
 
   nav ul.active {
-      display: flex;
-      flex-direction: column;
-      background: #002d5d;
-      position: absolute;
-      top: 80px;
-      right: -80px;
-      width: 150px;
-      text-align: left;
-      padding: 1px 0;
-
+  display: flex;
+  flex-direction: column;
+  background: #002d5d;
+  position: absolute;
+  top: 80px;
+  right: -80px;
+  width: 150px;
+  text-align: left;
+  padding: 1px 0;
   }
+ 
 
   nav ul li {
-      padding: 1px;
-      text-align: left;
+  padding: 1px;
+  text-align: left;
   }
+ 
 
   nav ul li a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
+  display: block;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
   }
+ 
 
   nav ul li a:hover {
-      text-decoration: underline;
+  text-decoration: underline;
   }
-  .delete-btn,
-  .download-btn { /* Apply to both buttons */
-    padding: 4px 8px; /* Smaller padding */
-    font-size: 12px;  /* Smaller font size */
-    align-items: center;
-    justify-content: center;
-  }
-}
+ 
 
-/* Container */
-.container {
+  .delete-btn,
+  .download-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  align-items: center;
+  justify-content: center;
+  }
+ }
+ 
+
+ /* Container */
+ .container {
   max-width: 1200px;
   margin: auto;
   padding: 20px;
-}
+ }
+ 
 
-h1 {
+ h1 {
   text-align: center;
   margin-bottom: 20px;
-}
+ }
+ 
 
-/* Table Styling */
-.table-wrapper {
+ /* Table Styling */
+ .table-wrapper {
   overflow-x: auto;
   margin-top: 20px;
-}
+ }
+ 
 
-table {
+ table {
   width: 100%;
   border-collapse: collapse;
-}
+ }
+ 
 
-th,
-td {
+ th,
+ td {
   padding: 8px;
   text-align: center;
   border: 1px solid #ccc;
   font-size: 14px;
-}
+ }
+ 
 
-th {
+ th {
   background-color: #003366;
   color: white;
-}
+ }
+ 
 
-.delete-btn {
+ .delete-btn {
   background-color: red;
   color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-}
+ }
+ 
 
-.delete-btn:hover {
+ .delete-btn:hover {
   background-color: darkred;
-}
+ }
+ 
 
-/* Responsive for smaller devices */
-@media screen and (max-width: 600px) {
-
+ /* Responsive for smaller devices */
+ @media screen and (max-width: 600px) {
   table,
   thead,
   tbody,
   th,
   td,
   tr {
-      display: block;
+  display: block;
   }
+ 
 
   thead {
-      display: none;
+  display: none;
   }
+ 
 
   tr {
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      padding: 10px;
-      background: #fff;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
   }
+ 
 
   td {
-      text-align: left;
-      position: relative;
-      padding-left: 50%;
+  text-align: left;
+  position: relative;
+  padding-left: 50%;
   }
+ 
 
   td::before {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      width: 45%;
-      padding-right: 10px;
-      font-weight: bold;
-      white-space: nowrap;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 45%;
+  padding-right: 10px;
+  font-weight: bold;
+  white-space: nowrap;
   }
+ 
 
   td:nth-child(1)::before {
-      content: "Customer ID";
+  content: "Customer ID";
   }
+ 
 
   td:nth-child(2)::before {
-      content: "Customer Name";
+  content: "Customer Name";
   }
+ 
 
   td:nth-child(3)::before {
-      content: "Phone Number";
+  content: "Phone Number";
   }
+ 
 
   td:nth-child(4)::before {
-      content: "Machine Name";
+  content: "Machine Name";
   }
+ 
 
   td:nth-child(5)::before {
-      content: "Purchase Date";
+  content: "Purchase Date";
   }
+ 
 
   td:nth-child(6)::before {
-      content: "Action";
+  content: "Action";
   }
-  td:nth-child(6) { /* Target the 'Action' cell */
-    display: flex;       /* Enable flexbox for centering */
-    flex-direction: column; /* Stack buttons vertically */
-    align-items: center; /* Center items horizontally */
-    gap: 5px;            /* Add some space between buttons */
-    padding-top: 10px;   /* Add some top padding for spacing */
-    padding-bottom: 10px; /* Add some bottom padding */
+ 
+
+  td:nth-child(6) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   }
+ 
 
   .delete-btn,
   .download-btn {
-    padding: 6px 10px; /* Slightly adjust padding */
-    font-size: 12px;
-    width: 80%;        /* Make buttons take up a reasonable width */
-    box-sizing: border-box; /* Include padding in the width */
-    margin: 0;          /* Remove default button margins */
+  padding: 6px 10px;
+  font-size: 12px;
+  width: 80%;
+  box-sizing: border-box;
+  margin: 0;
   }
-}
+ }
+ 
 
-/* Login Form Styles */
-#login-container {
+ /* Login Form Styles */
+ #login-container {
   max-width: 400px;
   margin: 60px auto;
   background: white;
@@ -282,73 +318,83 @@ th {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-}
+ }
+ 
 
-#login-container h2 {
+ #login-container h2 {
   color: #003366;
   margin-bottom: 20px;
-}
+ }
+ 
 
-/* Login Form Styling */
-.input-group {
+ /* Login Form Styling */
+ .input-group {
   position: relative;
-  /* Add this to make the input group a positioning context */
   margin-bottom: 15px;
-}
+ }
+ 
 
-.input-group i {
+ .input-group i {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   color: #777;
-}
+ }
+ 
 
-.input-group i.fa-user,
-.input-group i.fa-lock {
+ .input-group i.fa-user,
+ .input-group i.fa-lock {
   left: 10px;
-}
+ }
+ 
 
-.input-group input {
+ .input-group input {
   padding: 10px;
   padding-left: 35px;
-  /* Adjust padding to accommodate the left icon */
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
-}
+ }
+ 
 
-.input-group i.fa-eye,
-.input-group i.fa-eye-slash {
+ .input-group i.fa-eye,
+ .input-group i.fa-eye-slash {
   right: 10px;
   cursor: pointer;
-}
+ }
+ 
 
-.toggle-password {
+ .toggle-password {
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   color: #555;
-}
+ }
+ 
 
-.forgot-password {
+ .forgot-password {
   margin-top: 10px;
   text-align: center;
-}
+ }
+ 
 
-.forgot-password a {
+ .forgot-password a {
   color: #007bff;
   text-decoration: none;
   font-size: 0.9rem;
-}
+ }
+ 
 
-.forgot-password a:hover {
+ .forgot-password a:hover {
   text-decoration: underline;
-}
-#login-container button {
+ }
+ 
+
+ #login-container button {
   width: 100%;
   padding: 14px;
   background-color: #003366;
@@ -358,28 +404,31 @@ th {
   border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
-}
+ }
+ 
 
-#login-container button:hover {
+ #login-container button:hover {
   background-color: #0055aa;
-}
+ }
+ 
 
-.button-group {
+ .button-group {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  /* spacing between buttons */
   margin-top: 15px;
-}
+ }
+ 
 
-.button-group button {
+ .button-group button {
   width: 100%;
   max-width: 300px;
   font-size: 16px;
-}
+ }
+ 
 
-button#generate-btn {
+ button#generate-btn {
   background-color: #003366;
   color: white;
   padding: 12px 20px;
@@ -387,86 +436,101 @@ button#generate-btn {
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-}
+ }
+ 
 
-button.clear-button {
+ button.clear-button {
   background-color: crimson;
   color: white;
   padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-}
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+ }
+ 
 
-button.clear-button:hover {
-    background-color: darkred;
-}
+ button.clear-button:hover {
+  background-color: darkred;
+ }
+ 
 
-/* Receipt Styles */
-.receipt-content {
+ /* Receipt Styles */
+ .receipt-content {
   background: white;
   padding: 20px;
-  border: 2px solid #000; /* Strong black border */
-  width: 400px;        /* Fixed width for consistency */
-  margin: 20px auto;   /* Centered receipt */
+  border: 2px solid #000;
+  width: 400px;
+  margin: 20px auto;
   font-family: Arial, sans-serif;
-  font-size: 12px;      /* Smaller font size for receipt */
-  line-height: 1.4;    /* Adjust line height for readability */
-}
+  font-size: 12px;
+  line-height: 1.4;
+ }
+ 
 
-.receipt-content h2 {
-  font-size: 1.2em;   /* Smaller heading */
+ .receipt-content h2 {
+  font-size: 1.2em;
   margin-top: 10px;
   margin-bottom: 10px;
-}
+ }
+ 
 
-.receipt-content table {
+ .receipt-content table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-}
+ }
+ 
 
-.receipt-content th, .receipt-content td {
-  border-bottom: 1px solid #000; /* Only bottom border for rows */
+ .receipt-content th,
+ .receipt-content td {
+  border-bottom: 1px solid #000;
   padding: 8px;
   text-align: left;
-}
+ }
+ 
 
-.receipt-content th {
+ .receipt-content th {
   font-weight: bold;
-}
+ }
+ 
 
-.receipt-content img {
-  height: 50px;       /* Smaller logo */
+ .receipt-content img {
+  height: 50px;
   margin-bottom: 5px;
-}
+ }
+ 
 
-.receipt-content p {
-  font-size: 0.9em;   /* Smaller paragraph text */
+ .receipt-content p {
+  font-size: 0.9em;
   margin: 5px 0;
-}
+ }
+ 
 
-.receipt-content .center {
+ .receipt-content .center {
   text-align: center;
-}
+ }
+ 
 
-.receipt-content .right {
+ .receipt-content .right {
   text-align: right;
-}
+ }
+ 
 
-.receipt-content .bold {
+ .receipt-content .bold {
   font-weight: bold;
-}
+ }
+ 
 
-/* Add styles for dotted lines */
-.receipt-content .dotted-line {
+ /* Add styles for dotted lines */
+ .receipt-content .dotted-line {
   border-bottom: 1px dashed #000;
   margin: 10px 0;
-}
+ }
+ 
 
-.download-btn {
-  background-color: #4CAF50; /* Green */
+ .download-btn {
+  background-color: #4CAF50;
   border: none;
   color: white;
   padding: 8px 16px;
@@ -477,110 +541,179 @@ button.clear-button:hover {
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 4px;
-}
+ }
+ 
 
-.download-btn:hover {
-  background-color: #3e8e41; /* Darker green */
-}
+ .download-btn:hover {
+  background-color: #3e8e41;
+ }
+ 
 
-.download-btn:active {
+ .download-btn:active {
   background-color: #3e8e41;
   box-shadow: 0 1px #666;
   transform: translateY(1px);
-}
+ }
+ 
 
-/* refresh */
-.loading-overlay {
+ /* refresh */
+ .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.8);
-  /* Semi-transparent white */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  /* Make sure it's on top */
   display: none;
-  /* Initially hidden */
-}
+ }
+ 
 
-.loading-spinner {
+ .loading-spinner {
   border: 5px solid #f3f3f3;
-  /* Light grey */
   border-top: 5px solid #3498db;
-  /* Blue */
   border-radius: 50%;
   width: 50px;
   height: 50px;
   animation: spin 0.5s linear infinite;
-}
+ }
+ 
 
-@keyframes spin {
+ @keyframes spin {
   0% {
-      transform: rotate(0deg);
+  transform: rotate(0deg);
   }
+ 
 
   100% {
-      transform: rotate(360deg);
+  transform: rotate(360deg);
   }
-}
+ }
+ 
 
-#refresh-btn {
+ /* Admin Panel Styles */
+/* Admin Panel Styles */
+#admin-panel {
+  text-align: left;
+ }
+ 
+
+ #admin-panel h2 {
   margin-top: 10px;
-  margin-bottom: 30px;
+  font-size: 1.5em;
+  color: #003366;
+  text-align: center;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #003366;
+  padding-bottom: 5px;
+ }
+ 
+
+ .logout-refresh-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px; /* Increased gap for more space between buttons */
+  margin-bottom: 15px;
+  align-items: center;
+ 
+}
+ 
+
+ #refresh-btn {
   background-color: #4CAF50;
-  /* Green */
   border: none;
   color: white;
-  padding: 10px 20px;
+  padding: 8px 12px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
-  margin-bottom: -30px;
+  font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
-}
+  order: 1;
+  margin-right: 10px;
+ }
+ 
 
-#refresh-btn:hover {
+ #refresh-btn:hover {
   background-color: #3e8e41;
-}
-#admin-panel h2 {
-  margin-top: 10px;
-  font-size: 1.5em;          /* Larger font size */
-  color: #003366;           /* Dark blue color */
-  text-align: center;         /* Align to the left */
-  margin-bottom: 10px;      /* Add some spacing below */
-  border-bottom: 2px solid #003366; /* Underline with a dark blue line */
-  padding-bottom: 5px;       /* Spacing between text and underline */
+ }
+ 
+
+ #logout-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center; /* Vertically align icon and text */
+  justify-content: center; /* Horizontally align icon and text */
+  gap: 5px;
+  order: 2;
 }
 
-/* responsive receipt phone  */
-@media (max-width: 600px) {
-  .receipt-content {
-    width: 95% !important; /* Make the receipt container take up more width */
-    margin: 10px auto !important; /* Center it with some top/bottom margin */
-    padding: 15px !important;
+ #logout-btn:hover {
+  background-color: #c82333;
+ }
+ 
+
+ /* Responsive adjustments for smaller screens */
+ @media (max-width: 600px) {
+  .logout-refresh-container {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px; /* Add gap between stacked buttons */
   }
+ 
+
+  #refresh-btn,
+  #logout-btn {
+  width: 100%;
+  margin-bottom: 0; /* Remove default bottom margin when stacked */
+  order: 0;
+  }
+ }
+ 
+
+ /* responsive receipt phone */
+ @media (max-width: 600px) {
+  .receipt-content {
+  width: 95% !important;/* Make the receipt container take up more width */
+  margin: 10px auto !important;
+  /* Center it with some top/bottom margin */
+  padding: 15px !important;
+ }
+ 
 
   .receipt-content h2 {
-    font-size: 1.5em !important; /* Slightly smaller heading */
-    margin-bottom: 10px !important;
-  }
+  font-size: 1.5em !important;
+  /* Slightly smaller heading */
+  margin-bottom: 10px !important;
+ }
+ 
 
   .receipt-content table {
-    font-size: 0.9em !important; /* Slightly smaller table font */
-  }
+  font-size: 0.9em !important;
+  /* Slightly smaller table font */
+ }
+ 
 
   .receipt-content th,
   .receipt-content td {
-    padding: 5px !important; /* Less padding in table cells */
-  }
+  padding: 5px !important;
+  /* Less padding in table cells */
+ }
+ 
 
   .receipt-content .center p {
-    font-size: 0.9em !important; /* Slightly smaller paragraph font */
-  }
-}
+  font-size: 0.9em !important;
+  /* Slightly smaller paragraph font */
+ }
+ }

@@ -1,225 +1,308 @@
-<!-- REPLACE FULL CONTENT with this -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin | YSG</title>
-  <link rel="stylesheet" href="style3.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | YSG</title>
+    <link rel="stylesheet" href="style3.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Styles for larger screens */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .admin-header h2 {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .logout-refresh-container {
+            display: flex;
+            gap: 10px; /* Space between buttons */
+        }
+
+        #logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        #refresh-btn {
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .admin-header h2 {
+                flex-grow: 0; /* Don't take up all space on smaller screens */
+            }
+
+            .logout-refresh-container {
+                flex-direction: column;
+                align-items: stretch; /* Make buttons full width */
+            }
+
+            #logout-btn,
+            #refresh-btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <header>
-    <div class="logo">
-      <img src="img/Y S G_ (2).png" alt="YSG Logo" />
-    </div>
-    <nav>
-      <div class="hamburger" onclick="toggleMenu()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </div>
-      <ul id="nav-links">
-        <li><a href="index.html">Generate QR</a></li>
-        <li><a href="admin.html">Admin</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <div class="container">
-    <!-- Login Form -->
-    <div id="login-container">
-      <h2>Admin Login</h2>
-      <form method="POST" action="/login">
-        <div class="input-group">
-          <span class="input-icon"><i class="fas fa-user"></i></span>
-          <input type="text" name="username" placeholder="admin" required />
+    <header>
+        <div class="logo">
+            <img src="img/Y S G_ (2).png" alt="YSG Logo" />
         </div>
-        <div class="input-group">
-          <span class="input-icon"><i class="fas fa-lock"></i></span>
-          <input type="password" id="password" name="password" placeholder="Password" required />
-          <span class="toggle-password" onclick="togglePassword()">
-            <i id="eye-icon" class="fas fa-eye"></i>
-          </span>
+        <nav>
+            <div class="hamburger" onclick="toggleMenu()">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul id="nav-links">
+                <li><a href="index.html">Generate QR</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="login-container">
+            <h2>Admin Login</h2>
+            <form id="login-form" method="POST" action="/login">
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                    <input type="text" name="username" placeholder="admin" required />
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="password" name="password" placeholder="Password" required />
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <i id="eye-icon" class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <button type="submit">Login</button>
+                <div class="forgot-password">
+                    <a href="https://t.me/Emma_Heang" target="_blank">
+                        <i class="fab fa-telegram"></i> Forgot password? Contact me!
+                    </a>
+                </div>
+            </form>
         </div>
-        <button type="submit">Login</button>
-        <div class="forgot-password">
-          <a href="https://t.me/Emma_Heang" target="_blank">
-            <i class="fab fa-telegram"></i> Forgot password? Contact me!
-          </a>
+
+
+        <div id="admin-panel" style="display: none;">
+            <div class="admin-header">
+                <h2>All Receipts (Admin)</h2>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                <button id="refresh-btn" onclick="refreshReceipts()">Refresh</button>
+                <button id="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID អតិថិជន</th>
+                            <th>ឈ្មោះអតិថិជន</th>
+                            <th>លេខទូរស័ព្ទ</th>
+                            <th>ឈ្មោះផលិតផល</th>
+                            <th>កាលបរិច្ឆេទទិញ</th>
+                            <th>ផ្សេងៗ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipts-body"></tbody>
+                </table>
+            </div>
         </div>
-      </form>
     </div>
-    
 
-    <!-- Admin Panel (shown only after login) -->
-    <div id="admin-panel" style="display: none;">
-      <h2>All Receipts (Admin)</h2>
-      <button id="refresh-btn" onclick="refreshReceipts()">Refresh</button>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID អតិថិជន</th>
-              <th>ឈ្មោះអតិថិជន</th>
-              <th>លេខទូរស័ព្ទ</th>
-              <th>ឈ្មោះផលិតផល</th>
-              <th>កាលបរិច្ឆេទទិញ</th>
-              <th>ផ្សេងៗ</th>
-            </tr>
-          </thead>
-          <tbody id="receipts-body"></tbody>
-        </table>
-      </div>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
     </div>
-  </div>
 
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-  </div>
-
-  <script>
-
-
-
-  function toggleMenu() {
-    document.getElementById("nav-links").classList.toggle("active");
-  }
-
-    // Check if user is authenticated
-    fetch('/check-auth', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
-        const loginForm = document.getElementById("login-container");
-        const adminPanel = document.getElementById("admin-panel");
-  
-        if (data.authenticated) {
-          loginForm.style.display = "none";
-          adminPanel.style.display = "block";
-          loadReceipts();
-        } else {
-          loginForm.style.display = "block";
-          adminPanel.style.display = "none";
+    <script>
+        function toggleMenu() {
+            document.getElementById("nav-links").classList.toggle("active");
         }
-      });
-  
-    function toggleMenu() {
-      document.getElementById("nav-links").classList.toggle("active");
-    }
-  
-    function refreshReceipts() {
-      const loadingOverlay = document.getElementById('loading-overlay');
-      loadingOverlay.style.display = 'flex';
-  
-      setTimeout(() => {
-        loadReceipts();
-        loadingOverlay.style.display = 'none';
-      }, 2000);
-    }
-  
-    function loadReceipts() {
-      fetch("/api/receipts")
-        .then(res => res.json())
-        .then(data => {
-          const body = document.getElementById("receipts-body");
-          body.innerHTML = "";
-          data.forEach(receipt => {
-            body.innerHTML += `
-              <tr id="receipt-${receipt._id}">
-                <td>${receipt.customerId}</td>
-                <td>${receipt.customerName}</td>
-                <td>${receipt.phoneNumber}</td>
-                <td>${receipt.machineName}</td>
-                <td>${receipt.purchaseDate}</td>
-                <td>
-                  <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>
-                  <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">ទាញយក</button>
-                </td>
-              </tr>`;
-          });
-        });
-    }
-  
-    function deleteReceipt(id) {
-      if (confirm("តើអ្នកប្រាកដទេថាចង់លុបបង្កាន់ដៃនេះទេ?")) {
-        fetch(`/api/receipts/${id}`, {
-          method: "DELETE"
-        })
-          .then(res => {
-            if (res.ok) {
-              alert("✅ លុបដោយជោគជ័យ!");
-              loadReceipts();
-            } else {
-              alert("❌បរាជ័យក្នុងការលុប!");
+
+        function checkAuth() {
+            fetch('/check-auth', { credentials: 'include' })
+                .then(res => res.json())
+                .then(data => {
+                    const loginForm = document.getElementById("login-container");
+                    const adminPanel = document.getElementById("admin-panel");
+
+                    if (data.authenticated) {
+                        loginForm.style.display = "none";
+                        adminPanel.style.display = "block";
+                        loadReceipts();
+                    } else {
+                        loginForm.style.display = "block";
+                        adminPanel.style.display = "none";
+                    }
+                });
+        }
+
+        checkAuth(); // Call on page load
+
+        function refreshReceipts() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex';
+
+            setTimeout(() => {
+                loadReceipts();
+                loadingOverlay.style.display = 'none';
+            }, 2000);
+        }
+
+        function loadReceipts() {
+            fetch("/api/receipts")
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById("receipts-body");
+                    body.innerHTML = "";
+                    data.forEach(receipt => {
+                        body.innerHTML += `
+                            <tr id="receipt-${receipt._id}">
+                                <td>${receipt.customerId}</td>
+                                <td>${receipt.customerName}</td>
+                                <td>${receipt.phoneNumber}</td>
+                                <td>${receipt.machineName}</td>
+                                <td>${receipt.purchaseDate}</td>
+                                <td>
+                                    <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>
+                                    <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">ទាញយក</button>
+                                </td>
+                            </tr>`;
+                    });
+                });
+        }
+
+        function deleteReceipt(id) {
+            if (confirm("តើអ្នកប្រាកដទេថាចង់លុបបង្កាន់ដៃនេះទេ?")) {
+                fetch(`/api/receipts/${id}`, {
+                    method: "DELETE"
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("✅ លុបដោយជោគជ័យ!");
+                            loadReceipts();
+                        } else {
+                            alert("❌បរាជ័យក្នុងការលុប!");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("❌ Error ក្នុងការលុបបង្កាន់ដៃ!");
+                    });
             }
-          })
-          .catch(err => {
-            console.error(err);
-            alert("❌ Error ក្នុងការលុបបង្កាន់ដៃ!");
-          });
-      }
-    }
-  
-    function downloadReceipt(id) {
-      const row = document.getElementById(`receipt-${id}`);
-      if (!row) {
-        alert("រកមិនឃើញបង្កាន់ដៃទេ!");
-        return;
-      }
-  
-      const container = document.createElement('div');
-      container.className = 'receipt-content';
-      container.innerHTML = `
-        <div class="center">
-          <img src="img/Y S G_ (2).png" alt="YSG Logo">
-          <p class="bold">Yeung Shi Group Co.,Ltd</p>
-          <p>Phnom Penh, Cambodia</p>
-          <div class="dotted-line"></div>
-          <h2>Receipt Product</h2>
-        </div>
-        <table>
-          <tr><th>ID អតិថិជន</th><td>${row.cells[0].textContent}</td></tr>
-          <tr><th>ឈ្មោះអតិថិជន</th><td>${row.cells[1].textContent}</td></tr>
-          <tr><th>លេខទូរស័ព្ទ</th><td>${row.cells[2].textContent}</td></tr>
-          <tr><th>ឈ្មោះផលិតផល</th><td>${row.cells[3].textContent}</td></tr>
-          <tr><th>កាលបរិច្ឆេទទិញ</th><td>${row.cells[4].textContent}</td></tr>
-        </table>
-        <div class="dotted-line"></div>
-        <p class="center">Thank you for your purchase!</p>
-      `;
-  
-      document.body.appendChild(container);
-      html2canvas(container).then(canvas => {
-        const image = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = image;
-        link.download = `receipt-${id}.png`;
-        link.click();
-        document.body.removeChild(container);
-      });
-    }
+        }
 
-    // eyes
-    function togglePassword() {
-  const passwordInput = document.getElementById("password");
-  const eyeIcon = document.getElementById("eye-icon");
+        function downloadReceipt(id) {
+            const row = document.getElementById(`receipt-${id}`);
+            if (!row) {
+                alert("រកមិនឃើញបង្កាន់ដៃទេ!");
+                return;
+            }
 
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text";
-    eyeIcon.classList.remove("fa-eye");
-    eyeIcon.classList.add("fa-eye-slash");
-  } else {
-    passwordInput.type = "password";
-    eyeIcon.classList.remove("fa-eye-slash");
-    eyeIcon.classList.add("fa-eye");
-  }
-}
+            const container = document.createElement('div');
+            container.className = 'receipt-content';
+            container.innerHTML = `
+                <div class="center">
+                    <img src="img/Y S G_ (2).png" alt="YSG Logo">
+                    <p class="bold">Yeung Shi Group Co.,Ltd</p>
+                    <p>Phnom Penh, Cambodia</p>
+                    <div class="dotted-line"></div>
+                    <h2>Receipt Product</h2>
+                </div>
+                <table>
+                    <tr><th>ID អតិថិជន</th><td>${row.cells[0].textContent}</td></tr>
+                    <tr><th>ឈ្មោះអតិថិជន</th><td>${row.cells[1].textContent}</td></tr>
+                    <tr><th>លេខទូរស័ព្ទ</th><td>${row.cells[2].textContent}</td></tr>
+                    <tr><th>ឈ្មោះផលិតផល</th><td>${row.cells[3].textContent}</td></tr>
+                    <tr><th>កាលបរិច្ឆេទទិញ</th><td>${row.cells[4].textContent}</td></tr>
+                </table>
+                <div class="dotted-line"></div>
+                <p class="center">Thank you for your purchase!</p>
+            `;
 
-  </script>
-  
+            document.body.appendChild(container);
+            html2canvas(container).then(canvas => {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = `receipt-${id}.png`;
+                link.click();
+                document.body.removeChild(container);
+            });
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const eyeIcon = document.getElementById("eye-icon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        function logout() {
+            fetch('/logout', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    checkAuth(); // Re-check authentication to show login form
+                } else {
+                    alert('Failed to logout.');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+                alert('An error occurred during logout.');
+            });
+        }
+    </script>
+
 </body>
+
 </html>

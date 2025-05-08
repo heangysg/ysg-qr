@@ -557,3 +557,30 @@ button.clear-button:hover {
   border-bottom: 2px solid #003366; /* Underline with a dark blue line */
   padding-bottom: 5px;       /* Spacing between text and underline */
 }
+
+/* responsive receipt phone  */
+@media (max-width: 600px) {
+  .receipt-content {
+    width: 95% !important; /* Make the receipt container take up more width */
+    margin: 10px auto !important; /* Center it with some top/bottom margin */
+    padding: 15px !important;
+  }
+
+  .receipt-content h2 {
+    font-size: 1.5em !important; /* Slightly smaller heading */
+    margin-bottom: 10px !important;
+  }
+
+  .receipt-content table {
+    font-size: 0.9em !important; /* Slightly smaller table font */
+  }
+
+  .receipt-content th,
+  .receipt-content td {
+    padding: 5px !important; /* Less padding in table cells */
+  }
+
+  .receipt-content .center p {
+    font-size: 0.9em !important; /* Slightly smaller paragraph font */
+  }
+}

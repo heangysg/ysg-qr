@@ -117,7 +117,7 @@ document.getElementById("generate-btn").addEventListener("click", function () {
     }
   });
 
-  const baseUrl = "https://ysg-qr-scanner-production.up.railway.app"; // ✅ your deployed URL
+  const baseUrl = "https://ysg-qr.up.railway.app"; // ✅ your deployed URL
   const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(customerId)}`;
 
   document.getElementById("qrcode").innerHTML = "";

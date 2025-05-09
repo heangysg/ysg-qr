@@ -5,21 +5,24 @@ const Receipt = require('../models/Receipt');
 // CREATE a new receipt
 router.post('/', async (req, res) => {
   try {
-    const {
-      customerId,
-      customerName,
-      phoneNumber,
-      machineName,
-      purchaseDate
-    } = req.body;
+  const {
+  customerId,
+  customerName,
+  phoneNumber,
+  location, // ✅ ADD THIS
+  machineName,
+  purchaseDate
+} = req.body;
 
-    const receipt = new Receipt({
-      customerId,
-      customerName,
-      phoneNumber,
-      machineName,
-      purchaseDate
-    });
+const receipt = new Receipt({
+  customerId,
+  customerName,
+  phoneNumber,
+  location, // ✅ ADD THIS
+  machineName,
+  purchaseDate
+});
+
 
     await receipt.save();
     res.status(201).json(receipt);

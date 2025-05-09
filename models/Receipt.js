@@ -2,12 +2,13 @@
 const mongoose = require('mongoose');
 
 const receiptSchema = new mongoose.Schema({
-  customerId: String,
+  customerId: { type: String, required: true, unique: true },
   customerName: String,
   phoneNumber: String,
-  location: String,
+  location: String, // ✅ Add this
   machineName: String,
   purchaseDate: String
 });
 
 module.exports = mongoose.model('Receipt', receiptSchema);
+

@@ -197,19 +197,21 @@
                     const body = document.getElementById("receipts-body");
                     body.innerHTML = "";
                     data.forEach(receipt => {
-                        body.innerHTML += `
+                     body.innerHTML += `
                             <tr id="receipt-${receipt._id}">
-                            <td>${receipt.customerId}</td>
-                            <td>${receipt.customerName}</td>
-                            <td>${receipt.phoneNumber}</td>
-                            <td>${receipt.location || '-'}</td> 
-                            <td>${receipt.machineName}</td>
-                            <td>${receipt.purchaseDate}</td>
-                            <td>
+                                <td>${receipt.customerId}</td>
+                                <td>${receipt.customerName}</td>
+                                <td>${receipt.phoneNumber}</td>
+                                <td>${receipt.location || "-"}</td>
+                                <td>${receipt.machineName}</td>
+                                <td>${receipt.purchaseDate}</td>
+                                <td>
                                 <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>
                                 <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">ទាញយក</button>
-                            </td>
+                                </td>
                             </tr>`;
+
+
                         });
 
                 });

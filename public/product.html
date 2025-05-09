@@ -103,7 +103,7 @@
                     document.getElementById("customer-id").textContent = data.customerId;
                     document.getElementById("customer-name").textContent = data.customerName;
                     document.getElementById("phone-number").textContent = data.phoneNumber;
-                      document.getElementById("location").textContent = data.location;
+                 document.getElementById("location").textContent = data.location || "-";
                     document.getElementById("machine-name").textContent = data.machineName;
                     document.getElementById("purchase-date").textContent = data.purchaseDate;
                 })

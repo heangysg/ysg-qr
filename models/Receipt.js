@@ -5,6 +5,7 @@ const receiptSchema = new mongoose.Schema({
   customerId: String,
   customerName: String,
   phoneNumber: String,
+  location: String,
   machineName: String,
   purchaseDate: String
 });

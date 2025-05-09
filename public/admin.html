@@ -138,11 +138,13 @@
                             <th>ID អតិថិជន</th>
                             <th>ឈ្មោះអតិថិជន</th>
                             <th>លេខទូរស័ព្ទ</th>
+                            <th>ទីតាំង</th> 
                             <th>ឈ្មោះផលិតផល</th>
                             <th>កាលបរិច្ឆេទទិញ</th>
                             <th>ផ្សេងៗ</th>
                         </tr>
                     </thead>
+
                     <tbody id="receipts-body"></tbody>
                 </table>
             </div>
@@ -197,17 +199,19 @@
                     data.forEach(receipt => {
                         body.innerHTML += `
                             <tr id="receipt-${receipt._id}">
-                                <td>${receipt.customerId}</td>
-                                <td>${receipt.customerName}</td>
-                                <td>${receipt.phoneNumber}</td>
-                                <td>${receipt.machineName}</td>
-                                <td>${receipt.purchaseDate}</td>
-                                <td>
-                                    <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>
-                                    <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">ទាញយក</button>
-                                </td>
+                            <td>${receipt.customerId}</td>
+                            <td>${receipt.customerName}</td>
+                            <td>${receipt.phoneNumber}</td>
+                            <td>${receipt.location || '-'}</td> 
+                            <td>${receipt.machineName}</td>
+                            <td>${receipt.purchaseDate}</td>
+                            <td>
+                                <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>
+                                <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">ទាញយក</button>
+                            </td>
                             </tr>`;
-                    });
+                        });
+
                 });
         }
 
@@ -252,6 +256,7 @@
                     <tr><th>ID អតិថិជន</th><td>${row.cells[0].textContent}</td></tr>
                     <tr><th>ឈ្មោះអតិថិជន</th><td>${row.cells[1].textContent}</td></tr>
                     <tr><th>លេខទូរស័ព្ទ</th><td>${row.cells[2].textContent}</td></tr>
+                    tr><th>ទីតាំង</th><td>${row.cells[3].textContent}</td></tr> 
                     <tr><th>ឈ្មោះផលិតផល</th><td>${row.cells[3].textContent}</td></tr>
                     <tr><th>កាលបរិច្ឆេទទិញ</th><td>${row.cells[4].textContent}</td></tr>
                 </table>

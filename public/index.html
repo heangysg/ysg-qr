@@ -47,6 +47,11 @@
     <input type="text" id="phone-number" placeholder="Enter Phone Number" />
   </div>
 
+    <div class="receipt-input-group">
+    <label for="location">ទីតាំង:</label>
+    <input type="text" id="location" placeholder="Enter Location" />
+  </div>
+  
   <div class="receipt-input-group">
     <label for="machine-name">ឈ្មោះផលិតផល:</label>
     <input type="text" id="machine-name" placeholder="Enter Machine Name" />
@@ -84,15 +89,17 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   const customerId = document.getElementById("customer-id").value.trim();
   const customerName = document.getElementById("customer-name").value.trim();
   const phoneNumber = document.getElementById("phone-number").value.trim();
+  const location = document.getElementById("location").value.trim();
   const machineName = document.getElementById("machine-name").value.trim();
   const purchaseDate = document.getElementById("purchase-date").value;
+  
 
   if (!customerId || !customerName || !phoneNumber || !machineName || !purchaseDate) {
     alert("សូមបញ្ចូលព័ត៌មានទាំងអស់។");
     return;
   }
 
-  const receiptData = { customerId, customerName, phoneNumber, machineName, purchaseDate };
+  const receiptData = { customerId, customerName, phoneNumber, location, machineName, purchaseDate };
 
   fetch('/api/receipts', {
     method: 'POST',
@@ -147,6 +154,7 @@ document.getElementById("clear-btn").addEventListener("click", function () {
   document.getElementById("customer-id").value = "";
   document.getElementById("customer-name").value = "";
   document.getElementById("phone-number").value = "";
+    document.getElementById("location").value = "";
   document.getElementById("machine-name").value = "";
   document.getElementById("purchase-date").value = "";
   document.getElementById("qrcode").innerHTML = "";

@@ -53,6 +53,13 @@
                 <th>លេខទូរស័ព្ទ</th>
                 <td id="phone-number"></td>
             </tr>
+            
+            <tr>
+                <th>ទីតាំង</th>
+                <td id="location"></td>
+            </tr>
+
+
             <tr>
                 <th>ឈ្មោះផលិតផល</th>
                 <td id="machine-name"></td>
@@ -96,6 +103,7 @@
                     document.getElementById("customer-id").textContent = data.customerId;
                     document.getElementById("customer-name").textContent = data.customerName;
                     document.getElementById("phone-number").textContent = data.phoneNumber;
+                      document.getElementById("location").textContent = data.location;
                     document.getElementById("machine-name").textContent = data.machineName;
                     document.getElementById("purchase-date").textContent = data.purchaseDate;
                 })

@@ -155,6 +155,29 @@
         <div class="loading-spinner"></div>
     </div>
 
+    <div id="editReceiptModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Receipt</h2>
+            <form id="editReceiptForm">
+                <input type="hidden" id="editReceiptId">
+                <label for="editCustomerId">ID អតិថិជន:</label>
+                <input type="text" id="editCustomerId" name="customerId" required><br>
+                <label for="editCustomerName">ឈ្មោះអតិថិជន:</label>
+                <input type="text" id="editCustomerName" name="customerName" required><br>
+                <label for="editPhoneNumber">លេខទូរស័ព្ទ:</label>
+                <input type="text" id="editPhoneNumber" name="phoneNumber" required><br>
+                <label for="editLocation">ទីតាំង:</label>
+                <input type="text" id="editLocation" name="location"><br>
+                <label for="editMachineName">ឈ្មោះផលិតផល:</label>
+                <input type="text" id="editMachineName" name="machineName" required><br>
+                <label for="editPurchaseDate">កាលបរិច្ឆេទទិញ:</label>
+                <input type="date" id="editPurchaseDate" name="purchaseDate" required><br>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         function toggleMenu() {
             document.getElementById("nav-links").classList.toggle("active");
@@ -206,6 +229,7 @@
                                 <td>${receipt.machineName}</td>
                                 <td>${receipt.purchaseDate}</td>
                                 <td>
+                                <button class="edit-btn" onclick="openEditModal('${receipt._id}', '${receipt.customerId}', '${receipt.customerName}', '${receipt.phoneNumber}', '${receipt.location}', '${receipt.machineName}', '${receipt.purchaseDate}')">កែសម្រួល</button>
                                 <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>
                                 <button class="download-btn" onclick="downloadReceipt('${receipt._id}')">ទាញយក</button>
                                 </td>
@@ -257,7 +281,7 @@
                 <table>
                     <tr><th>ID អតិថិជន</th><td>${row.cells[0].textContent}</td></tr>
                     <tr><th>ឈ្មោះអតិថិជន</th><td>${row.cells[1].textContent}</td></tr>
-                    <tr><th>លេខទូរស័ព្ទ</th><td>${row.cells[2].textContent}</td></tr>
+                    <tr><th>លេខទូរស័ព្ឍ</th><td>${row.cells[2].textContent}</td></tr>
                     <tr><th>ទីតាំង</th><td>${row.cells[3].textContent}</td></tr> 
                     <tr><th>ឈ្មោះផលិតផល</th><td>${row.cells[4].textContent}</td></tr>
                     <tr><th>កាលបរិច្ឆេទទិញ</th><td>${row.cells[5].textContent}</td></tr>
@@ -308,6 +332,56 @@
                 alert('An error occurred during logout.');
             });
         }
+
+        // Functions for editing receipts
+        function openEditModal(id, customerId, customerName, phoneNumber, location, machineName, purchaseDate) {
+            document.getElementById('editReceiptId').value = id;
+            document.getElementById('editCustomerId').value = customerId;
+            document.getElementById('editCustomerName').value = customerName;
+            document.getElementById('editPhoneNumber').value = phoneNumber;
+            document.getElementById('editLocation').value = location;
+            document.getElementById('editMachineName').value = machineName;
+            document.getElementById('editPurchaseDate').value = purchaseDate;
+            document.getElementById('editReceiptModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editReceiptModal').style.display = 'none';
+        }
+
+        document.getElementById('editReceiptForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('editReceiptId').value;
+            const updatedData = {
+                customerId: document.getElementById('editCustomerId').value,
+                customerName: document.getElementById('editCustomerName').value,
+                phoneNumber: document.getElementById('editPhoneNumber').value,
+                location: document.getElementById('editLocation').value,
+                machineName: document.getElementById('editMachineName').value,
+                purchaseDate: document.getElementById('editPurchaseDate').value,
+            };
+
+            fetch(`/api/receipts/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('✅ Receipt updated successfully!');
+                    closeEditModal();
+                    loadReceipts(); // Refresh the table
+                } else {
+                    alert('❌ Failed to update receipt.');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating receipt:', error);
+                alert('❌ An error occurred while updating the receipt.');
+            });
+        });
     </script>
 
 </body>

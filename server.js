@@ -109,6 +109,22 @@ app.get('/api/receipts', async (req, res) => {
     }
 });
 
+// NEW ROUTE: Get a single receipt by its MongoDB _id
+app.get('/api/receipts/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const receipt = await Receipt.findById(id); // Find by MongoDB's _id
+
+        if (!receipt) {
+            return res.status(404).json({ message: 'Receipt not found' });
+        }
+        res.json(receipt);
+    } catch (error) {
+        console.error('Error fetching single receipt:', error);
+        res.status(500).json({ message: 'Server error fetching receipt' });
+    }
+});
+
 
 // Delete receipt
 app.delete('/api/receipts/:id', async (req, res) => {

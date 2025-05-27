@@ -84,7 +84,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const customerId = urlParams.get("customerId");
+            const customerId = urlParams.get("customerId"); // This will now receive the MongoDB _id
 
             if (!customerId) {
                 document.getElementById("no-data-message").style.display = "block";
@@ -92,7 +92,7 @@
                 return;
             }
 
-            fetch(`/api/receipts/${customerId}`)
+            fetch(`/api/receipts/${customerId}`) // This fetches using the MongoDB _id
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Receipt not found.");
@@ -100,7 +100,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    document.getElementById("customer-id").textContent = data.customerId;
+                    document.getElementById("customer-id").textContent = data.customerId; // This displays the 0000X ID
                     document.getElementById("customer-name").textContent = data.customerName;
                     document.getElementById("phone-number").textContent = data.phoneNumber;
                  document.getElementById("location").textContent = data.location || "-";

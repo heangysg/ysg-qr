@@ -183,6 +183,21 @@
             document.getElementById("nav-links").classList.toggle("active");
         }
 
+
+
+
+
+        function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+
+
+
         function checkAuth() {
             fetch('/check-auth', { credentials: 'include' })
                 .then(res => res.json())
@@ -227,7 +242,8 @@
                                 <td>${receipt.phoneNumber}</td>
                                 <td>${receipt.location || "-"}</td>
                                 <td>${receipt.machineName}</td>
-                                <td>${receipt.purchaseDate}</td>
+                                <td>${formatDate(receipt.purchaseDate)}</td>
+
                                 <td>
                                 <button class="edit-btn" onclick="openEditModal('${receipt._id}', '${receipt.customerId}', '${receipt.customerName}', '${receipt.phoneNumber}', '${receipt.location}', '${receipt.machineName}', '${receipt.purchaseDate}')">កែសម្រួល</button>
                                 <button class="delete-btn" onclick="deleteReceipt('${receipt._id}')">លុប</button>

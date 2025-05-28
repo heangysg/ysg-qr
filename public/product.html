@@ -92,8 +92,9 @@
                 return;
             }
 
-            fetch(/api/receipts/by-id/${customerId})
-.then(response => {
+            fetch(`/api/receipts/by-id/${customerId}`)
+
+                .then(response => {
                     if (!response.ok) {
                         throw new Error("Receipt not found.");
                     }

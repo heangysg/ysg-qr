@@ -250,6 +250,34 @@ document.getElementById("generate-btn").addEventListener("click", function () {
     console.error('Error storing receipt data:', error);
     alert(error.message || 'Error saving receipt data.');
   });
+<<<<<<< HEAD
+=======
+
+  const baseUrl = "https://ysgqr.onrender.com"; // ✅ your deployed URL
+  const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(customerId)}`;
+
+  document.getElementById("qrcode").innerHTML = "";
+  new QRCode(document.getElementById("qrcode"), {
+    text: url,
+    width: 200,
+    height: 200,
+  });
+
+  const receiptLink = document.getElementById("receipt-link");
+  receiptLink.href = url;
+  receiptLink.style.display = "inline";
+  receiptLink.innerText = "View Receipt Data";
+
+  setTimeout(() => {
+    const qrCanvas = document.querySelector('#qrcode canvas');
+    if (qrCanvas) {
+      const downloadLink = document.getElementById('download-link');
+      downloadLink.href = qrCanvas.toDataURL("image/png");
+      downloadLink.download = `${customerId}_qr.png`;
+      downloadLink.style.display = "inline-block";
+    }
+  }, 500);
+>>>>>>> ee1b57aa05e6ee41004533667187c4fc936d1bae
 });
 
 document.getElementById("clear-btn").addEventListener("click", function () {

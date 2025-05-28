@@ -179,8 +179,11 @@ document.getElementById("generate-btn").addEventListener("click", function () {
         alert("Server did not return a valid receipt ID. Please check server logs.");
         return;
     }
+
 const baseUrl = window.location.origin;
-const url = ${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMongoId)};
+const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMongoId)}`;
+
+
     document.getElementById("qrcode").innerHTML = "";
     const qrcodeElement = document.getElementById("qrcode");
     new QRCode(qrcodeElement, {
@@ -275,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (searchCustomerId) {
         window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
       } else {
-        alert("សូមបញ្ចូលID ដើម្បីស្វែងរក!");
+        alert("សូមបញ្ចូលMongoDB ID ដើម្បីស្វែងរក!");
       }
     });
   }

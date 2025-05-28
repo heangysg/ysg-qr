@@ -180,8 +180,9 @@ document.getElementById("generate-btn").addEventListener("click", function () {
         return;
     }
 
-    const baseUrl = "https://ysg-qr.up.railway.app"; // Your deployed URL
-    const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMongoId)}`;
+const baseUrl = window.location.origin;
+const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMongoId)}`;
+
 
     document.getElementById("qrcode").innerHTML = "";
     const qrcodeElement = document.getElementById("qrcode");

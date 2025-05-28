@@ -24,6 +24,34 @@ app.use(session({
     }
 }));
 
+// NEW: Search receipt by either MongoDB _id OR customerId (like "00001")
+app.get('/api/receipts/by-id/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        let receipt;
+
+        // First, try as MongoDB _id
+        if (/^[a-f\d]{24}$/i.test(id)) {
+            receipt = await Receipt.findById(id);
+        }
+
+        // If not found or not a valid ObjectId, try customerId
+        if (!receipt) {
+            receipt = await Receipt.findOne({ customerId: id });
+        }
+
+        if (!receipt) {
+            return res.status(404).json({ message: 'Receipt not found' });
+        }
+
+        res.json(receipt);
+    } catch (error) {
+        console.error('Error in /by-id/:id route:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Ensure the uploads directory exists
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(uploadsDir)) {

@@ -82,6 +82,17 @@
             document.getElementById("nav-links").classList.toggle("active");
         }
 
+
+
+        function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const customerId = urlParams.get("customerId"); // This will now receive the MongoDB _id
@@ -106,7 +117,8 @@
                     document.getElementById("phone-number").textContent = data.phoneNumber;
                  document.getElementById("location").textContent = data.location || "-";
                     document.getElementById("machine-name").textContent = data.machineName;
-                    document.getElementById("purchase-date").textContent = data.purchaseDate;
+                    document.getElementById("purchase-date").textContent = formatDate(data.purchaseDate);
+
                 })
                 .catch(error => {
                     console.error(error);

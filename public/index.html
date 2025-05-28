@@ -77,7 +77,7 @@
   <a id="download-link" style="display: none;" download>Download QR Code</a>
 
   <div class="search-id-container">
-    <h3>ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន (MongoDB ID)</h3>
+    <h3>ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន</h3>
     <input type="text" id="search-customer-id" placeholder="សូមបញ្ចូលMongoDB ID ដើម្បីស្វែងរក" />
     <button id="search-id-button">Search</button>
   </div>
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (searchCustomerId) {
         window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
       } else {
-        alert("សូមបញ្ចូលMongoDB ID ដើម្បីស្វែងរក!");
+        alert("សូមបញ្ចូលID ដើម្បីស្វែងរក!");
       }
     });
   }

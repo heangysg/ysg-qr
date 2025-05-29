@@ -53,7 +53,8 @@ app.get('/api/receipts/by-id/:id', async (req, res) => {
 });
 
 // Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, 'public', 'uploads');
+// MODIFIED: Use an absolute path for uploadsDir
+const uploadsDir = 'C:\\Users\\ADMIN\\Desktop\\A-YSGQR-Login\\public\\uploads'; // Specify the absolute path
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -238,7 +239,7 @@ app.post('/api/save-qr-code', (req, res) => {
     const base64Data = imageData.replace(/^data:image\/png;base64,/, '');
     const imageBuffer = Buffer.from(base64Data, 'base64');
 
-    const filePath = path.join(uploadsDir, fileName);
+    const filePath = path.join(uploadsDir, fileName); // Uses the updated uploadsDir
 
     fs.writeFile(filePath, imageBuffer, (err) => {
         if (err) {

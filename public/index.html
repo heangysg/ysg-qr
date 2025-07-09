@@ -5,15 +5,363 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <title>QR Code Generator | YSG</title>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+ <!-- Font Awesome for general icons -->
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
- <link rel="stylesheet" href="style.css" />
+ <!-- Removed original style.css link as most styles will be handled by Tailwind or inline -->
+ <!-- <link rel="stylesheet" href="style.css" /> -->
+
+ <!-- Tailwind CSS CDN -->
+ <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+ <!-- Font Awesome for new icons -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+ <!-- Google Fonts - Inter (for general text) and Battambang (for Khmer) -->
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+
+ <style>
+    /* Custom font for body (Inter) - applies broadly */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5; /* Slightly darker background to make white paper stand out more */
+    }
+    /* Apply Battambang to specific Khmer text elements */
+    .khmer-font {
+        font-family: 'Battambang', cursive;
+    }
+
+    /* --- Navbar Specific Styles (consistent across pages) --- */
+    header {
+        background-color: #002d5d; /* Your specified main color */
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        margin: 0;
+    }
+
+    header .logo img {
+        height: 60px;
+        margin-left: 0;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    #nav-links {
+        margin-right: 0;
+    }
+
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem; /* Adjusted gap for tighter spacing, consistent with admin.html */
+    }
+
+    nav ul li a,
+    nav ul li button {
+        color: white;
+        text-decoration: none;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        font-size: 1.15rem;
+        transition: color 0.2s ease;
+        padding: 10px 20px;
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    nav ul li a:hover,
+    nav ul li button:hover {
+        color: #a0aec0;
+        text-decoration: underline;
+    }
+
+    .hamburger {
+        display: none;
+        cursor: pointer;
+        flex-direction: column;
+        gap: 6px;
+        width: 30px;
+        height: 20px;
+        justify-content: space-between;
+        margin-right: 30px;
+    }
+
+    .hamburger .bar {
+        width: 100%;
+        height: 4px;
+        background-color: white;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+
+    @media (max-width: 768px) {
+        header {
+            padding: 1rem;
+        }
+        header nav ul {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: #002d5d;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        header nav ul.flex {
+            display: flex;
+        }
+
+        header nav ul li {
+            margin: 0.75rem 0;
+        }
+        header nav ul li a,
+        header nav ul li button {
+            font-size: 1rem;
+        }
+        .hamburger {
+            display: flex;
+        }
+    }
+    /* --- End Navbar Specific Styles --- */
+
+    /* --- Main Content Container Styles (New Paper-like Design) --- */
+    .container {
+        background-color: #ffffff; /* White background for the paper */
+        padding: 2.5rem; /* Standard padding */
+        width: 90%; /* Responsive width */
+        max-width: 380px; /* Adjusted max-width for 25-30% effect on desktop */
+        margin: 2.5rem auto; /* Centered with top/bottom margin */
+        border-radius: 0.5rem; /* Slightly less rounded for a paper feel */
+        /* Enhanced box-shadow for a more distinct "lifted paper" effect */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), /* Main shadow */
+                    0 0 0 1px rgba(0, 0, 0, 0.08); /* Subtle border-like effect */
+        text-align: center; /* Center content */
+        border: none; /* Remove explicit border as shadow handles it */
+    }
+
+    /* Adjusting H2 inside the container */
+    .container h2 {
+        color: #007bff; /* Blue heading color from screenshot */
+        font-size: 1.875rem; /* Tailwind text-3xl equivalent */
+        font-weight: 700; /* Tailwind font-bold equivalent */
+        margin-bottom: 1.5rem; /* Space below heading */
+    }
+
+    /* Input Group Styling for consistency with the screenshot */
+    .receipt-input-group {
+        margin-bottom: 1rem; /* Space between input groups */
+        text-align: left; /* Align labels to the left */
+    }
+
+    .receipt-input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 1.125rem; /* Tailwind text-lg equivalent */
+        font-weight: 600; /* Tailwind font-semibold equivalent */
+        color: #4a5568; /* Darker gray for labels */
+    }
+
+    .receipt-input-group input[type="text"],
+    .receipt-input-group input[type="date"] {
+        width: 100%; /* Full width */
+        padding: 0.75rem; /* More padding */
+        border: 1px solid #cbd5e0; /* Lighter border */
+        border-radius: 0.5rem; /* Rounded inputs */
+        box-sizing: border-box; /* Include padding and border in width */
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .receipt-input-group input[type="text"]:focus,
+    .receipt-input-group input[type="date"]:focus {
+        outline: none;
+        border-color: #4299e1; /* Blue focus ring */
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow */
+    }
+
+    /* Button Group Styling */
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Space between buttons */
+        margin-top: 1.5rem; /* Space above buttons */
+    }
+
+    .button-group button {
+        width: 100%;
+        padding: 1rem; /* More padding */
+        font-size: 1.125rem; /* Larger font */
+        font-weight: 700; /* Bold font */
+        color: white;
+        background-color: #007bff; /* Blue button color */
+        border: none;
+        border-radius: 0.5rem; /* Rounded buttons */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Subtle shadow */
+    }
+    .button-group button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+    .button-group button:active {
+        transform: translateY(0); /* Press effect */
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+
+    .button-group .clear-button {
+        background-color: #6c757d; /* Gray for clear button */
+        box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+    }
+    .button-group .clear-button:hover {
+        background-color: #5a6268;
+        box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    #qrcode {
+        margin-top: 2rem; /* Space above QR code */
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        border: 1px solid #e0e0e0; /* Light border */
+        border-radius: 0.5rem;
+        background-color: #f9f9f9; /* Light background */
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+    }
+
+    /* New styles for QR action buttons alignment */
+    .qr-actions-group {
+        display: flex;
+        flex-direction: column; /* Stack buttons vertically by default */
+        align-items: center; /* Center items horizontally */
+        gap: 1rem; /* Space between buttons */
+        margin-top: 1.5rem; /* Space above the group */
+    }
+
+    /* For larger screens, make them inline-block or side-by-side if desired */
+    @media (min-width: 640px) { /* Tailwind's 'sm' breakpoint */
+        .qr-actions-group {
+            flex-direction: row; /* Align horizontally on larger screens */
+            justify-content: center; /* Center the row of buttons */
+        }
+    }
+
+    #receipt-link, #download-link {
+        /* These styles are now applied via the .qr-action-button class */
+        width: 100%; /* Full width when stacked */
+        max-width: 250px; /* Limit individual button width */
+        padding: 1rem; /* Consistent padding */
+        font-size: 1.125rem; /* Consistent font size */
+        font-weight: 700; /* Consistent font weight */
+        border-radius: 0.5rem; /* Consistent border-radius */
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-decoration: none; /* Ensure no underline by default */
+        color: white; /* Ensure text color is white */
+    }
+    #receipt-link {
+        background-color: #007bff;
+    }
+    #receipt-link:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+    #receipt-link:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+    #download-link {
+        background-color: #28a745; /* Green color */
+        /* No margin-left needed here if using gap on parent */
+    }
+    #download-link:hover {
+        background-color: #218838; /* Darker green */
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+    }
+    #download-link:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+    }
+
+
+    .search-id-container {
+        margin-top: 2.5rem; /* Space above search section */
+        padding-top: 1.5rem; /* Internal padding */
+        border-top: 1px solid #e0e0e0; /* Separator line */
+    }
+    .search-id-container h3 {
+        font-size: 1.5rem; /* Larger heading */
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    #search-customer-id {
+        width: 80%; /* Adjust width */
+        max-width: 300px; /* Max width */
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    #search-customer-id:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+    #search-id-button {
+        width: 80%;
+        max-width: 300px;
+        padding: 1rem;
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    }
+    #search-id-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+    #search-id-button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    }
+ </style>
 </head>
 
 <body>
 
 <header>
  <div class="logo">
-  <img src="img/Y S G_ (2).png" alt="YSG Logo" />
+  <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-16" />
  </div>
  <nav>
   <div class="hamburger" onclick="toggleMenu()">
@@ -21,65 +369,66 @@
     <div class="bar"></div>
     <div class="bar"></div>
   </div>
-  <ul id="nav-links">
-    <li><a href="index.html">Generate QR</a></li>
-    <li><a href="admin.html">Admin</a></li>
-    <li><a href="contact.html">Contact</a></li>
+  <ul id="nav-links" class="hidden md:flex space-x-4"> <!-- Adjusted space-x to 4 (1rem) -->
+    <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
+    <li><a href="admin.html" class="text-white hover:text-gray-300 transition duration-200">Admin</a></li>
+    <li><a href="contact.html" class="text-white hover:text-gray-300 transition duration-200">Contact</a></li>
+    <li><button id="logout-btn-nav" class="text-white hover:text-gray-300 transition duration-200">Logout</button></li>
   </ul>
  </nav>
 </header>
 
-<div class="container">
-  <h2>Generate Receipt QR Code</h2>
+<div class="container" id="main-content" style="display: none;">
+  <h2 class="khmer-font">Generate Receipt QR Code</h2>
   
   <div class="receipt-input-group">
-    <label for="customer-id">ID អតិថិជន:</label>
+    <label for="customer-id" class="khmer-font">ID អតិថិជន:</label>
     <input type="text" id="customer-id" placeholder="Auto-generated ID" readonly />
   </div>
 
   <div class="receipt-input-group">
-    <label for="customer-name">ឈ្មោះអតិថិជន:</label>
+    <label for="customer-name" class="khmer-font">ឈ្មោះអតិថិជន:</label>
     <input type="text" id="customer-name" placeholder="Enter Customer Name" />
   </div>
 
   <div class="receipt-input-group">
-    <label for="phone-number">លេខទូរស័ព្ទ:</label>
+    <label for="phone-number" class="khmer-font">លេខទូរស័ព្ទ:</label>
     <input type="text" id="phone-number" placeholder="Enter Phone Number" />
   </div>
 
     <div class="receipt-input-group">
-    <label for="location">ទីតាំង:</label>
+    <label for="location" class="khmer-font">ទីតាំង:</label>
     <input type="text" id="location" placeholder="Enter Location" />
   </div>
   
   <div class="receipt-input-group">
-    <label for="machine-name">ឈ្មោះផលិតផល:</label>
+    <label for="machine-name" class="khmer-font">ឈ្មោះផលិតផល:</label>
     <input type="text" id="machine-name" placeholder="Enter Machine Name" />
   </div>
 
   <div class="receipt-input-group">
-    <label for="purchase-date">កាលបរិច្ឆេទទិញ:</label>
+    <label for="purchase-date" class="khmer-font">កាលបរិច្ឆេទទិញ:</label>
     <input type="text" id="purchase-date" placeholder="DD/MM/YYYY" maxlength="10" />
   </div>
 
   <div class="button-group">
-    <button id="generate-btn">បង្កើត QR Code</button>
-    <button id="clear-btn" class="clear-button">Clear Form</button>
+    <button id="generate-btn" class="khmer-font">បង្កើត QR Code</button>
+    <button id="clear-btn" class="clear-button khmer-font">Clear Form</button>
   </div>
   
   
   <div id="qrcode" style="margin-top: 20px;"></div>
 
-  <a id="receipt-link" href="#" style="display: none;" target="_blank">មើលទិន្នន័យ QRCode</a>
-
-  <br /><br>
-
-  <a id="download-link" style="display: none;" download>Download QR Code</a>
+  <!-- New container for QR action buttons -->
+  <div class="qr-actions-group">
+    <a id="receipt-link" href="#" style="display: none;" target="_blank" class="khmer-font">មើលទិន្នន័យ QRCode</a>
+    <a id="download-link" href="#" style="display: none;" download class="khmer-font">Download QR Code</a>
+  </div>
 
   <div class="search-id-container">
-    <h3>ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន (MongoDB ID)</h3>
-    <input type="text" id="search-customer-id" placeholder="សូមបញ្ចូលMongoDB ID ដើម្បីស្វែងរក" />
-    <button id="search-id-button">Search</button>
+    <h3 class="khmer-font">ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន</h3>
+    <input type="text" id="search-customer-id" placeholder="សូមបញ្ចូលID ដើម្បីស្វែងរក" />
+    <button id="search-id-button" class="khmer-font">Search</button>
   </div>
 
 </div>
@@ -100,7 +449,7 @@ async function fetchNextCustomerId() {
   }
 }
 
-// Function to validate and format DD/MM/YYYY to YYYY-MM-DD for backend
+// Function to validate and format DD/MM/YYYY toYYYY-MM-DD for backend
 function formatPurchaseDateForBackend(dateString) {
   const parts = dateString.split('/');
   if (parts.length === 3) {
@@ -110,7 +459,7 @@ function formatPurchaseDateForBackend(dateString) {
 
     // Basic validation for day, month, year ranges
     if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900) {
-      // Return in YYYY-MM-DD format for backend
+      // Return inYYYY-MM-DD format for backend
       return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     }
   }
@@ -149,12 +498,14 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   const purchaseDate = formatPurchaseDateForBackend(rawPurchaseDate);
   
   if (!customerName || !phoneNumber || !machineName || !rawPurchaseDate) {
-    alert("សូមបញ្ចូលព័ត៌មានទាំងអស់។");
+    // Replaced alert with console.error for better user experience
+    console.error("សូមបញ្ចូលព័ត៌មានទាំងអស់។"); 
     return;
   }
 
   if (!purchaseDate) {
-      alert("សូមបញ្ចូលកាលបរិច្ឆេទទិញក្នុងទម្រង់ DD/MM/YYYY ។");
+      // Replaced alert with console.error
+      console.error("សូមបញ្ចូលកាលបរិច្ឆេទទិញក្នុងទម្រង់ DD/MM/YYYY ។"); 
       return;
   }
 
@@ -172,16 +523,17 @@ document.getElementById("generate-btn").addEventListener("click", function () {
     return response.json();
   })
   .then(data => {
-    console.log('ទិន្នន័យបង្កាន់ដៃត្រូវបានរក្សាទុកដោយជោគជ័យ', data);
+    console.log('ទិន្នន័យបង្កាន់ដៃត្រូវបានរក្សាទុកដោយជោគជ័យ', data); // Receipt data saved successfully
     
     const receiptMongoId = data.receipt && data.receipt._id ? data.receipt._id : 'Error';
     if (receiptMongoId === 'Error') {
-        alert("Server did not return a valid receipt ID. Please check server logs.");
+        console.error("Server did not return a valid receipt ID. Please check server logs.");
         return;
     }
 
 const baseUrl = window.location.origin;
-const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMongoId)}`;
+// The QR code will now link to the product-login page, passing the customerId
+const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(receiptMongoId)}`;
 
 
     document.getElementById("qrcode").innerHTML = "";
@@ -197,12 +549,15 @@ const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMong
     receiptLink.style.display = "inline";
     receiptLink.innerText = "View Receipt Data";
 
+    const downloadLink = document.getElementById("download-link");
     // Wait for QR code to render to canvas, then get its data URL and send to server
     setTimeout(() => {
       const qrCanvas = qrcodeElement.querySelector('canvas');
       if (qrCanvas) {
         const imageDataUrl = qrCanvas.toDataURL("image/png");
-        const fileName = `${receiptMongoId}_qr.png`; // Use Mongo ID for filename
+        // Use the customer ID from the form for the filename, padded to 5 digits
+        const customerIdForFilename = data.receipt.customerId; // Use the actual customerId from the saved receipt
+        const fileName = `ysgqr_${customerIdForFilename}.png`; // Custom filename format
 
         // Send the QR code image data to the server
         fetch('/api/save-qr-code', {
@@ -214,32 +569,25 @@ const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMong
         .then(uploadData => {
             console.log('QR code image upload response:', uploadData);
             if (uploadData.message) {
-                alert(uploadData.message); // Inform user if saved or error
+                console.log(uploadData.message); // Log for now
             }
-            // You can optionally display the image from the server's uploads folder
-            // For example, if you want to link to it directly:
-            // const qrImageLink = document.createElement('a');
-            // qrImageLink.href = uploadData.imageUrl; // e.g., /uploads/some_id_qr.png
-            // qrImageLink.target = '_blank';
-            // qrImageLink.textContent = 'View Saved QR Code Image';
-            // qrcodeElement.appendChild(qrImageLink);
-
             // Update the download link
-            const downloadLink = document.getElementById('download-link');
             downloadLink.href = imageDataUrl; // Still allow client-side download
             downloadLink.download = fileName;
-            downloadLink.style.display = "inline-block";
+            // Ensure both links are displayed after QR generation
+            document.getElementById("receipt-link").style.display = "inline-block";
+            document.getElementById("download-link").style.display = "inline-block";
 
         })
         .catch(uploadError => {
             console.error('Error uploading QR code image:', uploadError);
-            alert('Error saving QR code image to server.');
+            console.error('Error saving QR code image to server.'); // Log for now
         });
       }
     }, 500); // Give a small delay for the canvas to render
 
     // After successful generation and server storage, update the customer ID field with the next ID
-    document.getElementById('customer-id').value = data.nextCustomerId; // This is the 0000X ID for display
+    document.getElementById("customer-id").value = data.nextCustomerId; // This is the 0000X ID for display
     // Clear other form fields
     document.getElementById("customer-name").value = "";
     document.getElementById("phone-number").value = "";
@@ -249,7 +597,7 @@ const url = `${baseUrl}/product.html?customerId=${encodeURIComponent(receiptMong
   })
   .catch(error => {
     console.error('Error storing receipt data:', error);
-    alert(error.message || 'Error saving receipt data.');
+    console.error(error.message || 'Error saving receipt data.'); // Log for now
   });
 });
 
@@ -267,21 +615,62 @@ document.getElementById("clear-btn").addEventListener("click", function () {
 });
 
 function toggleMenu() {
-  document.getElementById("nav-links").classList.toggle("active");
+  document.getElementById("nav-links").classList.toggle("hidden"); // Updated from 'active' to 'hidden'
+  document.getElementById("nav-links").classList.toggle("flex");   // Added 'flex'
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Check authentication status on page load
+  fetch('/check-admin-auth')
+    .then(response => response.json())
+    .then(data => {
+      if (data.authenticated) {
+        document.getElementById('main-content').style.display = 'block'; // Show content if authenticated
+        fetchNextCustomerId(); // Fetch ID only if authenticated
+      } else {
+        // Redirect to login page if not authenticated
+        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      }
+    })
+    .catch(error => {
+      console.error('Error checking authentication:', error);
+      // Fallback to redirect if auth check fails
+      window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+    });
+
   const searchIdButton = document.getElementById("search-id-button");
   if (searchIdButton) {
     searchIdButton.addEventListener("click", function() {
       const searchCustomerId = document.getElementById("search-customer-id").value.trim();
       if (searchCustomerId) {
-        window.location.href = `product.html?customerId=${encodeURIComponent(searchCustomerId)}`;
+        // Redirect to product-login.html when searching by ID
+        window.location.href = `product-login.html?customerId=${encodeURIComponent(searchCustomerId)}`;
       } else {
-        alert("សូមបញ្ចូលID ដើម្បីស្វែងរក!");
+        // Replaced alert with console.error
+        console.error("សូមបញ្ចូលID ដើម្បីស្វែងរក!"); 
       }
     });
   }
+
+  // Logout button event listener
+  // Changed id from 'logout-btn' to 'logout-btn-nav' for consistency with admin.html
+  document.getElementById('logout-btn-nav').addEventListener('click', async function() {
+    try {
+      const response = await fetch('/logout', { method: 'POST' });
+      const data = await response.json();
+      if (data.success) {
+        window.location.href = '/login.html'; // Redirect to login page after logout
+      } else {
+        console.error('Logout failed:', data.message);
+        // Using console.error instead of alert for better user experience
+        console.error('Failed to logout. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Using console.error instead of alert
+      console.error('An error occurred during logout.');
+    }
+  });
 });
 </script>
 

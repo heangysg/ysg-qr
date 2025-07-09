@@ -5,20 +5,344 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact Us | YSG</title>
-  <link rel="stylesheet" href="contact3.css" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     crossorigin="anonymous" />
-  <script defer src="menu.js"></script>
-  <link rel="icon" href="img/smalllicon.png" type="image/x-icon">
+  <!-- Google Fonts - Inter (for general text) and Battambang (for Khmer) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Removed old contact3.css link as styles are now inline or handled by Tailwind -->
+  <!-- <link rel="stylesheet" href="contact3.css" /> -->
+  <link rel="icon" href="img/favicon.ico" type="image/x-icon"> <!-- Updated favicon link -->
   <style>
+    /* Custom font for body (Inter) */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f4f7f9; /* From original contact3.css */
+        color: #333; /* From original contact3.css */
+        line-height: 1.6; /* From original contact3.css */
+        animation: fadeIn 0.8s ease-in-out forwards; /* From original contact3.css */
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: scale(0.98); }
+        100% { opacity: 1; transform: scale(1); }
+    }
 
+    /* Apply Battambang to specific Khmer text elements */
+    .khmer-font {
+        font-family: 'Battambang', cursive;
+    }
+
+    /* --- Navbar Specific Styles (consistent across pages) --- */
+    header {
+        background-color: #002d5d; /* Your specified main color */
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        margin: 0;
+    }
+
+    header .logo img {
+        height: 60px;
+        margin-left: 0;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    #nav-links {
+        margin-right: 0;
+    }
+
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem; /* Adjusted gap for tighter spacing, consistent with index.html */
+    }
+
+    nav ul li a,
+    nav ul li button {
+        color: white;
+        text-decoration: none;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        font-size: 1.15rem;
+        transition: color 0.2s ease;
+        padding: 10px 20px;
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    nav ul li a:hover,
+    nav ul li button:hover {
+        color: #a0aec0;
+        text-decoration: underline;
+    }
+
+    .hamburger {
+        display: none;
+        cursor: pointer;
+        flex-direction: column;
+        gap: 6px;
+        width: 30px;
+        height: 20px;
+        justify-content: space-between;
+        margin-right: 30px;
+    }
+
+    .hamburger .bar {
+        width: 100%;
+        height: 4px;
+        background-color: white;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+
+    @media (max-width: 768px) {
+        header {
+            padding: 1rem;
+        }
+        header nav ul {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: #002d5d;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        header nav ul.flex {
+            display: flex;
+        }
+
+        header nav ul li {
+            margin: 0.75rem 0;
+        }
+        header nav ul li a,
+        header nav ul li button {
+            font-size: 1rem;
+        }
+        .hamburger {
+            display: flex;
+        }
+    }
+    /* --- End Navbar Specific Styles --- */
+
+    /* --- Contact Page Specific Styles (from original contact3.css, adapted) --- */
+    .contact-container {
+        display: flex;
+        flex-direction: column;
+        max-width: 1000px;
+        margin: 60px auto;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .contact-form {
+        padding: 20px;
+    }
+
+    .contact-form h2 {
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 25px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        width: calc(100% - 32px);
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        border-color: #1abc9c;
+    }
+
+    .contact-form textarea {
+        height: 150px;
+        resize: vertical;
+    }
+
+    .contact-form button {
+        background-color: #002d5d;
+        color: #fff;
+        font-size: 18px;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: bold; /* Added bold from inline style */
+    }
+
+    .contact-form button:hover {
+        background-color: #16a085;
+    }
+
+    .contact-details {
+        padding: 20px;
+        text-align: left;
+        margin-top: 30px;
+    }
+
+    .contact-details h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .contact-details p {
+        margin: 10px 0;
+    }
+
+    .contact-details strong {
+        font-weight: 600;
+    }
+
+    .map-container {
+        margin-top: 30px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 350px;
+        border: none;
+    }
+
+    /* --- Footer styles (adapted for responsive columns) --- */
+    footer {
+        background-color: #002d5d; /* Your specified main color */
+        color: #fff;
+        text-align: center;
+        padding: 30px 40px;
+        margin-top: 60px;
+        display: flex;
+        flex-wrap: wrap; /* Allows wrapping to next line */
+        justify-content: space-between;
+        align-items: flex-start;
+        /* Tailwind-like responsive grid for columns */
+        @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 py-10; /* Added Tailwind classes */
+    }
+
+    footer > div { /* Target direct children divs of footer */
+        text-align: left; /* Align text left within each column */
+        margin-bottom: 20px; /* Space between stacked columns on small screens */
+        /* Remove old flex properties that conflict with grid */
+        flex: none; 
+        margin-right: 0;
+    }
+
+    footer div:last-child {
+        margin-right: 0;
+    }
+
+    footer h4 {
+        font-weight: bold;
+        color: #ff9900; /* Orange color for headings */
+        margin-bottom: 10px;
+        font-size: 1.25rem; /* Larger heading for footer sections */
+    }
+
+    footer p {
+        font-size: 0.95rem; /* Slightly larger paragraph text */
+        line-height: 1.5;
+    }
+
+    .social-icons {
+        display: flex;
+        justify-content: flex-start; /* Align social icons to the left */
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .social-icons a {
+        color: white;
+        font-size: 24px; /* Larger social icons */
+        margin-right: 15px; /* More space between icons */
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .social-icons a:hover {
+        color: #ccc;
+    }
+
+    .copyright {
+        flex-basis: 100%;
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 10px; /* Space above copyright after hr */
+        border-top: 1px solid rgba(255, 255, 255, 0.2); /* Lighter separator line */
+        font-size: 0.9rem;
+    }
+
+    hr { /* This HR is likely the old one, replaced by border-top on copyright */
+        display: none; /* Hide the old HR */
+    }
+
+    /* Mobile Footer Adjustments (from original contact3.css, adapted for Tailwind grid) */
+    @media (max-width: 767px) {
+        footer {
+            grid-template-columns: 1fr; /* Single column on small screens */
+            padding: 15px 20px;
+            gap: 20px; /* Space between stacked sections */
+        }
+
+        footer div {
+            margin-bottom: 0; /* Reset margin as gap handles spacing */
+            text-align: left;
+        }
+
+        .social-icons {
+            justify-content: center; /* Center social icons on mobile */
+        }
+
+        .copyright {
+            padding: 10px 0;
+            margin-top: 10px; 
+            margin: auto;
+        }
+    }
   </style>
 </head>
 
 <body>
     <header>
         <div class="logo">
-          <img src="img/Y S G_ (2).png" alt="YSG Logo" />
+          <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-16" />
         </div>
         <nav>
           <div class="hamburger" onclick="toggleMenu()">
@@ -26,35 +350,36 @@
             <div class="bar"></div>
             <div class="bar"></div>
           </div>
-          <ul id="nav-links">
-            <li><a href="index.html">Generate QR</a></li>
-            <li><a href="admin.html">Admin</a></li>
-            <li><a href="contact.html">Contact</a></li>
+          <ul id="nav-links" class="hidden md:flex space-x-4"> <!-- Adjusted space-x to 4 (1rem) -->
+            <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
+            <li><a href="admin.html" class="text-white hover:text-gray-300 transition duration-200">Admin</a></li>
+            <li><a href="contact.html" class="text-white hover:text-gray-300 transition duration-200">Contact</a></li>
+            <li><button id="logout-btn-nav" class="text-white hover:text-gray-300 transition duration-200">Logout</button></li>
           </ul>
         </nav>
       </header>
 
   <div class="contact-container">
     <div class="contact-form">
-      <h2>Send Us a Message</h2>
+      <h2 class="khmer-font">Send Us a Message</h2>
       <form action="https://formsubmit.co/hakchhaiheang0@gmail.com" method="post">
         <input type="text" name="name" placeholder="Your Name" required />
         <input type="email" name="email" placeholder="Your Email" required />
         <textarea name="message" placeholder="Your Message" required></textarea>
-        <button type="submit" style="font-weight: bold">Send Message</button>
+        <button type="submit" class="khmer-font">Send Message</button>
       </form>
     </div>
 
     <div class="contact-details">
-      <h2 style="align-items: center; text-align: center; font-weight: bold">
+      <h2 class="khmer-font" style="align-items: center; text-align: center; font-weight: bold">
         Our Contact Details
       </h2>
-      <p>
+      <p class="khmer-font">
         <strong>Address:</strong> building230, st271, Toul Tompong I2,
         Chomkarmon, Phnom Penh
       </p>
-      <p><strong>Phone:</strong> 010 / 011 / 012 / 070 : 309 302</p>
-      <p><strong>Email:</strong> yeungshigroup123@gmail.com</p>
+      <p class="khmer-font"><strong>Phone:</strong> 010 / 011 / 012 / 070 : 309 302</p>
+      <p class="khmer-font"><strong>Email:</strong> yeungshigroup123@gmail.com</p>
     </div>
     <div class="map-container">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3909.2261019304406!2d104.9087854740979!3d11.53563194473341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310950e6f508d97f%3A0x3fe425c8d8a84794!2sYeung%20Shi%20Group%20(YSG)!5e0!3m2!1sen!2skh!4v1742372716201!5m2!1sen!2skh" width="100%" height="350px" style="border: 0"
@@ -62,43 +387,72 @@
     </div>
   </div>
 
-  <footer>
-    <div>
-      <h4>Who We Are?</h4>
-      <p>Yeung Shi Group company was establish in china at GuangZhou city since 1990s, and we started to process the company in Cambodia in 2005, our passion is trying to figure out a target market in Cambodia.</p>
+  <footer class="bg-[#002d5d] text-white text-center py-10 px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="text-left">
+      <h4 class="khmer-font font-bold text-orange-400 text-xl mb-4">Who We Are?</h4>
+      <p class="khmer-font text-sm leading-relaxed">Yeung Shi Group company was establish in china at GuangZhou city since 1990s, and we started to process the company in Cambodia in 2005, our passion is trying to figure out a target market in Cambodia.</p>
     </div>
-    <div>
-      <h4>Term & Policy</h4>
-      <p>If you have any feature inquiry or you are interested in products from our website, please don't hesitate to contact us through phone number or our email. We truly appreciate for your interested with our products.</p>
+    <div class="text-left">
+      <h4 class="khmer-font font-bold text-orange-400 text-xl mb-4">Term & Policy</h4>
+      <p class="khmer-font text-sm leading-relaxed">If you have any feature inquiry or you are interested in products from our website, please don't hesitate to contact us through phone number or our email. We truly appreciate for your interested with our products.</p>
     </div>
-    <div class="contact-us-now">
-      <h4>Contact Us Now!</h4>
-      <p>Address : Building 230 , St. 271 , Sangkat Toul Tompong II , Khan Chamkamon , Phnom Penh.</p>
-      <p>Working Hours : 8: 00 am - 5:30pm ( Mon - Sat )</p>
-      <p>Phone : 010 / 011 / 012 / 070 : 309 302</p>
-      <p>Email : yeungshigroup123@gmail.com</p>
-      <p>Website : www.ysg-group.com</p>
-      <div class="social-icons">
-        <a href="https://www.facebook.com/ysgheadoffice" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-        <a href="https://www.tiktok.com/@ysg.online?is_from_webapp=1&sender_device=pc" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <div class="text-left">
+      <h4 class="khmer-font font-bold text-orange-400 text-xl mb-4">Contact Us Now!</h4>
+      <p class="khmer-font text-sm leading-relaxed">Address : Building 230 , St. 271 , Sangkat Toul Tompong II , Khan Chamkamon , Phnom Penh.</p>
+      <p class="khmer-font text-sm leading-relaxed">Working Hours : 8: 00 am - 5:30pm ( Mon - Sat )</p>
+      <p class="khmer-font text-sm leading-relaxed">Phone : 010 / 011 / 012 / 070 : 309 302</p>
+      <p class="khmer-font text-sm leading-relaxed">Email : yeungshigroup123@gmail.com</p>
+      <p class="khmer-font text-sm leading-relaxed">Website : www.ysg-group.com</p>
+      <div class="social-icons flex justify-start items-center mt-4 space-x-4">
+        <a href="https://www.facebook.com/ysgheadoffice" target="_blank" aria-label="Facebook" class="text-white text-2xl hover:text-gray-300 transition-colors duration-300"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.tiktok.com/@ysg.online?is_from_webapp=1&sender_device=pc" target="_blank" aria-label="TikTok" class="text-white text-2xl hover:text-gray-300 transition-colors duration-300"><i class="fab fa-tiktok"></i></a>
+        <a href="#" target="_blank" aria-label="YouTube" class="text-white text-2xl hover:text-gray-300 transition-colors duration-300"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
-    <hr>  <p class="copyright">© 2025 Heang YSG | All Rights Reserved</p>
+    <div class="copyright w-full text-center pt-4 border-t border-gray-700 text-gray-400 text-sm col-span-full">
+        <p class="khmer-font">© 2025 Heang YSG | All Rights Reserved</p>
+    </div>
   </footer>
 
   <script>
     function toggleMenu() {
-      document.getElementById("nav-links").classList.toggle("active");
+      document.getElementById("nav-links").classList.toggle("hidden");
+      document.getElementById("nav-links").classList.toggle("flex");
     }
 
-    
+    // Logout function (consistent with other pages)
+    function logout() {
+        fetch('/logout', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/login.html'; // Redirect to login page after logout
+            } else {
+                console.error('Logout failed:', data.message);
+                // In a real app, you'd show a user-friendly message here
+            }
+        })
+        .catch(error => {
+            console.error('Error during logout:', error);
+            // In a real app, you'd show a user-friendly message here
+        });
+    }
 
-    // refresh animation
-window.addEventListener("beforeunload", function () {
-    document.body.style.opacity = "0";
-    document.body.style.transition = "opacity 0.5s ease-in-out";
-});
+    // Attach logout event listener on DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", () => {
+        const logoutButtonNav = document.getElementById('logout-btn-nav');
+        if (logoutButtonNav) {
+            logoutButtonNav.addEventListener('click', logout);
+        }
+    });
+
+    // refresh animation (from original contact.html)
+    window.addEventListener("beforeunload", function () {
+        document.body.style.opacity = "0";
+        document.body.style.transition = "opacity 0.5s ease-in-out";
+    });
   </script>
 </body>
 

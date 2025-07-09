@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Access Receipt | YSG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <style>
+        /* Basic styling for the product login page */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .login-container h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            /* Adjusted padding to make space for the icon inside */
+            width: 100%; /* Make input full width of its parent */
+            padding: 12px 15px 12px 40px; /* Left padding for icon */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        .input-group input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        .input-icon {
+            position: absolute;
+            left: 15px; /* Position icon inside the input field */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1rem;
+            pointer-events: none; /* Ensure icon doesn't block input clicks */
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+        .toggle-password:hover {
+            color: #333;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745; /* Green for product access */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+        }
+        button:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none; /* Hidden by default */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+            }
+            .login-container h2 {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 1rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Enter Password to View Receipt</h2>
+        <form id="product-login-form">
+            <div class="input-group">
+                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                <input type="password" id="product-password" name="password" placeholder="Product Password" required />
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i id="eye-icon" class="fas fa-eye"></i>
+                </span>
+            </div>
+            <p id="error-message" class="error-message">Invalid password.</p>
+            <button type="submit">Access Receipt</button>
+        </form>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("product-password");
+            const eyeIcon = document.getElementById("eye-icon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        document.getElementById('product-login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const password = document.getElementById('product-password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get('customerId');
+
+            if (!customerId) {
+                errorMessage.textContent = 'Customer ID not found in URL.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/product-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password, customerId }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.redirectUrl; // Redirect to product.html with customerId
+                } else {
+                    errorMessage.textContent = data.message || 'Invalid password.';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Product login error:', error);
+                errorMessage.textContent = 'An error occurred during access. Please try again.';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

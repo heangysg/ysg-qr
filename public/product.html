@@ -5,15 +5,278 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Receipt Details | YSG</title>
-    <link rel="stylesheet" href="style2.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts - Inter (for main content) and Battambang (for Khmer) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Removed old style2.css link as styles are now inline or handled by Tailwind -->
+    <!-- <link rel="stylesheet" href="style2.css" /> -->
+
     <style>
+        /* Custom font for body (Inter) */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Apply Battambang to specific Khmer text elements */
+        .khmer-font {
+            font-family: 'Battambang', cursive;
+        }
+
+        /* --- Navbar Specific Styles (consistent across pages) --- */
+        header {
+            background-color: #002d5d; /* Your specified main color */
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            margin: 0;
+        }
+
+        header .logo img {
+            height: 60px;
+            margin-left: 0;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        #nav-links {
+            margin-right: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* Adjusted gap for tighter spacing, consistent with index.html */
+        }
+
+        nav ul li a,
+        nav ul li button {
+            color: white;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            font-size: 1.15rem;
+            transition: color 0.2s ease;
+            padding: 10px 20px;
+            display: block;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover,
+        nav ul li button:hover {
+            color: #a0aec0;
+            text-decoration: underline;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 6px;
+            width: 30px;
+            height: 20px;
+            justify-content: space-between;
+            margin-right: 30px;
+        }
+
+        .hamburger .bar {
+            width: 100%;
+            height: 4px;
+            background-color: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            header nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: #002d5d;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 1rem 0;
+                text-align: center;
+            }
+
+            header nav ul.flex {
+                display: flex;
+            }
+
+            header nav ul li {
+                margin: 0.75rem 0;
+            }
+            header nav ul li a,
+            header nav ul li button {
+                font-size: 1rem;
+            }
+            .hamburger {
+                display: flex;
+            }
+        }
+        /* --- End Navbar Specific Styles --- */
+
+        /* --- Main Content Container Styles (New Card Design) --- */
+        .product-detail-container {
+            background-color: #ffffff; /* White background for the card */
+            padding: 2.5rem; /* More padding */
+            width: 90%; /* Responsive width */
+            max-width: 600px; /* Max width for desktop */
+            margin: 2.5rem auto; /* Centered with top/bottom margin */
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            text-align: center; /* Center content */
+            border: 1px solid #e0e0e0; /* Subtle border */
+        }
+
+        /* Adjusting H2 inside the container */
+        .product-detail-container .card-detail { /* Re-purposed card-detail for the heading */
+            background-color: #007bff; /* Blue heading color */
+            color: white;
+            padding: 1rem; /* More padding */
+            border-radius: 0.5rem; /* Rounded corners */
+            font-size: 1.875rem; /* Larger font size */
+            font-weight: 700; /* Bold font */
+            margin-bottom: 1.5rem; /* Space below heading */
+            width: 100%; /* Full width */
+            display: block; /* Ensure it takes full width */
+        }
+        .product-detail-container .card-detail:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem; /* Space above table */
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid #ddd; /* Only bottom border */
+            padding: 0.75rem; /* More padding */
+            text-align: left;
+            font-size: 1rem; /* Increased font size */
+            color: #333;
+        }
+
+        th {
+            background-color: #f9f9f9; /* Lighter background for header */
+            font-weight: bold;
+            color: #4a5568; /* Darker header text */
+        }
+        tr:last-child th, tr:last-child td {
+            border-bottom: none; /* Remove bottom border for last row */
+        }
+
+        /* Back to Generator Button */
+        .qr-generator-button {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem; /* More padding */
+            border: none;
+            border-radius: 0.5rem; /* Rounded corners */
+            cursor: pointer;
+            margin-top: 2rem; /* More space above button */
+            width: 100%;
+            font-size: 1.125rem; /* Larger font */
+            font-weight: 700; /* Bold font */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+
+        .qr-generator-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+        }
+        .qr-generator-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        }
+
         #no-data-message {
             text-align: center;
-            font-size: 18px;
+            font-size: 1.125rem; /* Larger font size */
             color: #777;
-            margin-top: 20px;
+            margin-top: 2rem; /* More margin */
+        }
+
+        /* Message box for alerts */
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #e0e0e0;
+        }
+        .message-box .message-icon {
+            font-size: 4em;
+            margin-bottom: 1rem;
+        }
+        .message-box .message-icon.success {
+            color: #28a745;
+        }
+        .message-box .message-icon.error {
+            color: #dc3545;
+        }
+        .message-box p {
+            margin: 1rem 0;
+            font-size: 1.25em;
+            color: #333;
+            font-weight: 500;
+        }
+        .message-box button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 1.5rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+        .message-box button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .message-box button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
         }
     </style>
 </head>
@@ -21,8 +284,7 @@
 <body>
     <header>
         <div class="logo">
-            <img src="img/Y S G_ (2).png" alt="YSG Logo" />
-
+            <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-16" />
         </div>
         <nav>
             <div class="hamburger" onclick="toggleMenu()">
@@ -30,100 +292,161 @@
                 <div class="bar"></div>
                 <div class="bar"></div>
             </div>
-            <ul id="nav-links">
-                <li><a href="index.html">Generate QR</a></li>
-                <li><a href="admin.html">Admin</a></li>
-                <li><a href="contact.html">Contact</a></li>
+            <ul id="nav-links" class="hidden md:flex space-x-4">
+                <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
+                <li><a href="admin.html" class="text-white hover:text-gray-300 transition duration-200">Admin</a></li>
+                <li><a href="contact.html" class="text-white hover:text-gray-300 transition duration-200">Contact</a></li>
+                <li><button id="logout-btn-nav" class="text-white hover:text-gray-300 transition duration-200">Logout</button></li>
             </ul>
         </nav>
     </header>
 
-    <div class="product-detail-container">
-        <button class="card-detail" style="font-family: Battambang; font-size: 20px;">Receipt Information</button>
+    <div class="product-detail-container" id="product-detail-content" style="display: none;">
+        <button class="card-detail khmer-font">Receipt Information</button>
         <table id="receipt-table">
             <tr>
-                <th>លេខIDអតិថិជន</th>
+                <th class="khmer-font">លេខIDអតិថិជន</th>
                 <td id="customer-id"></td>
             </tr>
             <tr>
-                <th>ឈ្មោះអតិថិជន</th>
+                <th class="khmer-font">ឈ្មោះអតិថិជន</th>
                 <td id="customer-name"></td>
             </tr>
             <tr>
-                <th>លេខទូរស័ព្ទ</th>
+                <th class="khmer-font">លេខទូរស័ព្ទ</th>
                 <td id="phone-number"></td>
             </tr>
             
             <tr>
-                <th>ទីតាំង</th>
+                <th class="khmer-font">ទីតាំង</th>
                 <td id="location"></td>
             </tr>
 
 
             <tr>
-                <th>ឈ្មោះផលិតផល</th>
+                <th class="khmer-font">ឈ្មោះផលិតផល</th>
                 <td id="machine-name"></td>
             </tr>
             <tr>
-                <th>កាលបរិច្ឆេទទិញ</th>
+                <th class="khmer-font">កាលបរិច្ឆេទទិញ</th>
                 <td id="purchase-date"></td>
             </tr>
         </table>
-        <button class="qr-generator-button" onclick="goBack()">ត្រឡប់ទៅទំព័រដើម</button>
-        <p id="no-data-message" style="display: none;">រកមិនឃើញទិន្នន័យបង្កាន់ដៃសម្រាប់លេខសម្គាល់អតិថិជននេះទេ។</p>
+        <button class="qr-generator-button khmer-font" onclick="goBack()">ត្រឡប់ទៅទំព័រដើម</button>
+        <p id="no-data-message" class="khmer-font" style="display: none;">រកមិនឃើញទិន្នន័យបង្កាន់ដៃសម្រាប់លេខសម្គាល់អតិថិជននេះទេ។</p>
+    </div>
+
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="message-box">
+        <i id="messageIcon" class="message-icon"></i>
+        <p id="messageText"></p>
+        <button onclick="hideMessageBox()">OK</button>
     </div>
 
     <script>
+        // Function to show custom message box
+        function showMessageBox(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            const messageIcon = document.getElementById('messageIcon');
+            const messageText = document.getElementById('messageText');
+
+            messageText.textContent = message;
+            messageIcon.className = 'message-icon'; // Reset classes
+            if (type === 'success') {
+                messageIcon.classList.add('success', 'fas', 'fa-check-circle');
+            } else if (type === 'error') {
+                messageIcon.classList.add('error', 'fas', 'fa-times-circle');
+            }
+            messageBox.style.display = 'block';
+        }
+
+        // Function to hide custom message box
+        function hideMessageBox() {
+            document.getElementById('messageBox').style.display = 'none';
+        }
+
         function goBack() {
-            window.location.href = "index.html";
+            // Clear product authentication session when going back
+            fetch('/product-logout', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "index.html";
+                    } else {
+                        console.error('Failed to clear product session:', data.message);
+                        window.location.href = "index.html"; // Still go back even if session clear fails
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during product logout:', error);
+                    window.location.href = "index.html"; // Still go back
+                });
         }
 
         function toggleMenu() {
-            document.getElementById("nav-links").classList.toggle("active");
+            document.getElementById("nav-links").classList.toggle("hidden");
+            document.getElementById("nav-links").classList.toggle("flex");
         }
 
-
-
         function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-}
-
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const customerId = urlParams.get("customerId"); // This will now receive the MongoDB _id
+            const customerId = urlParams.get("customerId");
 
             if (!customerId) {
                 document.getElementById("no-data-message").style.display = "block";
                 document.getElementById("receipt-table").style.display = "none";
+                document.getElementById("product-detail-content").style.display = 'block';
                 return;
             }
 
-            fetch(`/api/receipts/by-id/${customerId}`)
-
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Receipt not found.");
-                    }
-                    return response.json();
-                })
+            fetch('/check-product-auth')
+                .then(response => response.json())
                 .then(data => {
-                    document.getElementById("customer-id").textContent = data.customerId; // This displays the 0000X ID
-                    document.getElementById("customer-name").textContent = data.customerName;
-                    document.getElementById("phone-number").textContent = data.phoneNumber;
-                 document.getElementById("location").textContent = data.location || "-";
-                    document.getElementById("machine-name").textContent = data.machineName;
-                    document.getElementById("purchase-date").textContent = formatDate(data.purchaseDate);
-
+                    if (data.authenticated) {
+                        fetch(`/api/receipts/by-id/${customerId}`)
+                            .then(response => {
+                                if (!response.ok) {
+                                    if (response.status === 401) {
+                                        window.location.href = `/product-login.html?customerId=${encodeURIComponent(customerId)}`;
+                                        return;
+                                    }
+                                    throw new Error("Receipt not found.");
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                document.getElementById("customer-id").textContent = data.customerId;
+                                document.getElementById("customer-name").textContent = data.customerName;
+                                document.getElementById("phone-number").textContent = data.phoneNumber;
+                                document.getElementById("location").textContent = data.location || "-";
+                                document.getElementById("machine-name").textContent = data.machineName;
+                                document.getElementById("purchase-date").textContent = formatDate(data.purchaseDate);
+                                document.getElementById("product-detail-content").style.display = 'block';
+                                document.getElementById("receipt-table").style.display = "table";
+                                document.getElementById("no-data-message").style.display = "none";
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                document.getElementById("no-data-message").style.display = "block";
+                                document.getElementById("receipt-table").style.display = "none";
+                                document.getElementById("product-detail-content").style.display = 'block';
+                                showMessageBox(error.message || "Failed to load receipt data.", "error");
+                            });
+                    } else {
+                        window.location.href = `/product-login.html?customerId=${encodeURIComponent(customerId)}`;
+                    }
                 })
                 .catch(error => {
-                    console.error(error);
-                    document.getElementById("no-data-message").style.display = "block";
-                    document.getElementById("receipt-table").style.display = "none";
+                    console.error('Error checking product authentication:', error);
+                    window.location.href = `/product-login.html?customerId=${encodeURIComponent(customerId)}`;
                 });
         });
     </script>

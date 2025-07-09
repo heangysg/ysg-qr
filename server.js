@@ -1,31 +1,180 @@
-require('dotenv').config();
+require('dotenv').config(); // This must be the very first line
+
+// Add a console log here to debug if MONGODB_URI is loaded
+console.log('MONGODB_URI from .env:', process.env.MONGODB_URI);
+
+
 const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs'); // Import the file system module
 const Receipt = require('./models/Receipt'); // Assuming Receipt model is correctly defined
+const cloudinary = require('cloudinary').v2; // Import Cloudinary
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Ensure environment variables are set
+if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD || !process.env.PRODUCT_PASSWORD || !process.env.SESSION_SECRET || !process.env.MONGODB_URI || !process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    console.error("❌ ERROR: Please define ADMIN_USERNAME, ADMIN_PASSWORD, PRODUCT_PASSWORD, SESSION_SECRET, MONGODB_URI, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your .env file.");
+    process.exit(1); // Exit if essential environment variables are missing
+}
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public')); // Serve static files from the 'public' directory
+
+// Session middleware setup
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'secretkey',
+    secret: process.env.SESSION_SECRET, // Use a strong secret from .env
     resave: false,
     saveUninitialized: false,
     cookie: {
         sameSite: 'lax',
-        secure: false,
-        httpOnly: true // Recommended for security
+        secure: false, // Set to true if using HTTPS in production
+        httpOnly: true, // Recommended for security
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
 
+// Serve static files from the 'public' directory, but protect them
+// We will handle serving specific HTML files after authentication
+app.use(express.static('public', { index: false })); // Disable default index serving
+
+// Ensure the uploads directory exists (still useful for local development/fallback)
+const uploadsDir = path.join(__dirname, 'public', 'uploads'); // Use path.join for cross-platform compatibility
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// --- Authentication Middleware ---
+
+// Middleware to protect admin and index pages
+const requireAdminAuth = (req, res, next) => {
+    if (req.session.authenticated) {
+        next(); // User is authenticated, proceed
+    } else {
+        // User is not authenticated, redirect to login page
+        // Store the original URL to redirect back after successful login
+        res.redirect(`/login.html?redirect=${encodeURIComponent(req.originalUrl)}`);
+    }
+};
+
+// Middleware to protect product detail page
+const requireProductAuth = (req, res, next) => {
+    // Check if the product session is authenticated
+    if (req.session.productAuthenticated) {
+        next(); // User is authenticated, proceed
+    } else {
+        // If not authenticated, redirect to product login page
+        // Ensure customerId is passed if available in the original request URL
+        const customerId = req.params.id || req.query.customerId; // Get ID from params or query
+        const redirectUrl = customerId ? `/product-login.html?customerId=${encodeURIComponent(customerId)}` : '/product-login.html';
+        res.redirect(redirectUrl);
+    }
+};
+
+// --- Routes for serving protected HTML files ---
+
+// Serve login.html for main login
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Serve product-login.html for product detail login
+app.get('/product-login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'product-login.html'));
+});
+
+// Protect index.html and admin.html
+app.get('/index.html', requireAdminAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/admin.html', requireAdminAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// Protect product.html
+app.get('/product.html', requireProductAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'product.html'));
+});
+
+
+// Redirect root to index.html (which is protected)
+app.get('/', (req, res) => {
+    res.redirect('/index.html');
+});
+
+// --- Login API Endpoints ---
+
+// Main login for admin and index pages
+app.post('/login', (req, res) => {
+    const { username, password, redirect } = req.body;
+    if (
+        username === process.env.ADMIN_USERNAME &&
+        password === process.env.ADMIN_PASSWORD
+    ) {
+        req.session.authenticated = true;
+        // Redirect to the original URL or a default page
+        return res.json({ success: true, redirectUrl: redirect || '/index.html' });
+    } else {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+});
+
+// Product detail login
+app.post('/product-login', (req, res) => {
+    const { password, customerId } = req.body;
+    if (password === process.env.PRODUCT_PASSWORD) {
+        req.session.productAuthenticated = true;
+        return res.json({ success: true, redirectUrl: `/product.html?customerId=${customerId}` });
+    } else {
+        return res.status(401).json({ success: false, message: 'Invalid password' });
+    }
+});
+
+// Logout route to clear session for admin/index
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ success: false, message: 'Failed to logout' });
+        }
+        res.clearCookie('connect.sid');
+        res.json({ success: true, message: 'Logged out successfully' });
+    });
+});
+
+// Logout route to clear session for product details
+app.post('/product-logout', (req, res) => {
+    req.session.productAuthenticated = false; // Clear only product authentication
+    res.json({ success: true, message: 'Product session cleared' });
+});
+
+// API to check authentication status for admin/index
+app.get('/check-admin-auth', (req, res) => {
+    res.json({ authenticated: !!req.session.authenticated });
+});
+
+// API to check authentication status for product detail
+app.get('/check-product-auth', (req, res) => {
+    res.json({ authenticated: !!req.session.productAuthenticated });
+});
+
+// --- Existing API Endpoints (with potential protection) ---
+
 // NEW: Search receipt by either MongoDB _id OR customerId (like "00001")
-app.get('/api/receipts/by-id/:id', async (req, res) => {
+// This route now requires product authentication
+app.get('/api/receipts/by-id/:id', requireProductAuth, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -52,46 +201,8 @@ app.get('/api/receipts/by-id/:id', async (req, res) => {
     }
 });
 
-// Ensure the uploads directory exists
-// MODIFIED: Use an absolute path for uploadsDir
-const uploadsDir = 'C:\\Users\\ADMIN\\Desktop\\A-YSGQR-Login\\public\\uploads'; // Specify the absolute path
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Secure login
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (
-        username === process.env.ADMIN_USERNAME &&
-        password === process.env.ADMIN_PASSWORD
-    ) {
-        req.session.authenticated = true;
-        return res.redirect('/admin.html');
-    } else {
-        return res.send('<script>alert("Invalid credentials"); window.location.href="/admin.html";</script>');
-    }
-});
-
-// Logout route to clear session
-app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error destroying session:', err);
-            return res.sendStatus(500);
-        }
-        res.clearCookie('connect.sid');
-        res.sendStatus(200);
-    });
-});
-
-// Protect admin.html route
-app.get('/admin.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-// POST route for /api/receipts
-app.post('/api/receipts', async (req, res) => {
+// POST route for /api/receipts (Protected by admin auth implicitly by index.html protection)
+app.post('/api/receipts', requireAdminAuth, async (req, res) => {
     try {
         const { customerName, phoneNumber, location, machineName, purchaseDate } = req.body;
 
@@ -126,8 +237,8 @@ app.post('/api/receipts', async (req, res) => {
     }
 });
 
-// GET all receipts for admin page
-app.get('/api/receipts', async (req, res) => {
+// GET all receipts for admin page (Protected by admin auth)
+app.get('/api/receipts', requireAdminAuth, async (req, res) => {
     try {
         const receipts = await Receipt.find({}); // Fetch all receipts
         res.json(receipts);
@@ -137,8 +248,8 @@ app.get('/api/receipts', async (req, res) => {
     }
 });
 
-// GET a single receipt by its MongoDB _id
-app.get('/api/receipts/:id', async (req, res) => {
+// GET a single receipt by its MongoDB _id (Protected by admin auth, not product auth)
+app.get('/api/receipts/:id', requireAdminAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const receipt = await Receipt.findById(id); // Find by MongoDB's _id
@@ -149,7 +260,6 @@ app.get('/api/receipts/:id', async (req, res) => {
         res.json(receipt);
     } catch (error) {
         console.error('Error fetching single receipt:', error);
-        // It's good practice to check for CastError if ID format is invalid
         if (error.name === 'CastError') {
             return res.status(400).json({ error: 'Invalid Receipt ID format' });
         }
@@ -157,8 +267,8 @@ app.get('/api/receipts/:id', async (req, res) => {
     }
 });
 
-// Delete receipt
-app.delete('/api/receipts/:id', async (req, res) => {
+// Delete receipt (Protected by admin auth)
+app.delete('/api/receipts/:id', requireAdminAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const result = await Receipt.findByIdAndDelete(id);
@@ -174,8 +284,8 @@ app.delete('/api/receipts/:id', async (req, res) => {
     }
 });
 
-// Update receipt
-app.put('/api/receipts/:id', async (req, res) => {
+// Update receipt (Protected by admin auth)
+app.put('/api/receipts/:id', requireAdminAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const updatedReceipt = req.body;
@@ -192,13 +302,8 @@ app.put('/api/receipts/:id', async (req, res) => {
     }
 });
 
-// API to check authentication status
-app.get('/check-auth', (req, res) => {
-    res.json({ authenticated: !!req.session.authenticated });
-});
-
-// API endpoint to get the next customer ID
-app.get('/api/next-customer-id', async (req, res) => {
+// API endpoint to get the next customer ID (Protected by admin auth implicitly by index.html protection)
+app.get('/api/next-customer-id', requireAdminAuth, async (req, res) => {
     try {
         const result = await Receipt.aggregate([
             {
@@ -228,31 +333,32 @@ app.get('/api/next-customer-id', async (req, res) => {
     }
 });
 
-// NEW ROUTE: Save QR code image to uploads folder
-app.post('/api/save-qr-code', (req, res) => {
+// NEW ROUTE: Save QR code image to Cloudinary
+app.post('/api/save-qr-code', requireAdminAuth, async (req, res) => {
     const { imageData, fileName } = req.body;
 
     if (!imageData || !imageData.startsWith('data:image/png;base64,')) {
         return res.status(400).json({ message: 'Invalid image data' });
     }
 
-    const base64Data = imageData.replace(/^data:image\/png;base64,/, '');
-    const imageBuffer = Buffer.from(base64Data, 'base64');
+    try {
+        // Upload image to Cloudinary
+        const uploadResult = await cloudinary.uploader.upload(imageData, {
+            folder: 'qr_codes', // Optional: specify a folder in Cloudinary
+            public_id: fileName.replace('.png', ''), // Use filename (without .png) as public_id
+            overwrite: true // Overwrite if an image with the same public_id exists
+        });
 
-    const filePath = path.join(uploadsDir, fileName); // Uses the updated uploadsDir
-
-    fs.writeFile(filePath, imageBuffer, (err) => {
-        if (err) {
-            console.error('Error saving QR code image:', err);
-            return res.status(500).json({ message: 'Failed to save QR code image.' });
-        }
-        console.log(`QR code image saved: ${filePath}`);
-        res.status(200).json({ message: 'QR code image saved successfully!', imageUrl: `/uploads/${fileName}` });
-    });
+        console.log(`QR code image uploaded to Cloudinary: ${uploadResult.secure_url}`);
+        res.status(200).json({ message: 'QR code image saved successfully!', imageUrl: uploadResult.secure_url });
+    } catch (err) {
+        console.error('Error uploading QR code image to Cloudinary:', err);
+        res.status(500).json({ message: 'Failed to save QR code image to Cloudinary.', error: err.message });
+    }
 });
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGODB_URI) // Ensure this uses process.env.MONGODB_URI
     .then(() => {
         console.log('✅ MongoDB Connected');
         app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

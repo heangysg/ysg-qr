@@ -25,6 +25,12 @@
         .khmer-font {
             font-family: 'Battambang', cursive;
         }
+        /* Specific style for table data cells to ensure non-bold Khmer font */
+        #receipts-body td.khmer-font-cell {
+            font-family: 'Battambang', cursive;
+            font-weight: normal; /* Ensure it's not bold */
+        }
+
 
         /* Custom styles for the message box */
         .message-box {
@@ -397,7 +403,7 @@
             </table>
             <p id="no-receipts-message" class="text-center py-6 text-gray-500 text-xl khmer-font" style="display: none;">រកមិនឃើញបង្កាន់ដៃដែលត្រូវគ្នានឹងការស្វែងរករបស់អ្នកទេ។</p>
         </div>
-    </div>
+        </div>
 
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-spinner"></div>
@@ -579,16 +585,20 @@
                 let valA = a[column];
                 let valB = b[column];
 
-                // Special handling for dates if they are in DD/MM/YYYY format
+                // Special handling for dates if they are in ISO format (from server)
                 if (column === 'purchaseDate') {
-                    valA = new Date(valA.split('/').reverse().join('-')); // Convert to YYYY-MM-DD for comparison
-                    valB = new Date(valB.split('/').reverse().join('-'));
+                    valA = new Date(valA); 
+                    valB = new Date(valB);
                 }
                 
                 // Handle numeric comparison for customerId (if it's numeric)
-                if (column === 'customerId') {
+                else if (column === 'customerId') {
                     valA = parseInt(valA, 10);
                     valB = parseInt(valB, 10);
+                } else {
+                    // Default to string comparison for other fields
+                    valA = String(valA).toLowerCase();
+                    valB = String(valB).toLowerCase();
                 }
 
                 if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
@@ -645,8 +655,7 @@
                 .then(data => {
                     if (!data) return;
                     allReceipts = data; // Store all fetched receipts
-                    filterReceipts(); // Display all initially
-                    // updateDashboardStats(allReceipts); // Moved this call to filterReceipts
+                    filterReceipts(); // Apply filters and display
                 })
                 .catch(err => {
                     console.error("Error loading receipts:", err);
@@ -662,7 +671,7 @@
             const fromDate = fromDateStr ? new Date(fromDateStr) : null;
             const toDate = toDateStr ? new Date(toDateStr) : null;
 
-            const filteredReceipts = allReceipts.filter(receipt => {
+            let tempFilteredReceipts = allReceipts.filter(receipt => {
                 const matchesSearch =
                     receipt.customerId.toLowerCase().includes(searchTerm) ||
                     receipt.customerName.toLowerCase().includes(searchTerm) ||
@@ -670,18 +679,40 @@
                     (receipt.location && receipt.location.toLowerCase().includes(searchTerm)) ||
                     receipt.machineName.toLowerCase().includes(searchTerm);
 
-                const purchaseDate = new Date(receipt.purchaseDate); // Already YYYY-MM-DD from backend
+                const purchaseDate = new Date(receipt.purchaseDate); 
                 const matchesDate =
                     (!fromDate || purchaseDate >= fromDate) &&
                     (!toDate || purchaseDate <= toDate);
 
                 return matchesSearch && matchesDate;
             });
-            displayReceipts(filteredReceipts);
-            updateDashboardStats(filteredReceipts); // Update dashboard stats based on filtered data
+
+            // Apply sorting to the filtered results
+            tempFilteredReceipts.sort((a, b) => {
+                let valA = a[currentSortColumn];
+                let valB = b[currentSortColumn];
+
+                if (currentSortColumn === 'purchaseDate') {
+                    valA = new Date(valA);
+                    valB = new Date(valB);
+                } else if (currentSortColumn === 'customerId') {
+                    valA = parseInt(valA, 10);
+                    valB = parseInt(valB, 10);
+                } else {
+                    valA = String(valA).toLowerCase();
+                    valB = String(valB).toLowerCase();
+                }
+
+                if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            displayReceipts(tempFilteredReceipts); // Display all filtered/sorted receipts directly
+            updateDashboardStats(tempFilteredReceipts); // Update dashboard stats based on filtered data
         }
 
-        function displayReceipts(receiptsToDisplay) {
+        function displayReceipts(receiptsToDisplay) { // Modified to take all filtered receipts
             const body = document.getElementById("receipts-body");
             body.innerHTML = "";
             const noReceiptsMessage = document.getElementById('no-receipts-message');
@@ -691,13 +722,16 @@
             } else {
                 noReceiptsMessage.style.display = 'none';
                 receiptsToDisplay.forEach(receipt => {
+                    // Format phone number to break after / if present
+                    const formattedPhoneNumber = receipt.phoneNumber ? receipt.phoneNumber.replace(/\s*\/\s*/, '/<br>') : '';
+
                     body.innerHTML += `
                         <tr id="receipt-${receipt._id}" class="hover:bg-gray-50 transition duration-150 ease-in-out">
                             <td class="px-6 py-4 text-center text-base font-medium text-gray-900">${receipt.customerId}</td>
-                            <td class="px-6 py-4 text-base text-gray-700 break-words">${receipt.customerName}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-700">${receipt.phoneNumber}</td>
-                            <td class="px-6 py-4 text-base text-gray-700 break-words">${receipt.location || "-"}</td>
-                            <td class="px-6 py-4 text-base text-gray-700 break-words">${receipt.machineName}</td>
+                            <td class="px-6 py-4 text-base text-gray-700 break-words khmer-font-cell">${receipt.customerName}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-700">${formattedPhoneNumber}</td>
+                            <td class="px-6 py-4 text-base text-gray-700 break-words khmer-font-cell">${receipt.location || "-"}</td>
+                            <td class="px-6 py-4 text-base text-gray-700 break-words khmer-font-cell">${receipt.machineName}</td>
                             <td class="px-6 py-4 text-center text-base text-gray-700">${formatDate(receipt.purchaseDate)}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-base font-medium">
                                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
@@ -749,6 +783,12 @@
             document.getElementById('search-input').value = '';
             document.getElementById('from-date-input').value = '';
             document.getElementById('to-date-input').value = '';
+            currentSortColumn = 'createdAt'; // Reset sort
+            currentSortDirection = 'desc'; // Reset sort direction
+            // Reset all sort icons
+            document.querySelectorAll('th i.fas.fa-sort-up, th i.fas.fa-sort-down').forEach(icon => {
+                icon.className = 'fas fa-sort text-sm ml-1';
+            });
             loadReceipts(); // Reload all receipts and apply default sort/filter
         }
 
@@ -774,14 +814,14 @@
         // Function to export all receipts to CSV
         function exportToCsv() {
             // Use the currently displayed (filtered and sorted) receipts for export
-            const receiptsToExport = Array.from(document.getElementById('receipts-body').children).map(row => {
+            const receiptsToExport = receiptsToDisplay.map(receipt => { // Changed to receiptsToDisplay
                 return {
-                    customerId: row.cells[0].textContent,
-                    customerName: row.cells[1].textContent,
-                    phoneNumber: row.cells[2].textContent,
-                    location: row.cells[3].textContent,
-                    machineName: row.cells[4].textContent,
-                    purchaseDate: row.cells[5].textContent // Already formatted DD/MM/YYYY
+                    customerId: receipt.customerId,
+                    customerName: receipt.customerName,
+                    phoneNumber: receipt.phoneNumber,
+                    location: receipt.location,
+                    machineName: receipt.machineName,
+                    purchaseDate: formatDate(receipt.purchaseDate)
                 };
             });
 
@@ -799,7 +839,7 @@
                 `"${receipt.customerId}"`, // Enclose in quotes to handle leading zeros and commas
                 `"${receipt.customerName}"`,
                 `"${receipt.phoneNumber}"`,
-                `"${receipt.location}"`,
+                `"${receipt.location || ""}"`,
                 `"${receipt.machineName}"`,
                 `"${receipt.purchaseDate}"`
             ]);
@@ -837,6 +877,26 @@
             container.style.lineHeight = '1.75';
             container.style.color = '#333';
 
+            // Find the receipt data in allReceipts (or receiptsToDisplay)
+            // Use a local copy of receiptsToDisplay directly or re-filter
+            const currentReceiptsInTable = Array.from(document.getElementById('receipts-body').children).map(row => {
+                 // Reconstruct a simplified object from the row's displayed content
+                 return {
+                    _id: row.id.replace('receipt-', ''),
+                    customerId: row.cells[0].textContent,
+                    customerName: row.cells[1].textContent,
+                    // Use innerHTML for phone number to get <br>
+                    phoneNumber: row.cells[2].innerHTML,
+                    location: row.cells[3].textContent,
+                    machineName: row.cells[4].textContent,
+                    purchaseDate: row.cells[5].textContent // DD/MM/YYYY
+                 };
+            });
+            const receiptDataForDownload = currentReceiptsInTable.find(r => r._id === id);
+            
+            // Format phone number for download content if it contains <br>
+            const phoneNumberForDownloadDisplay = receiptDataForDownload ? receiptDataForDownload.phoneNumber : row.cells[2].innerHTML;
+
             container.innerHTML = `
                 <div class="text-center mb-8">
                     <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-24 mx-auto mb-4">
@@ -849,7 +909,7 @@
                     <tbody>
                         <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ID អតិថិជន</th><td class="py-3">${row.cells[0].textContent}</td></tr>
                         <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ឈ្មោះអតិថិជន</th><td class="py-3">${row.cells[1].textContent}</td></tr>
-                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">លេខទូរស័ព្ទ</th><td class="py-3">${row.cells[2].textContent}</td></tr>
+                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">លេខទូរស័ព្ទ</th><td class="py-3">${phoneNumberForDownloadDisplay}</td></tr>
                         <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ទីតាំង</th><td class="py-3">${row.cells[3].textContent}</td></tr> 
                         <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ឈ្មោះផលិតផល</th><td class="py-3">${row.cells[4].textContent}</td></tr>
                         <tr><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">កាលបរិច្ឆេទទិញ</th><td class="py-3">${row.cells[5].textContent}</td></tr>

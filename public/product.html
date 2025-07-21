@@ -24,6 +24,12 @@
         .khmer-font {
             font-family: 'Battambang', cursive;
         }
+        /* Specific style for table data cells to ensure non-bold Khmer font */
+        #receipt-table td.khmer-font-cell { /* Targeted specifically for product.html table data */
+            font-family: 'Battambang', cursive;
+            font-weight: normal; /* Ensure it's not bold */
+        }
+
 
         /* --- Navbar Specific Styles (consistent across pages) --- */
         header {
@@ -67,7 +73,7 @@
         nav ul li button {
             color: white;
             text-decoration: none;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial', sans-serif; /* Apply Arial to navbar text */
             font-weight: bold;
             font-size: 1.15rem;
             transition: color 0.2s ease;
@@ -306,30 +312,30 @@
         <table id="receipt-table">
             <tr>
                 <th class="khmer-font">លេខIDអតិថិជន</th>
-                <td id="customer-id"></td>
+                <td id="customer-id" class="khmer-font-cell"></td>
             </tr>
             <tr>
                 <th class="khmer-font">ឈ្មោះអតិថិជន</th>
-                <td id="customer-name"></td>
+                <td id="customer-name" class="khmer-font-cell"></td>
             </tr>
             <tr>
                 <th class="khmer-font">លេខទូរស័ព្ទ</th>
-                <td id="phone-number"></td>
+                <td id="phone-number" class="khmer-font-cell"></td>
             </tr>
             
             <tr>
                 <th class="khmer-font">ទីតាំង</th>
-                <td id="location"></td>
+                <td id="location" class="khmer-font-cell"></td>
             </tr>
 
 
             <tr>
                 <th class="khmer-font">ឈ្មោះផលិតផល</th>
-                <td id="machine-name"></td>
+                <td id="machine-name" class="khmer-font-cell"></td>
             </tr>
             <tr>
                 <th class="khmer-font">កាលបរិច្ឆេទទិញ</th>
-                <td id="purchase-date"></td>
+                <td id="purchase-date" class="khmer-font-cell"></td>
             </tr>
         </table>
         <button class="qr-generator-button khmer-font" onclick="goBack()">ត្រឡប់ទៅទំព័រដើម</button>
@@ -425,7 +431,8 @@
                             .then(data => {
                                 document.getElementById("customer-id").textContent = data.customerId;
                                 document.getElementById("customer-name").textContent = data.customerName;
-                                document.getElementById("phone-number").textContent = data.phoneNumber;
+                                // Apply line break for phone number if it contains '/'
+                                document.getElementById("phone-number").innerHTML = data.phoneNumber ? data.phoneNumber.replace(/\s*\/\s*/, '/<br>') : '';
                                 document.getElementById("location").textContent = data.location || "-";
                                 document.getElementById("machine-name").textContent = data.machineName;
                                 document.getElementById("purchase-date").textContent = formatDate(data.purchaseDate);
@@ -448,6 +455,12 @@
                     console.error('Error checking product authentication:', error);
                     window.location.href = `/product-login.html?customerId=${encodeURIComponent(customerId)}`;
                 });
+            
+            // Attach event listener to the logout button in the navigation bar
+            const logoutButtonNav = document.getElementById('logout-btn-nav');
+            if (logoutButtonNav) {
+                logoutButtonNav.addEventListener('click', logout);
+            }
         });
     </script>
 </body>

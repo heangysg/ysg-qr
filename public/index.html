@@ -5,18 +5,13 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <title>QR Code Generator | YSG</title>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
- <!-- Font Awesome for general icons -->
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
- <!-- Removed original style.css link as most styles will be handled by Tailwind or inline -->
- <!-- <link rel="stylesheet" href="style.css" /> -->
 
- <!-- Tailwind CSS CDN -->
  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
- <!-- Font Awesome for new icons -->
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
- <!-- Google Fonts - Inter (for general text) and Battambang (for Khmer) -->
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
  <style>
     /* Custom font for body (Inter) - applies broadly */
@@ -235,15 +230,23 @@
         box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
     }
 
+    /* UPDATED: Styles for the QR code container (border-radius removed) */
     #qrcode {
-        margin-top: 2rem; /* Space above QR code */
-        padding: 1rem;
+        width: 250px; /* Target width (200px QR + 2*1rem (32px) padding + 2*2px border = 236px + a bit more) */
+        height: 250px; /* Target height */
+        margin: 2rem auto; /* Center the div horizontally */
+        padding: 1rem; /* Internal padding around the QR code */
         display: flex;
         justify-content: center;
-        border: 1px solid #e0e0e0; /* Light border */
-        border-radius: 0.5rem;
-        background-color: #f9f9f9; /* Light background */
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+        align-items: center; /* Center QR code vertically and horizontally */
+        
+        background-color: #ffffff; /* Solid white background */
+        border: 2px solid #333; /* Darker, more visible border */
+        /* border-radius: 0.75rem; <-- REMOVED THIS LINE */
+        /* Adjusted box-shadow to be softer and less prone to edge artifacts */
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), /* A very thin, subtle outer border/shadow */
+                    0 4px 12px rgba(0, 0, 0, 0.15); /* Main shadow, slightly softer */
+        box-sizing: border-box; /* Include padding and border in the width/height calculation */
     }
 
     /* New styles for QR action buttons alignment */
@@ -369,8 +372,7 @@
     <div class="bar"></div>
     <div class="bar"></div>
   </div>
-  <ul id="nav-links" class="hidden md:flex space-x-4"> <!-- Adjusted space-x to 4 (1rem) -->
-    <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
+  <ul id="nav-links" class="hidden md:flex space-x-4"> <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
     <li><a href="admin.html" class="text-white hover:text-gray-300 transition duration-200">Admin</a></li>
     <li><a href="contact.html" class="text-white hover:text-gray-300 transition duration-200">Contact</a></li>
     <li><button id="logout-btn-nav" class="text-white hover:text-gray-300 transition duration-200">Logout</button></li>
@@ -419,7 +421,6 @@
   
   <div id="qrcode" style="margin-top: 20px;"></div>
 
-  <!-- New container for QR action buttons -->
   <div class="qr-actions-group">
     <a id="receipt-link" href="#" style="display: none;" target="_blank" class="khmer-font">មើលទិន្នន័យ QRCode</a>
     <a id="download-link" href="#" style="display: none;" download class="khmer-font">Download QR Code</a>
@@ -493,7 +494,7 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   const phoneNumber = document.getElementById("phone-number").value.trim();
   const location = document.getElementById("location").value.trim();
   const machineName = document.getElementById("machine-name").value.trim();
-  const rawPurchaseDate = document.getElementById("purchase-date").value.trim(); 
+  const rawPurchaseDate = document.getElementById("purchase-date").value.trim();
 
   const purchaseDate = formatPurchaseDateForBackend(rawPurchaseDate);
   
@@ -550,42 +551,44 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
     receiptLink.innerText = "View Receipt Data";
 
     const downloadLink = document.getElementById("download-link");
-    // Wait for QR code to render to canvas, then get its data URL and send to server
-    setTimeout(() => {
-      const qrCanvas = qrcodeElement.querySelector('canvas');
-      if (qrCanvas) {
-        const imageDataUrl = qrCanvas.toDataURL("image/png");
-        // Use the customer ID from the form for the filename, padded to 5 digits
-        const customerIdForFilename = data.receipt.customerId; // Use the actual customerId from the saved receipt
-        const fileName = `ysgqr_${customerIdForFilename}.png`; // Custom filename format
+    const qrcodeDiv = document.getElementById("qrcode"); // Get the div element, not just the canvas
+    if (qrcodeDiv) {
+      html2canvas(qrcodeDiv, {
+          scale: 2, // Increase scale for better quality
+          backgroundColor: '#ffffff' // Explicitly set background to white for consistent rendering of the frame
+      }).then(canvas => {
+          const imageDataUrl = canvas.toDataURL("image/png");
+          const customerIdForFilename = data.receipt.customerId; // Use the actual customerId from the saved receipt
+         const fileName = `ysgqr_${customerIdForFilename}.png`; // Custom filename format (removed "_framed")
 
-        // Send the QR code image data to the server
-        fetch('/api/save-qr-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ imageData: imageDataUrl, fileName: fileName })
-        })
-        .then(response => response.json())
-        .then(uploadData => {
-            console.log('QR code image upload response:', uploadData);
-            if (uploadData.message) {
-                console.log(uploadData.message); // Log for now
-            }
-            // Update the download link
-            downloadLink.href = imageDataUrl; // Still allow client-side download
-            downloadLink.download = fileName;
-            // Ensure both links are displayed after QR generation
-            document.getElementById("receipt-link").style.display = "inline-block";
-            document.getElementById("download-link").style.display = "inline-block";
+          // Send the framed QR code image data to the server
+          fetch('/api/save-qr-code', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ imageData: imageDataUrl, fileName: fileName })
+          })
+          .then(response => response.json())
+          .then(uploadData => {
+              console.log('Framed QR code image upload response:', uploadData);
+              if (uploadData.message) {
+                  console.log(uploadData.message);
+              }
+              // Update the download link
+              downloadLink.href = imageDataUrl;
+              downloadLink.download = fileName;
+              // Ensure both links are displayed after QR generation
+              document.getElementById("receipt-link").style.display = "inline-block";
+              document.getElementById("download-link").style.display = "inline-block";
 
-        })
-        .catch(uploadError => {
-            console.error('Error uploading QR code image:', uploadError);
-            console.error('Error saving QR code image to server.'); // Log for now
-        });
-      }
-    }, 500); // Give a small delay for the canvas to render
-
+          })
+          .catch(uploadError => {
+              console.error('Error uploading framed QR code image:', uploadError);
+              console.error('Error saving framed QR code image to server.');
+          });
+      }).catch(error => {
+          console.error('Error generating framed QR code image:', error);
+      });
+    }
     // After successful generation and server storage, update the customer ID field with the next ID
     document.getElementById("customer-id").value = data.nextCustomerId; // This is the 0000X ID for display
     // Clear other form fields
@@ -602,7 +605,7 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
 });
 
 document.getElementById("clear-btn").addEventListener("click", function () {
-  document.getElementById("customer-id").value = ""; 
+  document.getElementById("customer-id").value = "";
   document.getElementById("customer-name").value = "";
   document.getElementById("phone-number").value = "";
   document.getElementById("location").value = "";

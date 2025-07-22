@@ -173,8 +173,7 @@
         color: #4a5568; /* Darker gray for labels */
     }
 
-    .receipt-input-group input[type="text"],
-    .receipt-input-group input[type="date"] {
+    .receipt-input-group input[type="text"] {
         width: 100%; /* Full width */
         padding: 0.75rem; /* More padding */
         border: 1px solid #cbd5e0; /* Lighter border */
@@ -183,8 +182,7 @@
         font-size: 1rem;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .receipt-input-group input[type="text"]:focus,
-    .receipt-input-group input[type="date"]:focus {
+    .receipt-input-group input[type="text"]:focus {
         outline: none;
         border-color: #4299e1; /* Blue focus ring */
         box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow */
@@ -230,23 +228,25 @@
         box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
     }
 
-    /* UPDATED: Styles for the QR code container (border-radius removed) */
+    /* Styles for the QR code container for a more minimal look with a bit of white */
     #qrcode {
-        width: 250px; /* Target width (200px QR + 2*1rem (32px) padding + 2*2px border = 236px + a bit more) */
-        height: 250px; /* Target height */
+        width: 200px; /* Set to the exact QR code size */
+        height: 200px; /* Set to the exact QR code size */
         margin: 2rem auto; /* Center the div horizontally */
-        padding: 1rem; /* Internal padding around the QR code */
+        padding: 10px; /* Added a small padding for the white container */
         display: flex;
         justify-content: center;
         align-items: center; /* Center QR code vertically and horizontally */
         
         background-color: #ffffff; /* Solid white background */
-        border: 2px solid #333; /* Darker, more visible border */
-        /* border-radius: 0.75rem; <-- REMOVED THIS LINE */
-        /* Adjusted box-shadow to be softer and less prone to edge artifacts */
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), /* A very thin, subtle outer border/shadow */
-                    0 4px 12px rgba(0, 0, 0, 0.15); /* Main shadow, slightly softer */
-        box-sizing: border-box; /* Include padding and border in the width/height calculation */
+        border: 1px solid #e0e0e0; /* Very light border */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Very subtle box-shadow */
+        box-sizing: content-box; /* Ensures padding adds to total size, preserving QR code dimensions */
+    }
+
+    /* Ensure QRCode.js canvas fills its parent #qrcode div if needed */
+    #qrcode canvas {
+        display: block; /* Remove extra space below canvas */
     }
 
     /* New styles for QR action buttons alignment */
@@ -435,6 +435,8 @@
 </div>
 
 <script>
+// No Flatpickr initialization here
+
 // Function to fetch and display the next customer ID
 async function fetchNextCustomerId() {
   try {
@@ -450,7 +452,7 @@ async function fetchNextCustomerId() {
   }
 }
 
-// Function to validate and format DD/MM/YYYY toYYYY-MM-DD for backend
+// Function to validate and format DD/MM/YYYY to YYYY-MM-DD for backend
 function formatPurchaseDateForBackend(dateString) {
   const parts = dateString.split('/');
   if (parts.length === 3) {
@@ -460,14 +462,14 @@ function formatPurchaseDateForBackend(dateString) {
 
     // Basic validation for day, month, year ranges
     if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900) {
-      // Return inYYYY-MM-DD format for backend
+      // Return in YYYY-MM-DD format for backend
       return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     }
   }
   return null; // Invalid format
 }
 
-// Function to format date input as DD/MM/YYYY as user types
+// Re-added the original date formatting listener for 'purchase-date' input
 document.getElementById('purchase-date').addEventListener('input', function(e) {
     let input = e.target.value.replace(/\D/g, ''); // Remove non-digits
     let formattedInput = '';
@@ -494,9 +496,9 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   const phoneNumber = document.getElementById("phone-number").value.trim();
   const location = document.getElementById("location").value.trim();
   const machineName = document.getElementById("machine-name").value.trim();
-  const rawPurchaseDate = document.getElementById("purchase-date").value.trim();
+  const rawPurchaseDate = document.getElementById("purchase-date").value.trim(); // This will be DD/MM/YYYY
 
-  const purchaseDate = formatPurchaseDateForBackend(rawPurchaseDate);
+  const purchaseDate = formatPurchaseDateForBackend(rawPurchaseDate); // Convert to YYYY-MM-DD for backend
   
   if (!customerName || !phoneNumber || !machineName || !rawPurchaseDate) {
     // Replaced alert with console.error for better user experience
@@ -596,7 +598,7 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
     document.getElementById("phone-number").value = "";
     document.getElementById("location").value = "";
     document.getElementById("machine-name").value = "";
-    document.getElementById("purchase-date").value = "";
+    document.getElementById("purchase-date").value = ""; // Clear the text input
   })
   .catch(error => {
     console.error('Error storing receipt data:', error);
@@ -610,7 +612,8 @@ document.getElementById("clear-btn").addEventListener("click", function () {
   document.getElementById("phone-number").value = "";
   document.getElementById("location").value = "";
   document.getElementById("machine-name").value = "";
-  document.getElementById("purchase-date").value = "";
+  document.getElementById("purchase-date").value = ""; // Clear the text input
+
   document.getElementById("qrcode").innerHTML = "";
   document.getElementById("receipt-link").style.display = "none";
   document.getElementById("download-link").style.display = "none";

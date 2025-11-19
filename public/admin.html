@@ -31,7 +31,6 @@
             font-weight: normal; /* Ensure it's not bold */
         }
 
-
         /* Custom styles for the message box */
         .message-box {
             display: none;
@@ -95,7 +94,6 @@
         .message-box button.ml-2:hover {
             background-color: #5a6268;
         }
-
 
         /* Loading overlay */
         .loading-overlay {
@@ -303,10 +301,31 @@
                 font-size: 1rem; /* Smaller font for mobile nav */
             }
 
-
             .hamburger {
                 display: flex;
             }
+        }
+
+        /* Pagination styles */
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pagination-btn:hover:not(.disabled) {
+            background-color: #f3f4f6;
+        }
+        .pagination-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -332,78 +351,101 @@
     </header>
 
     <div class="container mx-auto p-6 flex-grow" id="admin-panel" style="display: none;">
-        <div class="sticky top-0 z-10 bg-gray-100 pb-4"><div class="admin-header flex flex-col md:flex-row justify-between items-center mb-8">
-            <h2 class="text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">All Receipts (Admin)</h2>
-            <div class="action-buttons flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                <button id="refresh-btn" onclick="refreshReceipts()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
-                    <i class="fas fa-sync-alt mr-2"></i> Refresh
-                </button>
-                <button id="export-csv-btn" onclick="exportToCsv()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
-                    <i class="fas fa-file-csv mr-2"></i> Export CSV
-                </button>
-                <button id="logout-btn" onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
-                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                </button>
-            </div>
-        </div>
-
-        <div class="mb-8 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <h3 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="bg-blue-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                    <p class="text-lg font-medium text-blue-800">Total Receipts:</p>
-                    <span id="total-receipts-stat" class="text-2xl font-bold text-blue-700">0</span>
-                </div>
-                <div class="bg-green-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                    <p class="text-lg font-medium text-green-800">Receipts Today:</p>
-                    <span id="receipts-today-stat" class="text-2xl font-bold text-green-700">0</span>
-                </div>
-                <div class="bg-yellow-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                    <p class="text-lg font-medium text-yellow-800">Receipts This Month:</p>
-                    <span id="receipts-this-month-stat" class="text-2xl font-bold text-yellow-700">0</span>
+        <div class="sticky top-0 z-10 bg-gray-100 pb-4">
+            <div class="admin-header flex flex-col md:flex-row justify-between items-center mb-4">
+                <h2 class="text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">All Receipts (Admin)</h2>
+                <div class="action-buttons flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                    <button id="refresh-btn" onclick="refreshReceipts()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
+                        <i class="fas fa-sync-alt mr-2"></i> Refresh
+                    </button>
+                    <button id="export-csv-btn" onclick="exportToCsv()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
+                        <i class="fas fa-file-csv mr-2"></i> Export CSV
+                    </button>
+                    <button id="logout-btn" onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </button>
                 </div>
             </div>
+
+            <div class="mb-4 bg-white p-4 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
+                        <p class="text-lg font-medium text-blue-800">Total Receipts:</p>
+                        <span id="total-receipts-stat" class="text-2xl font-bold text-blue-700">0</span>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
+                        <p class="text-lg font-medium text-green-800">Receipts Today:</p>
+                        <span id="receipts-today-stat" class="text-2xl font-bold text-green-700">0</span>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
+                        <p class="text-lg font-medium text-yellow-800">Receipts This Month:</p>
+                        <span id="receipts-this-month-stat" class="text-2xl font-bold text-yellow-700">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <input type="text" id="search-input" placeholder="Search by ID, Name, Phone, Location, or Product..." class="flex-grow p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
+                    <input type="date" id="from-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
+                    <input type="date" id="to-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
+                    <button id="search-button" onclick="filterReceipts()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
+                        <i class="fas fa-search mr-2"></i> Search
+                    </button>
+                    <button id="clear-search-button" onclick="clearSearch()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
+                        <i class="fas fa-times mr-2"></i> Clear
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-8 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <div class="flex flex-col md:flex-row gap-4 items-center">
-                <input type="text" id="search-input" placeholder="Search by ID, Name, Phone, Location, or Product..." class="flex-grow p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-                
-                <input type="date" id="from-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-                <input type="date" id="to-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-
-                <button id="search-button" onclick="filterReceipts()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
-                    <i class="fas fa-search mr-2"></i> Search
-                </button>
-                <button id="clear-search-button" onclick="clearSearch()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
-                    <i class="fas fa-times mr-2"></i> Clear
-                </button>
-            </div></div>
-        </div>
-
-        <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200 table-fixed"> <thead class="bg-gray-50">
+        
+        <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 mt-4">
+            <table class="min-w-full divide-y divide-gray-200 table-fixed">
+                <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('customerId')"> ID អតិថិជន <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('customerName')"> ឈ្មោះអតិថិជន <i class="fas fa-sort text-sm ml-1"></i>
-                        </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('phoneNumber')"> លេខទូរស័ព្ទ <i class="fas fa-sort text-sm ml-1"></i>
-                        </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('location')"> ទីតាំង <i class="fas fa-sort text-sm ml-1"></i>
-                        </th> 
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('machineName')"> ឈ្មោះផលិតផល <i class="fas fa-sort text-sm ml-1"></i>
-                        </th>
-                        <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('purchaseDate')"> កាលបរិច្ឆេទទិញ <i class="fas fa-sort text-sm ml-1"></i>
-                        </th>
+                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('customerName')"> ឈ្មោះអតិថិជន <i class="fas fa-sort text-sm ml-1"></i> </th>
+                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('phoneNumber')"> លេខទូរស័ព្ទ <i class="fas fa-sort text-sm ml-1"></i> </th>
+                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('location')"> ទីតាំង <i class="fas fa-sort text-sm ml-1"></i> </th>
+                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('machineName')"> ឈ្មោះផលិតផល <i class="fas fa-sort text-sm ml-1"></i> </th>
+                        <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('purchaseDate')"> កាលបរិច្ឆេទទិញ <i class="fas fa-sort text-sm ml-1"></i> </th>
                         <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font">ផ្សេងៗ</th>
                     </tr>
                 </thead>
                 <tbody id="receipts-body" class="bg-white divide-y divide-gray-200">
-                    </tbody>
+                </tbody>
             </table>
             <p id="no-receipts-message" class="text-center py-6 text-gray-500 text-xl khmer-font" style="display: none;">រកមិនឃើញបង្កាន់ដៃដែលត្រូវគ្នានឹងការស្វែងរករបស់អ្នកទេ។</p>
         </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex justify-between items-center mt-6 bg-white p-4 rounded-lg shadow">
+            <div class="text-sm text-gray-700">
+                Showing <span id="showing-from">0</span> to <span id="showing-to">0</span> of 
+                <span id="total-records">0</span> entries
+            </div>
+            <div class="flex gap-2">
+                <button id="prev-page" class="pagination-btn disabled">
+                    Previous
+                </button>
+                <div id="page-numbers" class="flex gap-1">
+                    <!-- Page numbers will be inserted here -->
+                </div>
+                <button id="next-page" class="pagination-btn disabled">
+                    Next
+                </button>
+            </div>
+            <div>
+                <select id="page-size" class="border rounded p-2">
+                    <option value="10">10 per page</option>
+                    <option value="25">25 per page</option>
+                    <option value="50">50 per page</option>
+                    <option value="100">100 per page</option>
+                </select>
+            </div>
         </div>
+    </div>
 
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-spinner"></div>
@@ -412,32 +454,32 @@
     <div id="editReceiptModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeEditModal()">&times;</span>
-            <h2 class="text-3xl font-bold mb-6 text-gray-800">Edit Receipt</h2>
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 khmer-font">កែប្រែបង្កាន់ដៃ</h2>
             <form id="editReceiptForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 <input type="hidden" id="editReceiptId">
                 <div>
                     <label for="editCustomerId" class="block text-base font-semibold text-gray-700 khmer-font">ID អតិថិជន:</label>
-                    <input type="text" id="editCustomerId" name="customerId" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base">
+                    <input type="text" id="editCustomerId" name="customerId" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
                 </div>
                 <div>
                     <label for="editCustomerName" class="block text-base font-semibold text-gray-700 khmer-font">ឈ្មោះអតិថិជន:</label>
-                    <input type="text" id="editCustomerName" name="customerName" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base">
+                    <input type="text" id="editCustomerName" name="customerName" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
                 </div>
                 <div>
                     <label for="editPhoneNumber" class="block text-base font-semibold text-gray-700 khmer-font">លេខទូរស័ព្ទ:</label>
-                    <input type="text" id="editPhoneNumber" name="phoneNumber" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base">
+                    <input type="text" id="editPhoneNumber" name="phoneNumber" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
                 </div>
                 <div>
                     <label for="editLocation" class="block text-base font-semibold text-gray-700 khmer-font">ទីតាំង:</label>
-                    <input type="text" id="editLocation" name="location" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base">
+                    <input type="text" id="editLocation" name="location" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
                 </div>
                 <div>
                     <label for="editMachineName" class="block text-base font-semibold text-gray-700 khmer-font">ឈ្មោះផលិតផល:</label>
-                    <input type="text" id="editMachineName" name="machineName" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base">
+                    <input type="text" id="editMachineName" name="machineName" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
                 </div>
                 <div>
                     <label for="editPurchaseDate" class="block text-base font-semibold text-gray-700 khmer-font">កាលបរិច្ឆេទទិញ:</label>
-                    <input type="date" id="editPurchaseDate" name="purchaseDate" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base">
+                    <input type="date" id="editPurchaseDate" name="purchaseDate" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
                 </div>
                 <div class="md:col-span-2 mt-4">
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">Save Changes</button>
@@ -448,7 +490,7 @@
 
     <div id="messageBox" class="message-box">
         <i id="messageIcon" class="message-icon"></i>
-        <p id="messageText"></p>
+        <p id="messageText" class="khmer-font"></p>
         <button onclick="hideMessageBox()">OK</button>
     </div>
 
@@ -456,6 +498,12 @@
         // Store current sort column and direction
         let currentSortColumn = 'createdAt'; // Default sort
         let currentSortDirection = 'desc'; // Default direction
+
+        // Pagination variables
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+        let allReceipts = []; // Store all receipts for filtering
 
         // Function to show custom message box
         function showMessageBox(message, type, onConfirm = null) {
@@ -485,11 +533,11 @@
             } else if (type === 'confirm') {
                 messageIcon.classList.add('confirm', 'fas', 'fa-question-circle');
                 okButton.textContent = 'Yes';
-                okButton.classList.add('bg-green-600', 'hover:bg-green-700'); // Green for 'Yes'
+                okButton.classList.add('bg-green-600', 'hover:bg-green-700', 'khmer-font'); // Green for 'Yes'
 
                 const cancelButton = document.createElement('button');
                 cancelButton.textContent = 'No';
-                cancelButton.className = 'ml-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1';
+                cancelButton.classList.add('ml-2', 'bg-gray-500', 'hover:bg-gray-600', 'text-white', 'font-semibold', 'py-3', 'px-6', 'rounded-xl', 'shadow-md', 'transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'khmer-font');
                 cancelButton.onclick = () => {
                     hideMessageBox();
                     if (onConfirm) onConfirm(false);
@@ -580,35 +628,85 @@
                 sortIcon.className = `fas fa-sort-${currentSortDirection} text-sm ml-1`;
             }
 
-            // Perform sorting
-            allReceipts.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
-
-                // Special handling for dates if they are in ISO format (from server)
-                if (column === 'purchaseDate') {
-                    valA = new Date(valA); 
-                    valB = new Date(valB);
-                }
-                
-                // Handle numeric comparison for customerId (if it's numeric)
-                else if (column === 'customerId') {
-                    valA = parseInt(valA, 10);
-                    valB = parseInt(valB, 10);
-                } else {
-                    // Default to string comparison for other fields
-                    valA = String(valA).toLowerCase();
-                    valB = String(valB).toLowerCase();
-                }
-
-                if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
-                if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
-                return 0;
-            });
-
             filterReceipts(); // Re-filter and display sorted data
         }
 
+        // Initialize pagination
+        function initPagination() {
+            document.getElementById('page-size').addEventListener('change', function(e) {
+                pageSize = parseInt(e.target.value);
+                currentPage = 1;
+                filterReceipts();
+            });
+
+            document.getElementById('prev-page').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    filterReceipts();
+                }
+            });
+
+            document.getElementById('next-page').addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    filterReceipts();
+                }
+            });
+        }
+
+        // Update pagination controls
+        function updatePagination(totalRecords) {
+            totalPages = Math.ceil(totalRecords / pageSize);
+            
+            // Update showing text
+            const from = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+            const to = Math.min(currentPage * pageSize, totalRecords);
+            
+            document.getElementById('showing-from').textContent = from;
+            document.getElementById('showing-to').textContent = to;
+            document.getElementById('total-records').textContent = totalRecords;
+            
+            // Update page buttons
+            updatePageNumbers();
+            
+            // Update prev/next buttons
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
+            
+            // Add disabled class based on state
+            document.getElementById('prev-page').className = currentPage === 1 ? 
+                'pagination-btn disabled' : 'pagination-btn';
+            document.getElementById('next-page').className = (currentPage === totalPages || totalPages === 0) ? 
+                'pagination-btn disabled' : 'pagination-btn';
+        }
+
+        // Update page number buttons
+        function updatePageNumbers() {
+            const pageNumbers = document.getElementById('page-numbers');
+            pageNumbers.innerHTML = '';
+            
+            if (totalPages === 0) return;
+            
+            // Show max 5 page numbers
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = i === currentPage ? 
+                    'pagination-btn active' : 'pagination-btn';
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    filterReceipts();
+                });
+                pageNumbers.appendChild(pageBtn);
+            }
+        }
 
         // Authentication check on page load
         document.addEventListener("DOMContentLoaded", () => {
@@ -617,6 +715,7 @@
                 .then(data => {
                     if (data.authenticated) {
                         document.getElementById('admin-panel').style.display = 'block';
+                        initPagination();
                         loadReceipts();
                     } else {
                         window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
@@ -638,22 +737,25 @@
             setTimeout(() => {
                 loadReceipts();
                 loadingOverlay.style.display = 'none';
-            }, 2000);
+            }, 1000);
         }
 
-        let allReceipts = []; // Store all receipts for filtering
-
         function loadReceipts() {
+            console.log('Loading receipts from API...');
             fetch("/api/receipts")
                 .then(res => {
                     if (res.status === 401) {
                         window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
                         return;
                     }
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch receipts');
+                    }
                     return res.json();
                 })
                 .then(data => {
                     if (!data) return;
+                    console.log('Receipts loaded:', data.length);
                     allReceipts = data; // Store all fetched receipts
                     filterReceipts(); // Apply filters and display
                 })
@@ -708,11 +810,17 @@
                 return 0;
             });
 
-            displayReceipts(tempFilteredReceipts); // Display all filtered/sorted receipts directly
-            updateDashboardStats(tempFilteredReceipts); // Update dashboard stats based on filtered data
+            // Apply pagination
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedReceipts = tempFilteredReceipts.slice(startIndex, endIndex);
+
+            displayReceipts(paginatedReceipts);
+            updateDashboardStats(tempFilteredReceipts); // Use full filtered set for stats
+            updatePagination(tempFilteredReceipts.length); // Pass total filtered count
         }
 
-        function displayReceipts(receiptsToDisplay) { // Modified to take all filtered receipts
+        function displayReceipts(receiptsToDisplay) {
             const body = document.getElementById("receipts-body");
             body.innerHTML = "";
             const noReceiptsMessage = document.getElementById('no-receipts-message');
@@ -785,11 +893,13 @@
             document.getElementById('to-date-input').value = '';
             currentSortColumn = 'createdAt'; // Reset sort
             currentSortDirection = 'desc'; // Reset sort direction
+            currentPage = 1; // Reset to first page
+            
             // Reset all sort icons
             document.querySelectorAll('th i.fas.fa-sort-up, th i.fas.fa-sort-down').forEach(icon => {
                 icon.className = 'fas fa-sort text-sm ml-1';
             });
-            loadReceipts(); // Reload all receipts and apply default sort/filter
+            filterReceipts(); // Re-filter with cleared search
         }
 
         function deleteReceipt(id) {
@@ -798,14 +908,14 @@
                     try {
                         const res = await fetch(`/api/receipts/${id}`, { method: "DELETE" });
                         if (res.ok) {
-                            showMessageBox(" លុបដោយជោគជ័យ!", "success");
+                            showMessageBox("លុបដោយជោគជ័យ!", "success");
                             loadReceipts();
                         } else {
                             showMessageBox("បរាជ័យក្នុងការលុប!", "error");
                         }
                     } catch (err) {
                         console.error(err);
-                        showMessageBox("❌ An error occurred while deleting the receipt!", "error");
+                        showMessageBox("An error occurred while deleting the receipt!", "error");
                     }
                 }
             });
@@ -813,8 +923,7 @@
 
         // Function to export all receipts to CSV
         function exportToCsv() {
-            // Use the currently displayed (filtered and sorted) receipts for export
-            const receiptsToExport = receiptsToDisplay.map(receipt => { // Changed to receiptsToDisplay
+            const receiptsToExport = allReceipts.map(receipt => {
                 return {
                     customerId: receipt.customerId,
                     customerName: receipt.customerName,
@@ -836,7 +945,7 @@
             ];
 
             const rows = receiptsToExport.map(receipt => [
-                `"${receipt.customerId}"`, // Enclose in quotes to handle leading zeros and commas
+                `"${receipt.customerId}"`,
                 `"${receipt.customerName}"`,
                 `"${receipt.phoneNumber}"`,
                 `"${receipt.location || ""}"`,
@@ -849,7 +958,7 @@
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
-            if (link.download !== undefined) { // Feature detection for download attribute
+            if (link.download !== undefined) {
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
                 link.setAttribute("download", "receipts_export.csv");
@@ -857,9 +966,9 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                showMessageBox(" Data exported to CSV successfully!", "success");
+                showMessageBox("Data exported to CSV successfully!", "success");
             } else {
-                showMessageBox("❌ Your browser does not support downloading files directly.", "error");
+                showMessageBox("Your browser does not support downloading files directly.", "error");
             }
         }
 
@@ -872,29 +981,24 @@
 
             const container = document.createElement('div');
             container.className = 'receipt-content p-8 bg-white rounded-lg shadow-xl max-w-md mx-auto';
-            container.style.fontFamily = 'Inter, sans-serif'; /* Default English font */
+            container.style.fontFamily = 'Inter, sans-serif';
             container.style.fontSize = '16px';
             container.style.lineHeight = '1.75';
             container.style.color = '#333';
 
-            // Find the receipt data in allReceipts (or receiptsToDisplay)
-            // Use a local copy of receiptsToDisplay directly or re-filter
             const currentReceiptsInTable = Array.from(document.getElementById('receipts-body').children).map(row => {
-                 // Reconstruct a simplified object from the row's displayed content
                  return {
                     _id: row.id.replace('receipt-', ''),
                     customerId: row.cells[0].textContent,
                     customerName: row.cells[1].textContent,
-                    // Use innerHTML for phone number to get <br>
                     phoneNumber: row.cells[2].innerHTML,
                     location: row.cells[3].textContent,
                     machineName: row.cells[4].textContent,
-                    purchaseDate: row.cells[5].textContent // DD/MM/YYYY
+                    purchaseDate: row.cells[5].textContent
                  };
             });
             const receiptDataForDownload = currentReceiptsInTable.find(r => r._id === id);
             
-            // Format phone number for download content if it contains <br>
             const phoneNumberForDownloadDisplay = receiptDataForDownload ? receiptDataForDownload.phoneNumber : row.cells[2].innerHTML;
 
             container.innerHTML = `
@@ -919,23 +1023,22 @@
                 <p class="text-center text-gray-700 font-medium text-lg khmer-font">Thank you for your purchase!</p>
             `;
 
-            // Append to body temporarily for html2canvas
             document.body.appendChild(container);
             
             html2canvas(container, {
-                scale: 2, // Increase scale for better quality
-                useCORS: true // Important if images are from different origin
+                scale: 2,
+                useCORS: true
             }).then(canvas => {
                 const image = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.href = image;
                 link.download = `receipt-${id}.png`;
                 link.click();
-                document.body.removeChild(container); // Remove container after download
+                document.body.removeChild(container);
             }).catch(error => {
                 console.error("Error generating image for download:", error);
                 showMessageBox("Failed to generate receipt image for download.", "error");
-                document.body.removeChild(container); // Ensure container is removed on error too
+                document.body.removeChild(container);
             });
         }
 
@@ -945,12 +1048,11 @@
             document.getElementById('editCustomerName').value = customerName;
             document.getElementById('editPhoneNumber').value = phoneNumber;
             document.getElementById('editLocation').value = location;
-            // Format date for input type="date" (YYYY-MM-DD)
             const formattedDate = purchaseDate.split('/').reverse().join('-');
             document.getElementById('editPurchaseDate').value = formattedDate;
             document.getElementById('editMachineName').value = machineName;
             
-            document.getElementById('editReceiptModal').style.display = 'flex'; // Use flex to center modal
+            document.getElementById('editReceiptModal').style.display = 'flex';
         }
 
         function closeEditModal() {
@@ -966,7 +1068,7 @@
                 phoneNumber: document.getElementById('editPhoneNumber').value,
                 location: document.getElementById('editLocation').value,
                 machineName: document.getElementById('editMachineName').value,
-                purchaseDate: document.getElementById('editPurchaseDate').value, // This is alreadyYYYY-MM-DD
+                purchaseDate: document.getElementById('editPurchaseDate').value,
             };
 
             fetch(`/api/receipts/${id}`, {
@@ -978,16 +1080,16 @@
             })
             .then(response => {
                 if (response.ok) {
-                    showMessageBox(' Receipt updated successfully!', "success");
+                    showMessageBox('Receipt updated successfully!', "success");
                     closeEditModal();
-                    loadReceipts(); // Refresh the table
+                    loadReceipts();
                 } else {
-                    showMessageBox('❌ Failed to update receipt.', "error");
+                    showMessageBox('Failed to update receipt.', "error");
                 }
             })
             .catch(error => {
                 console.error('Error updating receipt:', error);
-                showMessageBox('❌ An error occurred while updating the receipt.', "error");
+                showMessageBox('An error occurred while updating the receipt.', "error");
             });
         });
 
@@ -998,7 +1100,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = '/login.html'; // Redirect to login page after logout
+                    window.location.href = '/login.html';
                 } else {
                     showMessageBox('Failed to logout.', "error");
                 }

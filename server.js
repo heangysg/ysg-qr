@@ -334,6 +334,7 @@ app.get('/api/next-customer-id', requireAdminAuth, async (req, res) => {
 });
 
 // NEW ROUTE: Save QR code image to Cloudinary
+// Save QR code image to Cloudinary (PNG, resized 200x200)
 app.post('/api/save-qr-code', requireAdminAuth, async (req, res) => {
     const { imageData, fileName } = req.body;
 
@@ -342,20 +343,28 @@ app.post('/api/save-qr-code', requireAdminAuth, async (req, res) => {
     }
 
     try {
-        // Upload image to Cloudinary
+        // Upload as PNG with resize 200x200
         const uploadResult = await cloudinary.uploader.upload(imageData, {
-            folder: 'qr_codes', // Optional: specify a folder in Cloudinary
-            public_id: fileName.replace('.png', ''), // Use filename (without .png) as public_id
-            overwrite: true // Overwrite if an image with the same public_id exists
+            folder: 'qr_codes',
+            public_id: fileName.replace('.png', ''), 
+            overwrite: true,
+            format: 'png', // Keep PNG format
+            transformation: [
+                { width: 200, height: 200, crop: "scale" } // Resize to 200x200
+            ]
         });
 
-        console.log(`QR code image uploaded to Cloudinary: ${uploadResult.secure_url}`);
-        res.status(200).json({ message: 'QR code image saved successfully!', imageUrl: uploadResult.secure_url });
+        console.log(`✅ QR code saved to Cloudinary: ${uploadResult.secure_url}`);
+        res.status(200).json({ 
+            message: 'QR code saved successfully!', 
+            imageUrl: uploadResult.secure_url 
+        });
     } catch (err) {
-        console.error('Error uploading QR code image to Cloudinary:', err);
-        res.status(500).json({ message: 'Failed to save QR code image to Cloudinary.', error: err.message });
+        console.error('❌ Error uploading QR to Cloudinary:', err);
+        res.status(500).json({ message: 'Failed to save QR code', error: err.message });
     }
 });
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI) // Ensure this uses process.env.MONGODB_URI

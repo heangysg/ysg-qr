@@ -25,7 +25,7 @@ if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD || !process.env.P
 // ========================
 // SECURITY MIDDLEWARE
 // ========================
-
+app.set('trust proxy', 1);
 // Helmet for general security headers
 app.use(helmet({
     contentSecurityPolicy: {
@@ -50,10 +50,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rate limiting
+// Rate limiting - INCREASED FOR BETTER USER EXPERIENCE
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 200, // Increased from 100 to 200 requests per 15 minutes
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -76,19 +76,18 @@ cloudinary.config({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session middleware setup - UPDATED FOR SECURITY
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        sameSite: 'strict', // Changed from 'lax' to 'strict'
-        secure: process.env.NODE_ENV === 'production', // true in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000
     },
-    name: 'ysgSession', // Custom session name
-    rolling: true // Refresh session on activity
+    name: 'ysgSession',
+    rolling: true
 }));
 
 // Serve static files from the 'public' directory, but protect them
@@ -160,10 +159,9 @@ app.get('/', (req, res) => {
 
 // --- Login API Endpoints ---
 
-// Rate limiting for login endpoints
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 login attempts per IP per 15 minutes
+  max: 10, // Increased from 5 to 10 login attempts
   message: 'Too many login attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,

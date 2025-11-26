@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <style>
-        /* Basic styling for the login page */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f2f5;
@@ -40,9 +39,8 @@
             margin-bottom: 20px;
         }
         .input-group input {
-            /* Adjusted padding to make space for the icon inside */
-            width: 100%; /* Make input full width of its parent */
-            padding: 12px 15px 12px 40px; /* Left padding for icon */
+            width: 100%;
+            padding: 12px 15px 12px 40px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1rem;
@@ -56,12 +54,12 @@
         }
         .input-icon {
             position: absolute;
-            left: 15px; /* Position icon inside the input field */
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: #888;
             font-size: 1rem;
-            pointer-events: none; /* Ensure icon doesn't block input clicks */
+            pointer-events: none;
         }
         .toggle-password {
             position: absolute;
@@ -97,30 +95,12 @@
             transform: translateY(0);
             box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
         }
-        .forgot-password {
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-        .forgot-password a {
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        .forgot-password a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-        .forgot-password .fab {
-            margin-right: 5px;
-        }
         .error-message {
             color: #dc3545;
             margin-top: 10px;
             font-size: 0.9rem;
-            display: none; /* Hidden by default */
+            display: none;
         }
-
-        /* Responsive adjustments */
         @media (max-width: 480px) {
             .login-container {
                 padding: 20px;
@@ -137,7 +117,7 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>YSG Admin Login</h2>
         <form id="login-form">
             <div class="input-group">
                 <span class="input-icon"><i class="fas fa-user"></i></span>
@@ -146,22 +126,18 @@
             <div class="input-group">
                 <span class="input-icon"><i class="fas fa-lock"></i></span>
                 <input type="password" id="password" name="password" placeholder="Password" required />
-                <span class="toggle-password" onclick="togglePassword()">
+                <span class="toggle-password">
                     <i id="eye-icon" class="fas fa-eye"></i>
                 </span>
             </div>
             <p id="error-message" class="error-message">Invalid username or password.</p>
             <button type="submit">Login</button>
-            <div class="forgot-password">
-                <a href="https://t.me/Emma_Heang" target="_blank">
-                    <i class="fab fa-telegram"></i> Forgot password? Contact me!
-                </a>
-            </div>
         </form>
     </div>
 
     <script>
-        function togglePassword() {
+        // Password toggle
+        document.querySelector('.toggle-password').addEventListener('click', function() {
             const passwordInput = document.getElementById("password");
             const eyeIcon = document.getElementById("eye-icon");
 
@@ -174,17 +150,19 @@
                 eyeIcon.classList.remove("fa-eye-slash");
                 eyeIcon.classList.add("fa-eye");
             }
-        }
+        });
 
+        // Login form submission
         document.getElementById('login-form').addEventListener('submit', async function(event) {
             event.preventDefault();
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('error-message');
 
-            // Get the redirect URL from the query parameter
+            // Get redirect URL
             const urlParams = new URLSearchParams(window.location.search);
-            const redirect = urlParams.get('redirect') || '/index.html'; // Default to index.html
+            const redirect = urlParams.get('redirect') || '/index.html';
 
             try {
                 const response = await fetch('/login', {
@@ -198,7 +176,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    window.location.href = data.redirectUrl; // Redirect to the intended page
+                    window.location.href = data.redirectUrl;
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     errorMessage.style.display = 'block';

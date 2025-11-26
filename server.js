@@ -27,28 +27,26 @@ if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD || !process.env.P
 // ========================
 
 // Helmet for general security headers
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://cdnjs.cloudflare.com/ajax/libs/"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://cdnjs.cloudflare.com/ajax/libs/", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com/ajax/libs/"],
+            imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'"]
+        }
+    },
+    crossOriginEmbedderPolicy: false
+}));
 
 // Custom security headers
 app.use((req, res, next) => {
-  // Prevent clickjacking
   res.setHeader('X-Frame-Options', 'DENY');
-  // Prevent MIME type sniffing
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  // Basic XSS protection
   res.setHeader('X-XSS-Protection', '1; mode=block');
-  // Referrer policy
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  // Content Security Policy - RESTRICTIVE
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; " +
-    "script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com/ajax/libs/ https://cdn.jsdelivr.net; " +
-    "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com/ajax/libs/ https://fonts.googleapis.com; " +
-    "font-src 'self' https://fonts.gstatic.com; " +
-    "img-src 'self' data: https:; " +
-    "connect-src 'self';"
-  );
   next();
 });
 
@@ -174,6 +172,12 @@ const loginLimiter = rateLimit({
 // Main login for admin and index pages
 app.post('/login', loginLimiter, (req, res) => {
     const { username, password, redirect } = req.body;
+    
+    // Validate input
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Username and password are required' });
+    }
+
     if (
         username === process.env.ADMIN_USERNAME &&
         password === process.env.ADMIN_PASSWORD
@@ -188,6 +192,11 @@ app.post('/login', loginLimiter, (req, res) => {
 // Product detail login
 app.post('/product-login', loginLimiter, (req, res) => {
     const { password, customerId } = req.body;
+    
+    if (!password) {
+        return res.status(400).json({ success: false, message: 'Password is required' });
+    }
+
     if (password === process.env.PRODUCT_PASSWORD) {
         req.session.productAuthenticated = true;
         return res.json({ success: true, redirectUrl: `/product.html?customerId=${customerId}` });
@@ -256,6 +265,11 @@ app.get('/api/receipts/by-id/:id', requireProductAuth, async (req, res) => {
 app.post('/api/receipts', requireAdminAuth, async (req, res) => {
     try {
         const { customerName, phoneNumber, location, machineName, purchaseDate } = req.body;
+
+        // Validate required fields
+        if (!customerName || !phoneNumber || !machineName || !purchaseDate) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
 
         const latestReceipt = await Receipt.findOne().sort({ customerId: -1 });
         let nextIdNumber = 1;

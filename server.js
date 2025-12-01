@@ -236,6 +236,8 @@ app.get('/check-product-auth', (req, res) => {
 // NEW: Search receipt by either MongoDB _id OR customerId (like "00001")
 app.get('/api/receipts/by-id/:id', requireProductAuth, async (req, res) => {
     const { id } = req.params;
+      
+
 
     try {
         let receipt;

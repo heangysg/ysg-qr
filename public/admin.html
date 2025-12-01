@@ -127,7 +127,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 10;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
@@ -147,17 +147,20 @@
             max-width: 600px; /* Wider modal */
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Stronger shadow */
             position: relative;
+            z-index: 1001;
         }
 
         .close-button {
             color: #aaa;
-            position: absolute; /* Absolute positioning for close button */
+            position: absolute;
             top: 1rem;
             right: 1.5rem;
-            font-size: 2rem; /* Larger close button */
+            font-size: 2rem;
             font-weight: bold;
             cursor: pointer;
             transition: color 0.2s ease;
+            z-index: 1002;
+            pointer-events: auto;
         }
 
         .close-button:hover,
@@ -168,33 +171,33 @@
         .modal-content h2 {
             margin-top: 0;
             color: #333;
-            font-size: 2rem; /* Larger heading */
+            font-size: 2rem;
             margin-bottom: 1.5rem;
         }
 
         .modal-content label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 600; /* Bolder labels */
-            color: #4a5568; /* Darker gray for labels */
-            font-size: 1.1rem; /* Increased label font size */
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 1.1rem;
         }
 
         .modal-content input[type="text"],
         .modal-content input[type="date"] {
-            width: 100%; /* Full width */
-            padding: 0.75rem; /* More padding */
-            margin-bottom: 1rem; /* Consistent margin */
-            border: 1px solid #cbd5e0; /* Lighter border */
-            border-radius: 0.5rem; /* Rounded inputs */
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            font-size: 1rem; /* Increased input font size */
+            font-size: 1rem;
         }
         .modal-content input[type="text"]:focus,
         .modal-content input[type="date"]:focus {
-            border-color: #4299e1; /* Blue focus ring */
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow */
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
             outline: none;
         }
 
@@ -222,21 +225,21 @@
 
         /* Header and Nav styles - Using your exact color #002d5d */
         header {
-            background-color: #002d5d; /* Your specified main color */
-            padding: 1rem 2rem; /* Increased horizontal padding */
+            background-color: #002d5d;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         header .logo img {
-            height: 60px; /* Slightly larger logo */
+            height: 60px;
         }
 
         header nav ul {
             display: flex;
-            gap: 2rem; /* More space between nav items */
+            gap: 2rem;
             list-style: none;
             margin: 0;
             padding: 0;
@@ -247,58 +250,57 @@
         header nav ul li button {
             color: white;
             text-decoration: none;
-            font-weight: bold; /* Made bold */
-            font-size: 1.15rem; /* Slightly larger for clarity on desktop */
+            font-weight: bold;
+            font-size: 1.15rem;
             transition: color 0.2s ease;
         }
 
         header nav ul li a:hover,
         header nav ul li button:hover {
-            color: #a0aec0; /* Lighter gray on hover */
+            color: #a0aec0;
         }
 
         .hamburger {
-            display: none; /* Hidden on larger screens */
+            display: none;
             cursor: pointer;
             flex-direction: column;
-            gap: 6px; /* More space between bars */
+            gap: 6px;
         }
 
         .hamburger .bar {
-            width: 30px; /* Wider bars */
-            height: 4px; /* Thicker bars */
+            width: 30px;
+            height: 4px;
             background-color: white;
             border-radius: 2px;
         }
 
         @media (max-width: 768px) {
             header {
-                padding: 1rem; /* Adjust padding for smaller screens */
+                padding: 1rem;
             }
             header nav ul {
                 display: none;
                 flex-direction: column;
                 position: absolute;
-                top: 80px; /* Adjust based on header height */
+                top: 80px;
                 left: 0;
                 width: 100%;
-                background-color: #002d5d; /* Your specified main color */
+                background-color: #002d5d;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 padding: 1rem 0;
                 text-align: center;
             }
 
-            header nav ul.flex { /* Use flex for active state */
+            header nav ul.flex {
                 display: flex;
             }
 
             header nav ul li {
-                margin: 0.75rem 0; /* More vertical space */
+                margin: 0.75rem 0;
             }
-            /* Adjust navbar text size for mobile */
             header nav ul li a,
             header nav ul li button {
-                font-size: 1rem; /* Smaller font for mobile nav */
+                font-size: 1rem;
             }
 
             .hamburger {
@@ -390,10 +392,10 @@
                     <input type="text" id="search-input" placeholder="Search by ID, Name, Phone, Location, or Product..." class="flex-grow p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
                     <input type="date" id="from-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
                     <input type="date" id="to-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-                    <button id="search-button" onclick="filterReceipts()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
+                    <button id="search-button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
                         <i class="fas fa-search mr-2"></i> Search
                     </button>
-                    <button id="clear-search-button" onclick="clearSearch()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
+                    <button id="clear-search-button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
                         <i class="fas fa-times mr-2"></i> Clear
                     </button>
                 </div>
@@ -453,7 +455,7 @@
 
     <div id="editReceiptModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeEditModal()">&times;</span>
+            <span class="close-button" id="closeModalButton">&times;</span>
             <h2 class="text-3xl font-bold mb-6 text-gray-800 khmer-font">កែប្រែបង្កាន់ដៃ</h2>
             <form id="editReceiptForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 <input type="hidden" id="editReceiptId">
@@ -496,16 +498,26 @@
 
     <script>
         // Store current sort column and direction
-        let currentSortColumn = 'createdAt'; // Default sort
-        let currentSortDirection = 'desc'; // Default direction
+        let currentSortColumn = 'createdAt';
+        let currentSortDirection = 'desc';
 
         // Pagination variables
         let currentPage = 1;
         let pageSize = 10;
         let totalPages = 1;
-        let allReceipts = []; // Store all receipts for filtering
+        let allReceipts = [];
 
-        // Function to show custom message box
+        // ========== MODAL FUNCTIONS ==========
+        function closeModal() {
+            console.log('Closing modal...');
+            document.getElementById('editReceiptModal').style.display = 'none';
+        }
+
+        function closeEditModal() {
+            closeModal();
+        }
+
+        // ========== MESSAGE BOX FUNCTIONS ==========
         function showMessageBox(message, type, onConfirm = null) {
             const messageBox = document.getElementById('messageBox');
             const messageIcon = document.getElementById('messageIcon');
@@ -513,12 +525,11 @@
             const okButton = messageBox.querySelector('button');
 
             messageText.textContent = message;
-            messageIcon.className = 'message-icon'; // Reset classes
-            okButton.classList.remove('ml-2', 'bg-gray-500', 'hover:bg-gray-600', 'bg-green-600', 'hover:bg-green-700', 'bg-red-600', 'hover:bg-red-700', 'bg-blue-600', 'hover:bg-blue-700'); // Clean up old confirm/success/error styles
-            okButton.textContent = 'OK'; // Default button text
-            okButton.onclick = hideMessageBox; // Default action
+            messageIcon.className = 'message-icon';
+            okButton.classList.remove('ml-2', 'bg-gray-500', 'hover:bg-gray-600', 'bg-green-600', 'hover:bg-green-700', 'bg-red-600', 'hover:bg-red-700', 'bg-blue-600', 'hover:bg-blue-700');
+            okButton.textContent = 'OK';
+            okButton.onclick = hideMessageBox;
 
-            // Remove any previously added 'No' button
             const existingCancelButton = okButton.parentNode.querySelector('.ml-2');
             if (existingCancelButton) {
                 existingCancelButton.remove();
@@ -533,7 +544,7 @@
             } else if (type === 'confirm') {
                 messageIcon.classList.add('confirm', 'fas', 'fa-question-circle');
                 okButton.textContent = 'Yes';
-                okButton.classList.add('bg-green-600', 'hover:bg-green-700', 'khmer-font'); // Green for 'Yes'
+                okButton.classList.add('bg-green-600', 'hover:bg-green-700', 'khmer-font');
 
                 const cancelButton = document.createElement('button');
                 cancelButton.textContent = 'No';
@@ -542,7 +553,7 @@
                     hideMessageBox();
                     if (onConfirm) onConfirm(false);
                 };
-                okButton.parentNode.appendChild(cancelButton); // Add 'No' button next to 'Yes'
+                okButton.parentNode.appendChild(cancelButton);
 
                 okButton.onclick = () => {
                     hideMessageBox();
@@ -552,17 +563,16 @@
             messageBox.style.display = 'block';
         }
 
-        // Function to hide custom message box
         function hideMessageBox() {
             const messageBox = document.getElementById('messageBox');
             messageBox.style.display = 'none';
-            // Clean up extra buttons if they exist (for 'confirm' type)
             const okButton = messageBox.querySelector('button');
             if (okButton && okButton.nextSibling && okButton.nextSibling.tagName === 'BUTTON') {
                 okButton.nextSibling.remove();
             }
         }
 
+        // ========== UTILITY FUNCTIONS ==========
         function toggleMenu() {
             document.getElementById("nav-links").classList.toggle("hidden");
             document.getElementById("nav-links").classList.toggle("flex");
@@ -571,19 +581,18 @@
         function formatDate(dateString) {
             if (!dateString) return "-";
             const date = new Date(dateString);
-            if (isNaN(date.getTime())) return "-"; // Handle invalid dates
+            if (isNaN(date.getTime())) return "-";
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         }
 
-        // Function to update dashboard statistics
         function updateDashboardStats(receipts) {
             document.getElementById('total-receipts-stat').textContent = receipts.length;
 
             const today = new Date();
-            today.setHours(0, 0, 0, 0); // Set to start of today
+            today.setHours(0, 0, 0, 0);
 
             const currentMonth = today.getMonth();
             const currentYear = today.getFullYear();
@@ -593,7 +602,7 @@
 
             receipts.forEach(receipt => {
                 const purchaseDate = new Date(receipt.purchaseDate);
-                purchaseDate.setHours(0, 0, 0, 0); // Set to start of day
+                purchaseDate.setHours(0, 0, 0, 0);
 
                 if (purchaseDate.getTime() === today.getTime()) {
                     receiptsToday++;
@@ -608,7 +617,7 @@
             document.getElementById('receipts-this-month-stat').textContent = receiptsThisMonth;
         }
 
-        // Function to sort receipts
+        // ========== SORTING FUNCTIONS ==========
         function sortReceipts(column) {
             if (currentSortColumn === column) {
                 currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
@@ -617,21 +626,19 @@
                 currentSortDirection = 'asc';
             }
 
-            // Reset all sort icons
             document.querySelectorAll('th i.fas.fa-sort, th i.fas.fa-sort-up, th i.fas.fa-sort-down').forEach(icon => {
                 icon.className = 'fas fa-sort text-sm ml-1';
             });
 
-            // Update current column's sort icon
             const sortIcon = document.querySelector(`th[onclick="sortReceipts('${column}')"] i`);
             if (sortIcon) {
                 sortIcon.className = `fas fa-sort-${currentSortDirection} text-sm ml-1`;
             }
 
-            filterReceipts(); // Re-filter and display sorted data
+            filterReceipts();
         }
 
-        // Initialize pagination
+        // ========== PAGINATION FUNCTIONS ==========
         function initPagination() {
             document.getElementById('page-size').addEventListener('change', function(e) {
                 pageSize = parseInt(e.target.value);
@@ -654,11 +661,9 @@
             });
         }
 
-        // Update pagination controls
         function updatePagination(totalRecords) {
             totalPages = Math.ceil(totalRecords / pageSize);
             
-            // Update showing text
             const from = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
             const to = Math.min(currentPage * pageSize, totalRecords);
             
@@ -666,28 +671,23 @@
             document.getElementById('showing-to').textContent = to;
             document.getElementById('total-records').textContent = totalRecords;
             
-            // Update page buttons
             updatePageNumbers();
             
-            // Update prev/next buttons
             document.getElementById('prev-page').disabled = currentPage === 1;
             document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
             
-            // Add disabled class based on state
             document.getElementById('prev-page').className = currentPage === 1 ? 
                 'pagination-btn disabled' : 'pagination-btn';
             document.getElementById('next-page').className = (currentPage === totalPages || totalPages === 0) ? 
                 'pagination-btn disabled' : 'pagination-btn';
         }
 
-        // Update page number buttons
         function updatePageNumbers() {
             const pageNumbers = document.getElementById('page-numbers');
             pageNumbers.innerHTML = '';
             
             if (totalPages === 0) return;
             
-            // Show max 5 page numbers
             let startPage = Math.max(1, currentPage - 2);
             let endPage = Math.min(totalPages, startPage + 4);
             
@@ -708,101 +708,61 @@
             }
         }
 
-        // Authentication check on page load
-        document.addEventListener("DOMContentLoaded", () => {
-            fetch('/check-admin-auth')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.authenticated) {
-                        document.getElementById('admin-panel').style.display = 'block';
-                        initPagination();
-                        loadReceipts();
-                    } else {
-                        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking authentication:', error);
-                    window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-                });
-
-            // Attach event listener to the logout button in the navigation bar
-            document.getElementById('logout-btn-nav').addEventListener('click', logout);
-        });
-
-        function refreshReceipts() {
-            const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.style.display = 'flex';
-
-            setTimeout(() => {
-                loadReceipts();
-                loadingOverlay.style.display = 'none';
-            }, 1000);
-        }
-
-        function loadReceipts() {
-            console.log('Loading receipts from API...');
-            fetch("/api/receipts")
-                .then(res => {
-                    if (res.status === 401) {
-                        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-                        return;
-                    }
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch receipts');
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    if (!data) return;
-                    console.log('Receipts loaded:', data.length);
-                    allReceipts = data; // Store all fetched receipts
-                    filterReceipts(); // Apply filters and display
-                })
-                .catch(err => {
-                    console.error("Error loading receipts:", err);
-                    showMessageBox("Error loading receipts. Please try again.", "error");
-                });
-        }
-
+        // ========== SEARCH AND FILTER FUNCTIONS ==========
         function filterReceipts() {
+            console.log('Filtering receipts...');
+            
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             const fromDateStr = document.getElementById('from-date-input').value;
             const toDateStr = document.getElementById('to-date-input').value;
 
             const fromDate = fromDateStr ? new Date(fromDateStr) : null;
             const toDate = toDateStr ? new Date(toDateStr) : null;
+            
+            console.log('Search term:', searchTerm);
+            console.log('From date:', fromDate);
+            console.log('To date:', toDate);
 
             let tempFilteredReceipts = allReceipts.filter(receipt => {
-                const matchesSearch =
-                    receipt.customerId.toLowerCase().includes(searchTerm) ||
-                    receipt.customerName.toLowerCase().includes(searchTerm) ||
-                    receipt.phoneNumber.toLowerCase().includes(searchTerm) ||
+                const matchesSearch = !searchTerm || 
+                    (receipt.customerId && receipt.customerId.toLowerCase().includes(searchTerm)) ||
+                    (receipt.customerName && receipt.customerName.toLowerCase().includes(searchTerm)) ||
+                    (receipt.phoneNumber && receipt.phoneNumber.toLowerCase().includes(searchTerm)) ||
                     (receipt.location && receipt.location.toLowerCase().includes(searchTerm)) ||
-                    receipt.machineName.toLowerCase().includes(searchTerm);
+                    (receipt.machineName && receipt.machineName.toLowerCase().includes(searchTerm));
 
-                const purchaseDate = new Date(receipt.purchaseDate); 
-                const matchesDate =
-                    (!fromDate || purchaseDate >= fromDate) &&
-                    (!toDate || purchaseDate <= toDate);
+                let matchesDate = true;
+                if (fromDate || toDate) {
+                    const purchaseDate = new Date(receipt.purchaseDate);
+                    purchaseDate.setHours(0, 0, 0, 0);
+                    
+                    if (fromDate && toDate) {
+                        matchesDate = purchaseDate >= fromDate && purchaseDate <= toDate;
+                    } else if (fromDate) {
+                        matchesDate = purchaseDate >= fromDate;
+                    } else if (toDate) {
+                        matchesDate = purchaseDate <= toDate;
+                    }
+                }
 
                 return matchesSearch && matchesDate;
             });
 
-            // Apply sorting to the filtered results
+            console.log('Filtered results:', tempFilteredReceipts.length);
+
             tempFilteredReceipts.sort((a, b) => {
                 let valA = a[currentSortColumn];
                 let valB = b[currentSortColumn];
 
-                if (currentSortColumn === 'purchaseDate') {
+                if (currentSortColumn === 'purchaseDate' || currentSortColumn === 'createdAt') {
                     valA = new Date(valA);
                     valB = new Date(valB);
                 } else if (currentSortColumn === 'customerId') {
-                    valA = parseInt(valA, 10);
-                    valB = parseInt(valB, 10);
+                    valA = parseInt(valA, 10) || 0;
+                    valB = parseInt(valB, 10) || 0;
                 } else {
-                    valA = String(valA).toLowerCase();
-                    valB = String(valB).toLowerCase();
+                    valA = String(valA || '').toLowerCase();
+                    valB = String(valB || '').toLowerCase();
                 }
 
                 if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
@@ -810,16 +770,31 @@
                 return 0;
             });
 
-            // Apply pagination
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = startIndex + pageSize;
             const paginatedReceipts = tempFilteredReceipts.slice(startIndex, endIndex);
 
             displayReceipts(paginatedReceipts);
-            updateDashboardStats(tempFilteredReceipts); // Use full filtered set for stats
-            updatePagination(tempFilteredReceipts.length); // Pass total filtered count
+            updateDashboardStats(tempFilteredReceipts);
+            updatePagination(tempFilteredReceipts.length);
         }
 
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('from-date-input').value = '';
+            document.getElementById('to-date-input').value = '';
+            currentSortColumn = 'createdAt';
+            currentSortDirection = 'desc';
+            currentPage = 1;
+            
+            document.querySelectorAll('th i.fas').forEach(icon => {
+                icon.className = 'fas fa-sort text-sm ml-1';
+            });
+            
+            filterReceipts();
+        }
+
+        // ========== DATA DISPLAY FUNCTIONS ==========
         function displayReceipts(receiptsToDisplay) {
             const body = document.getElementById("receipts-body");
             body.innerHTML = "";
@@ -830,7 +805,6 @@
             } else {
                 noReceiptsMessage.style.display = 'none';
                 receiptsToDisplay.forEach(receipt => {
-                    // Format phone number to break after / if present
                     const formattedPhoneNumber = receipt.phoneNumber ? receipt.phoneNumber.replace(/\s*\/\s*/, '/<br>') : '';
 
                     body.innerHTML += `
@@ -856,7 +830,7 @@
                             </td>
                         </tr>`;
                 });
-                // Attach event listeners to the newly added buttons
+                
                 body.querySelectorAll('.edit-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const row = event.target.closest('tr');
@@ -866,10 +840,11 @@
                         const phoneNumber = row.cells[2].textContent;
                         const location = row.cells[3].textContent;
                         const machineName = row.cells[4].textContent;
-                        const purchaseDate = row.cells[5].textContent; // DD/MM/YYYY format
+                        const purchaseDate = row.cells[5].textContent;
                         openEditModal(id, customerId, customerName, phoneNumber, location, machineName, purchaseDate);
                     });
                 });
+                
                 body.querySelectorAll('.delete-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const row = event.target.closest('tr');
@@ -877,6 +852,7 @@
                         deleteReceipt(id);
                     });
                 });
+                
                 body.querySelectorAll('.download-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const row = event.target.closest('tr');
@@ -887,19 +863,40 @@
             }
         }
 
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('from-date-input').value = '';
-            document.getElementById('to-date-input').value = '';
-            currentSortColumn = 'createdAt'; // Reset sort
-            currentSortDirection = 'desc'; // Reset sort direction
-            currentPage = 1; // Reset to first page
-            
-            // Reset all sort icons
-            document.querySelectorAll('th i.fas.fa-sort-up, th i.fas.fa-sort-down').forEach(icon => {
-                icon.className = 'fas fa-sort text-sm ml-1';
-            });
-            filterReceipts(); // Re-filter with cleared search
+        // ========== CRUD OPERATIONS ==========
+        function loadReceipts() {
+            console.log('Loading receipts from API...');
+            fetch("/api/receipts")
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                        return;
+                    }
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch receipts');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    console.log('Receipts loaded:', data.length);
+                    allReceipts = data;
+                    filterReceipts();
+                })
+                .catch(err => {
+                    console.error("Error loading receipts:", err);
+                    showMessageBox("Error loading receipts. Please try again.", "error");
+                });
+        }
+
+        function refreshReceipts() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex';
+
+            setTimeout(() => {
+                loadReceipts();
+                loadingOverlay.style.display = 'none';
+            }, 1000);
         }
 
         function deleteReceipt(id) {
@@ -921,7 +918,20 @@
             });
         }
 
-        // Function to export all receipts to CSV
+        function openEditModal(id, customerId, customerName, phoneNumber, location, machineName, purchaseDate) {
+            document.getElementById('editReceiptId').value = id;
+            document.getElementById('editCustomerId').value = customerId;
+            document.getElementById('editCustomerName').value = customerName;
+            document.getElementById('editPhoneNumber').value = phoneNumber;
+            document.getElementById('editLocation').value = location;
+            const formattedDate = purchaseDate.split('/').reverse().join('-');
+            document.getElementById('editPurchaseDate').value = formattedDate;
+            document.getElementById('editMachineName').value = machineName;
+            
+            document.getElementById('editReceiptModal').style.display = 'flex';
+        }
+
+        // ========== EXPORT FUNCTIONS ==========
         function exportToCsv() {
             const receiptsToExport = allReceipts.map(receipt => {
                 return {
@@ -953,7 +963,6 @@
                 `"${receipt.purchaseDate}"`
             ]);
 
-            // Add UTF-8 BOM to the beginning of the CSV content
             const csvContent = "\uFEFF" + headers.join(",") + "\n" + rows.map(row => row.join(",")).join("\n");
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1042,23 +1051,7 @@
             });
         }
 
-        function openEditModal(id, customerId, customerName, phoneNumber, location, machineName, purchaseDate) {
-            document.getElementById('editReceiptId').value = id;
-            document.getElementById('editCustomerId').value = customerId;
-            document.getElementById('editCustomerName').value = customerName;
-            document.getElementById('editPhoneNumber').value = phoneNumber;
-            document.getElementById('editLocation').value = location;
-            const formattedDate = purchaseDate.split('/').reverse().join('-');
-            document.getElementById('editPurchaseDate').value = formattedDate;
-            document.getElementById('editMachineName').value = machineName;
-            
-            document.getElementById('editReceiptModal').style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editReceiptModal').style.display = 'none';
-        }
-
+        // ========== FORM HANDLING ==========
         document.getElementById('editReceiptForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const id = document.getElementById('editReceiptId').value;
@@ -1081,7 +1074,7 @@
             .then(response => {
                 if (response.ok) {
                     showMessageBox('Receipt updated successfully!', "success");
-                    closeEditModal();
+                    closeModal();
                     loadReceipts();
                 } else {
                     showMessageBox('Failed to update receipt.', "error");
@@ -1093,6 +1086,7 @@
             });
         });
 
+        // ========== AUTHENTICATION AND INITIALIZATION ==========
         function logout() {
             fetch('/logout', {
                 method: 'POST'
@@ -1110,6 +1104,57 @@
                 showMessageBox('An error occurred during logout.', "error");
             });
         }
+
+        // ========== PAGE INITIALIZATION ==========
+        document.addEventListener("DOMContentLoaded", () => {
+            // Add event listener for the close button
+            const closeButton = document.getElementById('closeModalButton');
+            if (closeButton) {
+                closeButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Close button clicked');
+                    closeModal();
+                });
+            }
+
+            // Add event listeners for search functionality
+            document.getElementById('search-button').addEventListener('click', filterReceipts);
+            document.getElementById('clear-search-button').addEventListener('click', clearSearch);
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    filterReceipts();
+                }
+            });
+
+            // Click outside modal to close
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('editReceiptModal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Authentication check
+            fetch('/check-admin-auth')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.authenticated) {
+                        document.getElementById('admin-panel').style.display = 'block';
+                        initPagination();
+                        loadReceipts();
+                    } else {
+                        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking authentication:', error);
+                    window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                });
+
+            // Logout button in navigation
+            document.getElementById('logout-btn-nav').addEventListener('click', logout);
+        });
     </script>
 
 </body>

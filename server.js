@@ -1,6 +1,4 @@
-require('dotenv').config(); // This must be the very first line
-
-// Add a console log here to debug if MONGODB_URI is loaded
+require('dotenv').config(); 
 console.log('MONGODB_URI from .env:', process.env.MONGODB_URI);
 
 const express = require('express');
@@ -280,7 +278,7 @@ app.post('/api/receipts', requireAdminAuth, async (req, res) => {
                 nextIdNumber = lastNumber + 1;
             }
         }
-        const newCustomerId = String(nextIdNumber).padStart(5, '0');
+        const newCustomerId = String(nextIdNumber).padStart(6, '0');
 
         const newReceipt = new Receipt({
             customerId: newCustomerId,
@@ -292,7 +290,7 @@ app.post('/api/receipts', requireAdminAuth, async (req, res) => {
         });
 
         await newReceipt.save();
-        res.status(201).json({ message: 'Receipt saved successfully', receipt: newReceipt, nextCustomerId: String(nextIdNumber + 1).padStart(5, '0') });
+        res.status(201).json({ message: 'Receipt saved successfully', receipt: newReceipt, nextCustomerId: String(nextIdNumber + 1).padStart(6, '0') });
     } catch (error) {
         console.error('Error saving receipt:', error);
         if (error.code === 11000) {
@@ -390,7 +388,7 @@ app.get('/api/next-customer-id', requireAdminAuth, async (req, res) => {
             nextIdNumber = result[0].customerIdNum + 1;
         }
 
-        const nextCustomerId = String(nextIdNumber).padStart(5, '0');
+        const nextCustomerId = String(nextIdNumber).padStart(6, '0');
         res.json({ nextCustomerId });
     } catch (error) {
         console.error('Error getting next customer ID:', error);

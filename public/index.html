@@ -527,16 +527,16 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   })
   .then(data => {
     console.log('ទិន្នន័យបង្កាន់ដៃត្រូវបានរក្សាទុកដោយជោគជ័យ', data); // Receipt data saved successfully
-    
-    const receiptMongoId = data.receipt && data.receipt._id ? data.receipt._id : 'Error';
-    if (receiptMongoId === 'Error') {
-        console.error("Server did not return a valid receipt ID. Please check server logs.");
+
+    const receiptCustomerId = data.receipt && data.receipt.customerId ? data.receipt.customerId : 'Error';
+    if (receiptCustomerId === 'Error') {
+        console.error("Server did not return a valid customer ID. Please check server logs.");
         return;
     }
 
 const baseUrl = window.location.origin;
-// The QR code will now link to the product-login page, passing the customerId
-const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(receiptMongoId)}`;
+// Using short customerId (e.g., "00001") instead of MongoDB _id for cleaner QR code
+const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(receiptCustomerId)}`;
 
 
     document.getElementById("qrcode").innerHTML = "";
@@ -545,6 +545,7 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
       text: url,
       width: 200,
       height: 200,
+      correctLevel: QRCode.CorrectLevel.M // Medium error correction for cleaner code
     });
 
     const receiptLink = document.getElementById("receipt-link");

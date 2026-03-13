@@ -651,6 +651,15 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
   .catch(error => {
     console.error('Error storing receipt data:', error);
     console.error(error.message || 'Error saving receipt data.');
+    
+    // Check if it's a duplicate ID error
+    if (error.message && error.message.includes('Duplicate ID')) {
+        alert("ID នេះត្រូវបានប្រើរួច! កំពុងទាញយក ID ថ្មី...");
+        // Automatically fetch a new ID
+        fetchNextCustomerId();
+        return;
+    }
+    
     alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ៖ " + (error.message || 'សូមព្យាយាមម្តងទៀត'));
   });
 });

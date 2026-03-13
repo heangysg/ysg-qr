@@ -269,14 +269,25 @@ app.post('/api/receipts', requireAdminAuth, async (req, res) => {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
-        const latestReceipt = await Receipt.findOne().sort({ customerId: -1 });
-        let nextIdNumber = 1;
-
-        if (latestReceipt && latestReceipt.customerId) {
-            const lastNumber = parseInt(latestReceipt.customerId, 10);
-            if (!isNaN(lastNumber)) {
-                nextIdNumber = lastNumber + 1;
+        // Use aggregation to get the highest customerId numerically (same as /api/next-customer-id)
+        const result = await Receipt.aggregate([
+            {
+                $project: {
+                    _id: 0,
+                    customerIdNum: { $convert: { input: "$customerId", to: "int", onError: 0, onNull: 0 } }
+                }
+            },
+            {
+                $sort: { customerIdNum: -1 }
+            },
+            {
+                $limit: 1
             }
+        ]);
+
+        let nextIdNumber = 1;
+        if (result.length > 0 && !isNaN(result[0].customerIdNum)) {
+            nextIdNumber = result[0].customerIdNum + 1;
         }
         const newCustomerId = String(nextIdNumber).padStart(6, '0');
 

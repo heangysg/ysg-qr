@@ -490,6 +490,23 @@ document.getElementById('purchase-date').addEventListener('input', function(e) {
 // Call fetchNextCustomerId when the page loads
 document.addEventListener('DOMContentLoaded', fetchNextCustomerId);
 
+// Check if QRCode library is loaded on page load
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof QRCode === 'undefined') {
+    console.error('❌ QRCode library failed to load!');
+    alert('មានបញ្ហាក្នុងការផ្ទុក QR Code library។ សូម refresh ទំព័រ ឬពិនិត្យមើលការតភ្ជាប់អ៊ីនធឺណិត។');
+  } else {
+    console.log('✅ QRCode library loaded successfully');
+  }
+  
+  // Also check html2canvas
+  if (typeof html2canvas === 'undefined') {
+    console.warn('⚠️ html2canvas library failed to load - download will still work but may be lower quality');
+  } else {
+    console.log('✅ html2canvas library loaded successfully');
+  }
+});
+
 
 document.getElementById("generate-btn").addEventListener("click", function () {
   const customerName = document.getElementById("customer-name").value.trim();
@@ -528,9 +545,17 @@ document.getElementById("generate-btn").addEventListener("click", function () {
   .then(data => {
     console.log('ទិន្នន័យបង្កាន់ដៃត្រូវបានរក្សាទុកដោយជោគជ័យ', data); // Receipt data saved successfully
 
-    const receiptCustomerId = data.receipt && data.receipt.customerId ? data.receipt.customerId : 'Error';
-    if (receiptCustomerId === 'Error') {
-        console.error("Server did not return a valid customer ID. Please check server logs.");
+    // Check if receipt data exists
+    if (!data.receipt) {
+        console.error("No receipt data returned from server:", data);
+        alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ។ សូមព្យាយាមម្តងទៀត។");
+        return;
+    }
+
+    const receiptCustomerId = data.receipt.customerId;
+    if (!receiptCustomerId) {
+        console.error("No customerId in receipt:", data.receipt);
+        alert("មានបញ្ហាក្នុងការទាញយក ID។ សូមព្យាយាមម្តងទៀត។");
         return;
     }
 
@@ -538,9 +563,19 @@ const baseUrl = window.location.origin;
 // Using short customerId (e.g., "00001") instead of MongoDB _id for cleaner QR code
 const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(receiptCustomerId)}`;
 
+    console.log("Generating QR code for customerId:", receiptCustomerId);
+    console.log("QR URL:", url);
 
     document.getElementById("qrcode").innerHTML = "";
     const qrcodeElement = document.getElementById("qrcode");
+    
+    // Check if QRCode library is loaded
+    if (typeof QRCode === 'undefined') {
+        console.error("QRCode library is not loaded!");
+        alert("មានបញ្ហាក្នុងការផ្ទុក QR Code library។ សូម refresh ទំព័រ។");
+        return;
+    }
+    
     new QRCode(qrcodeElement, {
       text: url,
       width: 200,
@@ -548,14 +583,24 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
       correctLevel: QRCode.CorrectLevel.M // Medium error correction for cleaner code
     });
 
+    console.log("QR code generated successfully");
+
     const receiptLink = document.getElementById("receipt-link");
     receiptLink.href = url;
-    receiptLink.style.display = "inline";
-    receiptLink.innerText = "View Receipt Data";
+    receiptLink.style.display = "inline-block";
+    receiptLink.innerText = "មើលទិន្នន័យ QRCode";
 
     const downloadLink = document.getElementById("download-link");
+    
+    // Show buttons immediately
+    receiptLink.style.display = "inline-block";
+    downloadLink.style.display = "inline-block";
+    downloadLink.href = "#";
+    downloadLink.download = "qrcode.png";
+    downloadLink.innerText = "Download QR Code";
+
     const qrcodeDiv = document.getElementById("qrcode"); // Get the div element, not just the canvas
-    if (qrcodeDiv) {
+    if (qrcodeDiv && typeof html2canvas !== 'undefined') {
       html2canvas(qrcodeDiv, {
           scale: 2, // Increase scale for better quality
           backgroundColor: '#ffffff' // Explicitly set background to white for consistent rendering of the frame
@@ -563,6 +608,10 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
           const imageDataUrl = canvas.toDataURL("image/png");
           const customerIdForFilename = data.receipt.customerId; // Use the actual customerId from the saved receipt
          const fileName = `ysgqr_${customerIdForFilename}.png`; // Custom filename format (removed "_framed")
+
+          // Update the download link with actual QR code image
+          downloadLink.href = imageDataUrl;
+          downloadLink.download = fileName;
 
           // Send the framed QR code image data to the server
           fetch('/api/save-qr-code', {
@@ -576,21 +625,19 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
               if (uploadData.message) {
                   console.log(uploadData.message);
               }
-              // Update the download link
-              downloadLink.href = imageDataUrl;
-              downloadLink.download = fileName;
-              // Ensure both links are displayed after QR generation
-              document.getElementById("receipt-link").style.display = "inline-block";
-              document.getElementById("download-link").style.display = "inline-block";
-
           })
           .catch(uploadError => {
               console.error('Error uploading framed QR code image:', uploadError);
-              console.error('Error saving framed QR code image to server.');
+              // Download still works even if upload fails
+              downloadLink.href = imageDataUrl;
+              downloadLink.download = fileName;
           });
       }).catch(error => {
           console.error('Error generating framed QR code image:', error);
+          // QR code is still visible even if html2canvas fails
       });
+    } else {
+        console.log('html2canvas not available, download button will use basic QR code');
     }
     // After successful generation and server storage, update the customer ID field with the next ID
     document.getElementById("customer-id").value = data.nextCustomerId; // This is the 0000X ID for display
@@ -603,7 +650,8 @@ const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(recei
   })
   .catch(error => {
     console.error('Error storing receipt data:', error);
-    console.error(error.message || 'Error saving receipt data.'); // Log for now
+    console.error(error.message || 'Error saving receipt data.');
+    alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ៖ " + (error.message || 'សូមព្យាយាមម្តងទៀត'));
   });
 });
 

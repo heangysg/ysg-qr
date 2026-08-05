@@ -1,14 +1,18 @@
-
 const mongoose = require('mongoose');
 
 const receiptSchema = new mongoose.Schema({
-  customerId: { type: String, required: true, unique: true },
-  customerName: String,
-  phoneNumber: String,
-  location: String, // ✅ Add this
+  customerId: { type: String, required: true, unique: true, index: true },
+  customerName: { type: String, index: true },
+  phoneNumber: { type: String, index: true },
+  location: String,
   machineName: String,
-  purchaseDate: String
+  purchaseDate: { type: String, index: true }
+}, { 
+  timestamps: true 
 });
 
-module.exports = mongoose.model('Receipt', receiptSchema);
+// High-performance compound indexes for instant sorting & search lookups
+receiptSchema.index({ customerId: 1, createdAt: -1 });
+receiptSchema.index({ createdAt: -1 });
 
+module.exports = mongoose.model('Receipt', receiptSchema);

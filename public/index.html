@@ -1,742 +1,441 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>QR Code Generator | YSG</title>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
-
- <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>បង្កើតបង្កាន់ដៃ QR Code | YSG System</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/theme.css" />
   <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
- <style>
-    /* Custom font for body (Inter) - applies broadly */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5; /* Slightly darker background to make white paper stand out more */
-    }
-    /* Apply Battambang to specific Khmer text elements */
-    .khmer-font {
-        font-family: 'Battambang', cursive;
+  <style>
+    body, input, button, select, label {
+      font-family: 'Battambang', cursive, 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* --- Navbar Specific Styles (consistent across pages) --- */
-    header {
-        background-color: #002d5d; /* Your specified main color */
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 0;
-        width: 100%;
-        z-index: 1000;
-        margin: 0;
+    .main-grid {
+      max-width: 1280px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
     }
 
-    header .logo img {
-        height: 60px;
-        margin-left: 0;
+    @media (max-width: 992px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        margin: 1rem auto;
+      }
     }
 
-    nav {
-        display: flex;
-        align-items: center;
+    .card-padding {
+      padding: 2rem;
     }
 
-    #nav-links {
-        margin-right: 0;
+    .qr-preview-box {
+      width: 220px;
+      height: 220px;
+      margin: 1.5rem auto;
+      padding: 12px;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 1rem; /* Adjusted gap for tighter spacing, consistent with admin.html */
+    .qr-preview-box canvas, .qr-preview-box img {
+      max-width: 100%;
+      max-height: 100%;
     }
 
-    nav ul li a,
-    nav ul li button {
-        color: white;
-        text-decoration: none;
-        font-family: 'Arial', sans-serif;
-        font-weight: bold;
-        font-size: 1.15rem;
-        transition: color 0.2s ease;
-        padding: 10px 20px;
-        display: block;
-        background: none;
-        border: none;
-        cursor: pointer;
+    .action-links-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
     }
-
-    nav ul li a:hover,
-    nav ul li button:hover {
-        color: #a0aec0;
-        text-decoration: underline;
-    }
-
-    .hamburger {
-        display: none;
-        cursor: pointer;
-        flex-direction: column;
-        gap: 6px;
-        width: 30px;
-        height: 20px;
-        justify-content: space-between;
-        margin-right: 30px;
-    }
-
-    .hamburger .bar {
-        width: 100%;
-        height: 4px;
-        background-color: white;
-        border-radius: 2px;
-        transition: 0.3s;
-    }
-
-    @media (max-width: 768px) {
-        header {
-            padding: 1rem;
-        }
-        header nav ul {
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 80px;
-            left: 0;
-            width: 100%;
-            background-color: #002d5d;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 1rem 0;
-            text-align: center;
-        }
-
-        header nav ul.flex {
-            display: flex;
-        }
-
-        header nav ul li {
-            margin: 0.75rem 0;
-        }
-        header nav ul li a,
-        header nav ul li button {
-            font-size: 1rem;
-        }
-        .hamburger {
-            display: flex;
-        }
-    }
-    /* --- End Navbar Specific Styles --- */
-
-    /* --- Main Content Container Styles (New Paper-like Design) --- */
-    .container {
-        background-color: #ffffff; /* White background for the paper */
-        padding: 2.5rem; /* Standard padding */
-        width: 90%; /* Responsive width */
-        max-width: 380px; /* Adjusted max-width for 25-30% effect on desktop */
-        margin: 2.5rem auto; /* Centered with top/bottom margin */
-        border-radius: 0.5rem; /* Slightly less rounded for a paper feel */
-        /* Enhanced box-shadow for a more distinct "lifted paper" effect */
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), /* Main shadow */
-                    0 0 0 1px rgba(0, 0, 0, 0.08); /* Subtle border-like effect */
-        text-align: center; /* Center content */
-        border: none; /* Remove explicit border as shadow handles it */
-    }
-
-    /* Adjusting H2 inside the container */
-    .container h2 {
-        color: #007bff; /* Blue heading color from screenshot */
-        font-size: 1.875rem; /* Tailwind text-3xl equivalent */
-        font-weight: 700; /* Tailwind font-bold equivalent */
-        margin-bottom: 1.5rem; /* Space below heading */
-    }
-
-    /* Input Group Styling for consistency with the screenshot */
-    .receipt-input-group {
-        margin-bottom: 1rem; /* Space between input groups */
-        text-align: left; /* Align labels to the left */
-    }
-
-    .receipt-input-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-size: 1.125rem; /* Tailwind text-lg equivalent */
-        font-weight: 600; /* Tailwind font-semibold equivalent */
-        color: #4a5568; /* Darker gray for labels */
-    }
-
-    .receipt-input-group input[type="text"] {
-        width: 100%; /* Full width */
-        padding: 0.75rem; /* More padding */
-        border: 1px solid #cbd5e0; /* Lighter border */
-        border-radius: 0.5rem; /* Rounded inputs */
-        box-sizing: border-box; /* Include padding and border in width */
-        font-size: 1rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .receipt-input-group input[type="text"]:focus {
-        outline: none;
-        border-color: #4299e1; /* Blue focus ring */
-        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow */
-    }
-
-    /* Button Group Styling */
-    .button-group {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem; /* Space between buttons */
-        margin-top: 1.5rem; /* Space above buttons */
-    }
-
-    .button-group button {
-        width: 100%;
-        padding: 1rem; /* More padding */
-        font-size: 1.125rem; /* Larger font */
-        font-weight: 700; /* Bold font */
-        color: white;
-        background-color: #007bff; /* Blue button color */
-        border: none;
-        border-radius: 0.5rem; /* Rounded buttons */
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Subtle shadow */
-    }
-    .button-group button:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-        transform: translateY(-2px); /* Lift effect on hover */
-        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
-    }
-    .button-group button:active {
-        transform: translateY(0); /* Press effect */
-        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-    }
-
-    .button-group .clear-button {
-        background-color: #6c757d; /* Gray for clear button */
-        box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
-    }
-    .button-group .clear-button:hover {
-        background-color: #5a6268;
-        box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
-    }
-
-    /* Styles for the QR code container for a more minimal look with a bit of white */
-    #qrcode {
-        width: 200px; /* Set to the exact QR code size */
-        height: 200px; /* Set to the exact QR code size */
-        margin: 2rem auto; /* Center the div horizontally */
-        padding: 10px; /* Added a small padding for the white container */
-        display: flex;
-        justify-content: center;
-        align-items: center; /* Center QR code vertically and horizontally */
-        
-        background-color: #ffffff; /* Solid white background */
-        border: 1px solid #e0e0e0; /* Very light border */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Very subtle box-shadow */
-        box-sizing: content-box; /* Ensures padding adds to total size, preserving QR code dimensions */
-    }
-
-    /* Ensure QRCode.js canvas fills its parent #qrcode div if needed */
-    #qrcode canvas {
-        display: block; /* Remove extra space below canvas */
-    }
-
-    /* New styles for QR action buttons alignment */
-    .qr-actions-group {
-        display: flex;
-        flex-direction: column; /* Stack buttons vertically by default */
-        align-items: center; /* Center items horizontally */
-        gap: 1rem; /* Space between buttons */
-        margin-top: 1.5rem; /* Space above the group */
-    }
-
-    /* For larger screens, make them inline-block or side-by-side if desired */
-    @media (min-width: 640px) { /* Tailwind's 'sm' breakpoint */
-        .qr-actions-group {
-            flex-direction: row; /* Align horizontally on larger screens */
-            justify-content: center; /* Center the row of buttons */
-        }
-    }
-
-    #receipt-link, #download-link {
-        /* These styles are now applied via the .qr-action-button class */
-        width: 100%; /* Full width when stacked */
-        max-width: 250px; /* Limit individual button width */
-        padding: 1rem; /* Consistent padding */
-        font-size: 1.125rem; /* Consistent font size */
-        font-weight: 700; /* Consistent font weight */
-        border-radius: 0.5rem; /* Consistent border-radius */
-        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        text-decoration: none; /* Ensure no underline by default */
-        color: white; /* Ensure text color is white */
-    }
-    #receipt-link {
-        background-color: #007bff;
-    }
-    #receipt-link:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
-    }
-    #receipt-link:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-    }
-    #download-link {
-        background-color: #28a745; /* Green color */
-        /* No margin-left needed here if using gap on parent */
-    }
-    #download-link:hover {
-        background-color: #218838; /* Darker green */
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
-    }
-    #download-link:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
-    }
-
-
-    .search-id-container {
-        margin-top: 2.5rem; /* Space above search section */
-        padding-top: 1.5rem; /* Internal padding */
-        border-top: 1px solid #e0e0e0; /* Separator line */
-    }
-    .search-id-container h3 {
-        font-size: 1.5rem; /* Larger heading */
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 1rem;
-    }
-    #search-customer-id {
-        width: 80%; /* Adjust width */
-        max-width: 300px; /* Max width */
-        padding: 0.75rem;
-        font-size: 1rem;
-        border: 1px solid #cbd5e0;
-        border-radius: 0.5rem;
-        box-sizing: border-box;
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    #search-customer-id:focus {
-        outline: none;
-        border-color: #4299e1;
-        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-    }
-    #search-id-button {
-        width: 80%;
-        max-width: 300px;
-        padding: 1rem;
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: white;
-        background-color: #007bff;
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-    }
-    #search-id-button:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
-    }
-    #search-id-button:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-    }
- </style>
+  </style>
 </head>
-
 <body>
 
-<header>
- <div class="logo">
-  <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-16" />
- </div>
- <nav>
-  <div class="hamburger" onclick="toggleMenu()">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
-  <ul id="nav-links" class="hidden md:flex space-x-4"> <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
-    <li><a href="admin.html" class="text-white hover:text-gray-300 transition duration-200">Admin</a></li>
-    <li><a href="contact.html" class="text-white hover:text-gray-300 transition duration-200">Contact</a></li>
-    <li><button id="logout-btn-nav" class="text-white hover:text-gray-300 transition duration-200">Logout</button></li>
-  </ul>
- </nav>
-</header>
+  <!-- Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="img/Y S G_ (2).png" alt="YSG Logo" style="height: 48px;" />
+      </a>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link active"><i class="fas fa-plus-circle"></i> <span>បង្កើត QR Code</span></a></li>
+        <li><a href="admin.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> <span>អ្នកគ្រប់គ្រង</span></a></li>
+        <li><a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> <span>ទំនាក់ទំនង</span></a></li>
+        <li><button type="button" id="logout-btn-nav" class="btn btn-outline btn-sm"><i class="fas fa-sign-out-alt"></i> <span>ចាកចេញ</span></button></li>
+      </ul>
+    </div>
+  </header>
 
-<div class="container" id="main-content" style="display: none;">
-  <h2 class="khmer-font">Generate Receipt QR Code</h2>
-  
-  <div class="receipt-input-group">
-    <label for="customer-id" class="khmer-font">ID អតិថិជន:</label>
-    <input type="text" id="customer-id" placeholder="Auto-generated ID" readonly />
-  </div>
+  <!-- Main Workspace (Hidden until auth check) -->
+  <main id="main-content" style="display: none;">
+    <div class="main-grid">
+      
+      <!-- Left Column: Receipt Form -->
+      <section class="glass-card card-padding">
+        <div style="margin-bottom: 1.75rem;">
+          <h2 style="font-size: 1.5rem; color: var(--text-main);">
+            <i class="fas fa-file-invoice" style="color: var(--primary); margin-right: 0.5rem;"></i>
+            បង្កើតបង្កាន់ដៃ & QR Code
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">
+            សូមបញ្ចូលព័ត៌មានអតិថិជនដើម្បីរក្សាទុក និងបង្កើត QR Code
+          </p>
+        </div>
 
-  <div class="receipt-input-group">
-    <label for="customer-name" class="khmer-font">ឈ្មោះអតិថិជន:</label>
-    <input type="text" id="customer-name" placeholder="Enter Customer Name" />
-  </div>
+        <form id="receipt-form" onsubmit="event.preventDefault();">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label for="customer-id" class="form-label">ID អតិថិជន (បង្កើតស្វ័យប្រវត្តិ)</label>
+              <div class="input-wrapper">
+                <input type="text" id="customer-id" class="form-input" placeholder="កំពុងបង្កើត..." readonly />
+                <i class="fas fa-hashtag input-icon"></i>
+              </div>
+            </div>
 
-  <div class="receipt-input-group">
-    <label for="phone-number" class="khmer-font">លេខទូរស័ព្ទ:</label>
-    <input type="text" id="phone-number" placeholder="Enter Phone Number" />
-  </div>
+            <div class="form-group">
+              <label for="purchase-date" class="form-label">កាលបរិច្ឆេទទិញ (ថ្ងៃ/ខែ/ឆ្នាំ)</label>
+              <div class="input-wrapper">
+                <input type="text" id="purchase-date" class="form-input" placeholder="DD/MM/YYYY" maxlength="10" />
+                <i class="fas fa-calendar-alt input-icon"></i>
+              </div>
+            </div>
+          </div>
 
-    <div class="receipt-input-group">
-    <label for="location" class="khmer-font">ទីតាំង:</label>
-    <input type="text" id="location" placeholder="Enter Location" />
-  </div>
-  
-  <div class="receipt-input-group">
-    <label for="machine-name" class="khmer-font">ឈ្មោះផលិតផល:</label>
-    <input type="text" id="machine-name" placeholder="Enter Machine Name" />
-  </div>
+          <div class="form-group">
+            <label for="customer-name" class="form-label">ឈ្មោះអតិថិជន</label>
+            <div class="input-wrapper">
+              <input type="text" id="customer-name" class="form-input" placeholder="បញ្ចូលឈ្មោះអតិថិជនពេញលេញ" />
+              <i class="fas fa-user input-icon"></i>
+            </div>
+          </div>
 
-  <div class="receipt-input-group">
-    <label for="purchase-date" class="khmer-font">កាលបរិច្ឆេទទិញ:</label>
-    <input type="text" id="purchase-date" placeholder="DD/MM/YYYY" maxlength="10" />
-  </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <div class="form-group">
+              <label for="phone-number" class="form-label">លេខទូរស័ព្ទ</label>
+              <div class="input-wrapper">
+                <input type="text" id="phone-number" class="form-input" placeholder="ឧទាហរណ៍៖ 012345678" />
+                <i class="fas fa-phone input-icon"></i>
+              </div>
+            </div>
 
-  <div class="button-group">
-    <button id="generate-btn" class="khmer-font">បង្កើត QR Code</button>
-    <button id="clear-btn" class="clear-button khmer-font">Clear Form</button>
-  </div>
-  
-  
-  <div id="qrcode" style="margin-top: 20px;"></div>
+            <div class="form-group">
+              <label for="location" class="form-label">ទីតាំង / អាសយដ្ឋាន</label>
+              <div class="input-wrapper">
+                <input type="text" id="location" class="form-input" placeholder="បញ្ចូលរាជធានី ឬខេត្ត" />
+                <i class="fas fa-map-marker-alt input-icon"></i>
+              </div>
+            </div>
+          </div>
 
-  <div class="qr-actions-group">
-    <a id="receipt-link" href="#" style="display: none;" target="_blank" class="khmer-font">មើលទិន្នន័យ QRCode</a>
-    <a id="download-link" href="#" style="display: none;" download class="khmer-font">Download QR Code</a>
-  </div>
+          <div class="form-group">
+            <label for="machine-name" class="form-label">ឈ្មោះផលិតផល / ម៉ាស៊ីន</label>
+            <div class="input-wrapper">
+              <input type="text" id="machine-name" class="form-input" placeholder="បញ្ចូលឈ្មោះម៉ាស៊ីន ឬផលិតផល" />
+              <i class="fas fa-cog input-icon"></i>
+            </div>
+          </div>
 
-  <div class="search-id-container">
-    <h3 class="khmer-font">ស្វែងរកបង្កាន់ដៃដោយIDអតិថិជន</h3>
-    <input type="text" id="search-customer-id" placeholder="សូមបញ្ចូលID ដើម្បីស្វែងរក" />
-    <button id="search-id-button" class="khmer-font">Search</button>
-  </div>
+          <div style="display: flex; gap: 1rem; margin-top: 1.75rem;">
+            <button type="button" id="generate-btn" class="btn btn-primary btn-full">
+              <i class="fas fa-qrcode"></i> បង្កើត QR Code
+            </button>
+            <button type="button" id="clear-btn" class="btn btn-outline" style="width: 130px;">
+              <i class="fas fa-undo"></i> សម្អាត
+            </button>
+          </div>
+        </form>
+      </section>
 
-</div>
+      <!-- Right Column: Live QR Preview & Search -->
+      <section style="display: flex; flex-direction: column; gap: 2rem;">
+        
+        <!-- Live QR Code Card -->
+        <div class="glass-card card-padding" style="text-align: center;">
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.35rem;">
+            <i class="fas fa-eye" style="color: var(--secondary); margin-right: 0.5rem;"></i>
+            ទិដ្ឋភាពទូទៅនៃ QR Code
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">
+            QR Code ដែលបានបង្កើតនឹងបង្ហាញនៅខាងក្រោមនេះ
+          </p>
 
-<script>
-// No Flatpickr initialization here
+          <div class="qr-preview-box">
+            <div id="qrcode">
+              <div style="color: var(--text-dim); text-align: center;">
+                <i class="fas fa-qrcode" style="font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.3;"></i>
+                <p style="font-size: 0.8rem; color: #94a3b8;">មិនទាន់មាន QR Code នៅឡើយទេ</p>
+              </div>
+            </div>
+          </div>
 
-// Function to fetch and display the next customer ID
-async function fetchNextCustomerId() {
-  try {
-    const response = await fetch('/api/next-customer-id');
-    if (!response.ok) {
-      throw new Error('Failed to fetch next customer ID');
+          <div class="action-links-wrapper">
+            <a id="receipt-link" href="#" style="display: none;" target="_blank" class="btn btn-secondary btn-full">
+              <i class="fas fa-external-link-alt"></i> មើលទិន្នន័យ QRCode
+            </a>
+            <a id="download-link" href="#" style="display: none;" download class="btn btn-outline btn-full">
+              <i class="fas fa-download"></i> ទាញយករូបភាព QR Code
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Receipt Lookup Card -->
+        <div class="glass-card card-padding">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">
+            <i class="fas fa-search" style="color: var(--accent); margin-right: 0.5rem;"></i>
+            ស្វែងរកបង្កាន់ដៃដោយ ID អតិថិជន
+          </h3>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <div class="input-wrapper">
+              <input type="text" id="search-customer-id" class="form-input" placeholder="បញ្ចូល ID (ឧទាហរណ៍ 000001)" />
+              <i class="fas fa-hashtag input-icon"></i>
+            </div>
+          </div>
+          <button type="button" id="search-id-button" class="btn btn-outline btn-full">
+            <i class="fas fa-search"></i> ស្វែងរកបង្កាន់ដៃ
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    async function fetchNextCustomerId() {
+      try {
+        const response = await fetch('/api/next-customer-id');
+        if (!response.ok) throw new Error('Failed to fetch next customer ID');
+        const data = await response.json();
+        document.getElementById('customer-id').value = data.nextCustomerId;
+      } catch (error) {
+        console.error('Error fetching next customer ID:', error);
+        document.getElementById('customer-id').value = '000001';
+      }
     }
-    const data = await response.json();
-    document.getElementById('customer-id').value = data.nextCustomerId;
-  } catch (error) {
-    console.error('Error fetching next customer ID:', error);
-    document.getElementById('customer-id').value = 'Error'; // Show an error or default
-  }
-}
 
-// Function to validate and format DD/MM/YYYY to YYYY-MM-DD for backend
-function formatPurchaseDateForBackend(dateString) {
-  const parts = dateString.split('/');
-  if (parts.length === 3) {
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
-
-    // Basic validation for day, month, year ranges
-    if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900) {
-      // Return in YYYY-MM-DD format for backend
-      return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    function formatPurchaseDateForBackend(dateString) {
+      const parts = dateString.split('/');
+      if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const year = parseInt(parts[2], 10);
+        if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900) {
+          return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+      }
+      return null;
     }
-  }
-  return null; // Invalid format
-}
 
-// Re-added the original date formatting listener for 'purchase-date' input
-document.getElementById('purchase-date').addEventListener('input', function(e) {
-    let input = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    let formattedInput = '';
-
-    if (input.length > 0) {
+    document.getElementById('purchase-date').addEventListener('input', function(e) {
+      let input = e.target.value.replace(/\D/g, '');
+      let formattedInput = '';
+      if (input.length > 0) {
         formattedInput += input.substring(0, 2);
         if (input.length > 2) {
-            formattedInput += '/' + input.substring(2, 4);
-            if (input.length > 4) {
-                formattedInput += '/' + input.substring(4, 8);
-            }
+          formattedInput += '/' + input.substring(2, 4);
+          if (input.length > 4) {
+            formattedInput += '/' + input.substring(4, 8);
+          }
         }
-    }
-    e.target.value = formattedInput;
-});
-
-
-// Call fetchNextCustomerId when the page loads
-document.addEventListener('DOMContentLoaded', fetchNextCustomerId);
-
-// Check if QRCode library is loaded on page load
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof QRCode === 'undefined') {
-    console.error('❌ QRCode library failed to load!');
-    alert('មានបញ្ហាក្នុងការផ្ទុក QR Code library។ សូម refresh ទំព័រ ឬពិនិត្យមើលការតភ្ជាប់អ៊ីនធឺណិត។');
-  } else {
-    console.log('✅ QRCode library loaded successfully');
-  }
-  
-  // Also check html2canvas
-  if (typeof html2canvas === 'undefined') {
-    console.warn('⚠️ html2canvas library failed to load - download will still work but may be lower quality');
-  } else {
-    console.log('✅ html2canvas library loaded successfully');
-  }
-});
-
-
-document.getElementById("generate-btn").addEventListener("click", function () {
-  const customerName = document.getElementById("customer-name").value.trim();
-  const phoneNumber = document.getElementById("phone-number").value.trim();
-  const location = document.getElementById("location").value.trim();
-  const machineName = document.getElementById("machine-name").value.trim();
-  const rawPurchaseDate = document.getElementById("purchase-date").value.trim(); // This will be DD/MM/YYYY
-
-  const purchaseDate = formatPurchaseDateForBackend(rawPurchaseDate); // Convert to YYYY-MM-DD for backend
-  
-  if (!customerName || !phoneNumber || !machineName || !rawPurchaseDate) {
-    // Replaced alert with console.error for better user experience
-    console.error("សូមបញ្ចូលព័ត៌មានទាំងអស់។"); 
-    return;
-  }
-
-  if (!purchaseDate) {
-      // Replaced alert with console.error
-      console.error("សូមបញ្ចូលកាលបរិច្ឆេទទិញក្នុងទម្រង់ DD/MM/YYYY ។"); 
-      return;
-  }
-
-  const receiptData = { customerName, phoneNumber, location, machineName, purchaseDate };
-
-  fetch('/api/receipts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(receiptData),
-  })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(err => {throw new Error(`HTTP error! status: ${response.status}, message: ${err.error || response.statusText}`)});
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('ទិន្នន័យបង្កាន់ដៃត្រូវបានរក្សាទុកដោយជោគជ័យ', data); // Receipt data saved successfully
-
-    // Check if receipt data exists
-    if (!data.receipt) {
-        console.error("No receipt data returned from server:", data);
-        alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ។ សូមព្យាយាមម្តងទៀត។");
-        return;
-    }
-
-    const receiptCustomerId = data.receipt.customerId;
-    if (!receiptCustomerId) {
-        console.error("No customerId in receipt:", data.receipt);
-        alert("មានបញ្ហាក្នុងការទាញយក ID។ សូមព្យាយាមម្តងទៀត។");
-        return;
-    }
-
-const baseUrl = window.location.origin;
-// Using short customerId (e.g., "00001") instead of MongoDB _id for cleaner QR code
-const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(receiptCustomerId)}`;
-
-    console.log("Generating QR code for customerId:", receiptCustomerId);
-    console.log("QR URL:", url);
-
-    document.getElementById("qrcode").innerHTML = "";
-    const qrcodeElement = document.getElementById("qrcode");
-    
-    // Check if QRCode library is loaded
-    if (typeof QRCode === 'undefined') {
-        console.error("QRCode library is not loaded!");
-        alert("មានបញ្ហាក្នុងការផ្ទុក QR Code library។ សូម refresh ទំព័រ។");
-        return;
-    }
-    
-    new QRCode(qrcodeElement, {
-      text: url,
-      width: 200,
-      height: 200,
-      correctLevel: QRCode.CorrectLevel.M // Medium error correction for cleaner code
+      }
+      e.target.value = formattedInput;
     });
 
-    console.log("QR code generated successfully");
+    document.getElementById("generate-btn").addEventListener("click", function (e) {
+      if (e) e.preventDefault();
+      
+      const customerName = document.getElementById("customer-name").value.trim();
+      const phoneNumber = document.getElementById("phone-number").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const machineName = document.getElementById("machine-name").value.trim();
+      const rawPurchaseDate = document.getElementById("purchase-date").value.trim();
+      const purchaseDate = formatPurchaseDateForBackend(rawPurchaseDate);
 
-    const receiptLink = document.getElementById("receipt-link");
-    receiptLink.href = url;
-    receiptLink.style.display = "inline-block";
-    receiptLink.innerText = "មើលទិន្នន័យ QRCode";
+      if (!customerName || !phoneNumber || !machineName || !rawPurchaseDate) {
+        alert("សូមបញ្ចូលព័ត៌មានទាំងអស់។ (Please fill in all required fields)");
+        return;
+      }
 
-    const downloadLink = document.getElementById("download-link");
-    
-    // Show buttons immediately
-    receiptLink.style.display = "inline-block";
-    downloadLink.style.display = "inline-block";
-    downloadLink.href = "#";
-    downloadLink.download = "qrcode.png";
-    downloadLink.innerText = "Download QR Code";
+      if (!purchaseDate) {
+        alert("សូមបញ្ចូលកាលបរិច្ឆេទទិញក្នុងទម្រង់ DD/MM/YYYY (Invalid date format)");
+        return;
+      }
 
-    const qrcodeDiv = document.getElementById("qrcode"); // Get the div element, not just the canvas
-    if (qrcodeDiv && typeof html2canvas !== 'undefined') {
-      html2canvas(qrcodeDiv, {
-          scale: 2, // Increase scale for better quality
-          backgroundColor: '#ffffff' // Explicitly set background to white for consistent rendering of the frame
-      }).then(canvas => {
-          const imageDataUrl = canvas.toDataURL("image/png");
-          const customerIdForFilename = data.receipt.customerId; // Use the actual customerId from the saved receipt
-         const fileName = `ysgqr_${customerIdForFilename}.png`; // Custom filename format (removed "_framed")
+      const receiptData = { customerName, phoneNumber, location, machineName, purchaseDate };
 
-          // Update the download link with actual QR code image
-          downloadLink.href = imageDataUrl;
-          downloadLink.download = fileName;
+      fetch('/api/receipts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(receiptData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.error || err.message || 'Error saving receipt data.') });
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (!data.receipt) {
+          alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ។");
+          return;
+        }
 
-          // Send the framed QR code image data to the server
-          fetch('/api/save-qr-code', {
+        const receiptCustomerId = data.receipt.customerId;
+        const baseUrl = window.location.origin;
+        const url = `${baseUrl}/product-login.html?customerId=${encodeURIComponent(receiptCustomerId)}`;
+
+        const qrcodeElement = document.getElementById("qrcode");
+        qrcodeElement.innerHTML = "";
+
+        new QRCode(qrcodeElement, {
+          text: url,
+          width: 200,
+          height: 200,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+
+        const receiptLink = document.getElementById("receipt-link");
+        receiptLink.href = url;
+        receiptLink.style.display = "inline-flex";
+
+        const downloadLink = document.getElementById("download-link");
+        downloadLink.style.display = "inline-flex";
+
+        setTimeout(() => {
+          const canvasEl = qrcodeElement.querySelector('canvas');
+          const imgEl = qrcodeElement.querySelector('img');
+          const sourceEl = (canvasEl && canvasEl.width > 0) ? canvasEl : imgEl;
+
+          if (sourceEl) {
+            // Create compact, lightweight ~4KB framed PNG image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const qrSize = 200;
+            const padding = 10; // 10px white border padding
+            const totalSize = qrSize + (padding * 2); // 220 x 220 px
+
+            canvas.width = totalSize;
+            canvas.height = totalSize;
+
+            // 1. Fill crisp solid white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, totalSize, totalSize);
+
+            // 2. Draw 1px light border line around edge
+            ctx.strokeStyle = '#eeeeee';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0.5, 0.5, totalSize - 1, totalSize - 1);
+
+            // 3. Draw QR matrix in middle
+            ctx.drawImage(sourceEl, padding, padding, qrSize, qrSize);
+
+            const imageDataUrl = canvas.toDataURL("image/png");
+            const fileName = `ysgqr_${receiptCustomerId}.png`;
+
+            downloadLink.href = imageDataUrl;
+            downloadLink.download = fileName;
+
+            fetch('/api/save-qr-code', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ imageData: imageDataUrl, fileName: fileName })
-          })
-          .then(response => response.json())
-          .then(uploadData => {
-              console.log('Framed QR code image upload response:', uploadData);
-              if (uploadData.message) {
-                  console.log(uploadData.message);
-              }
-          })
-          .catch(uploadError => {
-              console.error('Error uploading framed QR code image:', uploadError);
-              // Download still works even if upload fails
-              downloadLink.href = imageDataUrl;
-              downloadLink.download = fileName;
-          });
-      }).catch(error => {
-          console.error('Error generating framed QR code image:', error);
-          // QR code is still visible even if html2canvas fails
+            }).catch(err => console.error('Cloudinary upload error:', err));
+          }
+        }, 300);
+
+        document.getElementById("customer-id").value = data.nextCustomerId;
+        document.getElementById("customer-name").value = "";
+        document.getElementById("phone-number").value = "";
+        document.getElementById("location").value = "";
+        document.getElementById("machine-name").value = "";
+        document.getElementById("purchase-date").value = "";
+      })
+      .catch(error => {
+        console.error('Error saving receipt:', error);
+        if (error.message && error.message.includes('Duplicate ID')) {
+          alert("ID នេះត្រូវបានប្រើរួច! កំពុងទាញយក ID ថ្មី...");
+          fetchNextCustomerId();
+          return;
+        }
+        alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ: " + error.message);
       });
-    } else {
-        console.log('html2canvas not available, download button will use basic QR code');
-    }
-    // After successful generation and server storage, update the customer ID field with the next ID
-    document.getElementById("customer-id").value = data.nextCustomerId; // This is the 0000X ID for display
-    // Clear other form fields
-    document.getElementById("customer-name").value = "";
-    document.getElementById("phone-number").value = "";
-    document.getElementById("location").value = "";
-    document.getElementById("machine-name").value = "";
-    document.getElementById("purchase-date").value = ""; // Clear the text input
-  })
-  .catch(error => {
-    console.error('Error storing receipt data:', error);
-    console.error(error.message || 'Error saving receipt data.');
-    
-    // Check if it's a duplicate ID error
-    if (error.message && error.message.includes('Duplicate ID')) {
-        alert("ID នេះត្រូវបានប្រើរួច! កំពុងទាញយក ID ថ្មី...");
-        // Automatically fetch a new ID
-        fetchNextCustomerId();
-        return;
-    }
-    
-    alert("មានបញ្ហាក្នុងការរក្សាទុកទិន្នន័យ៖ " + (error.message || 'សូមព្យាយាមម្តងទៀត'));
-  });
-});
-
-document.getElementById("clear-btn").addEventListener("click", function () {
-  document.getElementById("customer-id").value = "";
-  document.getElementById("customer-name").value = "";
-  document.getElementById("phone-number").value = "";
-  document.getElementById("location").value = "";
-  document.getElementById("machine-name").value = "";
-  document.getElementById("purchase-date").value = ""; // Clear the text input
-
-  document.getElementById("qrcode").innerHTML = "";
-  document.getElementById("receipt-link").style.display = "none";
-  document.getElementById("download-link").style.display = "none";
-  fetchNextCustomerId(); // Fetch a new ID when clearing the form
-});
-
-function toggleMenu() {
-  document.getElementById("nav-links").classList.toggle("hidden"); // Updated from 'active' to 'hidden'
-  document.getElementById("nav-links").classList.toggle("flex");   // Added 'flex'
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Check authentication status on page load
-  fetch('/check-admin-auth')
-    .then(response => response.json())
-    .then(data => {
-      if (data.authenticated) {
-        document.getElementById('main-content').style.display = 'block'; // Show content if authenticated
-        fetchNextCustomerId(); // Fetch ID only if authenticated
-      } else {
-        // Redirect to login page if not authenticated
-        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-      }
-    })
-    .catch(error => {
-      console.error('Error checking authentication:', error);
-      // Fallback to redirect if auth check fails
-      window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
     });
 
-  const searchIdButton = document.getElementById("search-id-button");
-  if (searchIdButton) {
-    searchIdButton.addEventListener("click", function() {
-      const searchCustomerId = document.getElementById("search-customer-id").value.trim();
-      if (searchCustomerId) {
-        // Redirect to product-login.html when searching by ID
-        window.location.href = `product-login.html?customerId=${encodeURIComponent(searchCustomerId)}`;
-      } else {
-        // Replaced alert with console.error
-        console.error("សូមបញ្ចូលID ដើម្បីស្វែងរក!"); 
-      }
+    document.getElementById("clear-btn").addEventListener("click", function (e) {
+      if (e) e.preventDefault();
+      document.getElementById("customer-name").value = "";
+      document.getElementById("phone-number").value = "";
+      document.getElementById("location").value = "";
+      document.getElementById("machine-name").value = "";
+      document.getElementById("purchase-date").value = "";
+      document.getElementById("qrcode").innerHTML = `
+        <div style="color: var(--text-dim); text-align: center;">
+          <i class="fas fa-qrcode" style="font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.3;"></i>
+          <p style="font-size: 0.8rem; color: #94a3b8;">មិនទាន់មាន QR Code នៅឡើយទេ</p>
+        </div>`;
+      document.getElementById("receipt-link").style.display = "none";
+      document.getElementById("download-link").style.display = "none";
+      fetchNextCustomerId();
     });
-  }
 
-  // Logout button event listener
-  // Changed id from 'logout-btn' to 'logout-btn-nav' for consistency with admin.html
-  document.getElementById('logout-btn-nav').addEventListener('click', async function() {
-    try {
-      const response = await fetch('/logout', { method: 'POST' });
-      const data = await response.json();
-      if (data.success) {
-        window.location.href = '/login.html'; // Redirect to login page after logout
-      } else {
-        console.error('Logout failed:', data.message);
-        // Using console.error instead of alert for better user experience
-        console.error('Failed to logout. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-      // Using console.error instead of alert
-      console.error('An error occurred during logout.');
+    function verifyAdminAuth() {
+      fetch('/check-admin-auth')
+        .then(res => res.json())
+        .then(data => {
+          if (data.authenticated) {
+            document.getElementById('main-content').style.display = 'block';
+            fetchNextCustomerId();
+          } else {
+            document.getElementById('main-content').style.display = 'none';
+            window.location.replace('/login.html');
+          }
+        })
+        .catch(() => {
+          document.getElementById('main-content').style.display = 'none';
+          window.location.replace('/login.html');
+        });
     }
-  });
-});
-</script>
 
+    document.addEventListener("DOMContentLoaded", () => {
+      verifyAdminAuth();
+
+      const searchIdButton = document.getElementById("search-id-button");
+      if (searchIdButton) {
+        searchIdButton.addEventListener("click", function(e) {
+          if (e) e.preventDefault();
+          const searchCustomerId = document.getElementById("search-customer-id").value.trim();
+          if (searchCustomerId) {
+            window.location.href = `product-login.html?customerId=${encodeURIComponent(searchCustomerId)}`;
+          } else {
+            alert("សូមបញ្ចូល ID ដើម្បីស្វែងរក!");
+          }
+        });
+      }
+
+      document.getElementById('logout-btn-nav').addEventListener('click', async function(e) {
+        if (e) e.preventDefault();
+        try {
+          await fetch('/logout', { method: 'POST' });
+        } catch (e) {}
+        window.location.replace('/login.html');
+      });
+    });
+
+    window.addEventListener("pageshow", function(event) {
+      verifyAdminAuth();
+    });
+  </script>
 </body>
 </html>

@@ -1,191 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Access Receipt | YSG</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <title>ផ្ទៀងផ្ទាត់បង្កាន់ដៃ | YSG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/theme.css" />
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <style>
-        /* Basic styling for the product login page */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .login-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #e0e0e0;
-        }
-        .login-container h2 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        .input-group input {
-            /* Adjusted padding to make space for the icon inside */
-            width: 100%; /* Make input full width of its parent */
-            padding: 12px 15px 12px 40px; /* Left padding for icon */
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            box-sizing: border-box;
-        }
-        .input-group input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-            outline: none;
-        }
-        .input-icon {
-            position: absolute;
-            left: 15px; /* Position icon inside the input field */
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-            font-size: 1rem;
-            pointer-events: none; /* Ensure icon doesn't block input clicks */
-        }
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #888;
-            font-size: 1rem;
-            transition: color 0.2s ease;
-        }
-        .toggle-password:hover {
-            color: #333;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #28a745; /* Green for product access */
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
-        }
-        button:hover {
-            background-color: #218838;
-            transform: translateY(-1px);
-        }
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
-        }
-        .error-message {
-            color: #dc3545;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            display: none; /* Hidden by default */
+        body, input, button {
+            font-family: 'Battambang', cursive, 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 20px;
-            }
-            .login-container h2 {
-                font-size: 1.5rem;
-            }
-            button {
-                font-size: 1rem;
-                padding: 10px;
-            }
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .customer-badge {
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: var(--transition-fast);
+            padding: 0.25rem;
+        }
+
+        .toggle-password:hover {
+            color: var(--text-main);
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Enter Password to View Receipt</h2>
-        <form id="product-login-form">
-            <div class="input-group">
-                <span class="input-icon"><i class="fas fa-lock"></i></span>
-                <input type="password" id="product-password" name="password" placeholder="Product Password" required />
-                <span class="toggle-password" onclick="togglePassword()">
-                    <i id="eye-icon" class="fas fa-eye"></i>
-                </span>
+    <div class="login-wrapper">
+        <div class="glass-card login-card">
+            <div class="login-header">
+                <img src="img/Y S G_ (2).png" alt="YSG Logo" style="height: 60px; margin: 0 auto 1.25rem; display: block; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));" />
+                <h1 class="login-title">ផ្ទៀងផ្ទាត់បង្កាន់ដៃឌីជីថល</h1>
+                <p class="login-subtitle" style="color: var(--text-muted); font-size: 0.85rem;">សូមបញ្ចូលលេខកូដសុវត្ថិភាពដើម្បីមើលព័ត៌មានលម្អិត</p>
+                <div id="customer-id-badge" class="customer-badge" style="display: none;">
+                    <span class="badge badge-success"><i class="fas fa-hashtag"></i> លេខសម្គាល់: <span id="display-customer-id"></span></span>
+                </div>
             </div>
-            <p id="error-message" class="error-message">Invalid password.</p>
-            <button type="submit">Access Receipt</button>
-        </form>
+
+            <form id="product-login-form">
+                <div class="form-group">
+                    <label class="form-label" for="product-password">ពាក្យសម្ងាត់សុវត្ថិភាពបង្កាន់ដៃ</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="product-password" name="password" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
+                        <i class="fas fa-key input-icon"></i>
+                        <span class="toggle-password" id="toggle-btn" title="បង្ហាញ/លាក់ ពាក្យសម្ងាត់">
+                            <i id="eye-icon" class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div id="error-alert" class="alert alert-danger" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="error-text">ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។</span>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn btn-secondary btn-full" style="margin-top: 1.5rem;">
+                    <i class="fas fa-unlock"></i>
+                    <span id="btn-text">ចូលមើលបង្កាន់ដៃ (Access Receipt)</span>
+                </button>
+            </form>
+        </div>
     </div>
 
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById("product-password");
-            const eyeIcon = document.getElementById("eye-icon");
+        const urlParams = new URLSearchParams(window.location.search);
+        const customerId = urlParams.get('customerId');
+        const badgeContainer = document.getElementById('customer-id-badge');
+        const displayCustomerId = document.getElementById('display-customer-id');
 
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                eyeIcon.classList.remove("fa-eye");
-                eyeIcon.classList.add("fa-eye-slash");
-            } else {
-                passwordInput.type = "password";
-                eyeIcon.classList.remove("fa-eye-slash");
-                eyeIcon.classList.add("fa-eye");
-            }
+        if (customerId) {
+            displayCustomerId.textContent = customerId;
+            badgeContainer.style.display = 'inline-block';
         }
 
-        document.getElementById('product-login-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const password = document.getElementById('product-password').value;
-            const errorMessage = document.getElementById('error-message');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const passwordInput = document.getElementById('product-password');
+        const eyeIcon = document.getElementById('eye-icon');
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const customerId = urlParams.get('customerId');
+        toggleBtn.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.className = 'fas fa-eye';
+            }
+        });
+
+        document.getElementById('product-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const password = passwordInput.value;
+            const errorAlert = document.getElementById('error-alert');
+            const errorText = document.getElementById('error-text');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
 
             if (!customerId) {
-                errorMessage.textContent = 'Customer ID not found in URL.';
-                errorMessage.style.display = 'block';
+                errorText.textContent = 'រកមិនឃើញ ID អតិថិជននៅក្នុង URL ទេ។';
+                errorAlert.style.display = 'flex';
                 return;
             }
+
+            errorAlert.style.display = 'none';
+            submitBtn.disabled = true;
+            btnText.textContent = 'កំពុងផ្ទៀងផ្ទាត់...';
 
             try {
                 const response = await fetch('/product-login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password, customerId }),
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    window.location.href = data.redirectUrl; // Redirect to product.html with customerId
+                    window.location.replace(data.redirectUrl);
                 } else {
-                    errorMessage.textContent = data.message || 'Invalid password.';
-                    errorMessage.style.display = 'block';
+                    errorText.textContent = data.message || 'ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។';
+                    errorAlert.style.display = 'flex';
                 }
             } catch (error) {
                 console.error('Product login error:', error);
-                errorMessage.textContent = 'An error occurred during access. Please try again.';
-                errorMessage.style.display = 'block';
+                errorText.textContent = 'មានបញ្ហាបណ្តាញ! សូមព្យាយាមម្តងទៀត។';
+                errorAlert.style.display = 'flex';
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'ចូលមើលបង្កាន់ដៃ (Access Receipt)';
             }
         });
     </script>

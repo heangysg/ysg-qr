@@ -1,583 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Panel | YSG</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+    <title>ប្រព័ន្ធគ្រប់គ្រងបង្កាន់ដៃ (Admin) | YSG System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="/theme.css" />
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <style>
-        /* Custom font for body (Inter) */
-        body {
-            font-family: 'Battambang', cursive;
-        }
-        /* Apply Arial to navbar text for consistency with other pages */
-        header nav ul li a,
-        header nav ul li button {
-            font-family: 'Arial', sans-serif;
-            font-weight: bold; /* Make navbar text bold */
-        }
-        /* Apply Battambang to specific Khmer text elements */
-        .khmer-font {
-            font-family: 'Battambang', cursive;
-        }
-        /* Specific style for table data cells to ensure non-bold Khmer font */
-        #receipts-body td.khmer-font-cell {
-            font-family: 'Battambang', cursive;
-            font-weight: normal; /* Ensure it's not bold */
+        body, input, button, select, label, table, th, td {
+            font-family: 'Battambang', cursive, 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Custom styles for the message box */
-        .message-box {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #ffffff;
-            padding: 2.5rem; /* Increased padding */
-            border-radius: 1rem; /* More rounded corners */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-            z-index: 1000;
-            text-align: center;
-            max-width: 400px; /* Wider message box */
-            width: 90%;
-            border: 1px solid #e0e0e0; /* Subtle border */
-        }
-        .message-box .message-icon {
-            font-size: 4em; /* Larger icon */
-            margin-bottom: 1rem;
-        }
-        .message-box .message-icon.success {
-            color: #28a745;
-        }
-        .message-box .message-icon.error {
-            color: #dc3545;
-        }
-        .message-box .message-icon.confirm {
-            color: #ffc107; /* Yellow for confirm */
-        }
-        .message-box p {
-            margin: 1rem 0;
-            font-size: 1.25em; /* Larger text */
-            color: #333;
-            font-weight: 500;
-        }
-        .message-box button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem; /* More padding */
-            border-radius: 0.5rem; /* Rounded buttons */
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 1.5rem;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-        }
-        .message-box button:hover {
-            background-color: #0056b3;
-            transform: translateY(-1px);
-        }
-        .message-box button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-        }
-        .message-box button.ml-2 { /* For the 'No' button in confirm */
-            background-color: #6c757d; /* Gray for secondary action */
-            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
-        }
-        .message-box button.ml-2:hover {
-            background-color: #5a6268;
+        .dashboard-container {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
         }
 
-        /* Loading overlay */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            justify-content: center;
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: center;
-            z-index: 999;
-        }
-
-        .loading-spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            padding: 2rem; /* Increased padding */
-            border: 1px solid #e0e0e0;
-            border-radius: 1rem; /* More rounded */
-            width: 90%;
-            max-width: 600px; /* Wider modal */
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Stronger shadow */
-            position: relative;
-            z-index: 1001;
-        }
-
-        .close-button {
-            color: #aaa;
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s ease;
-            z-index: 1002;
-            pointer-events: auto;
-        }
-
-        .close-button:hover,
-        .close-button:focus {
-            color: #333;
-        }
-
-        .modal-content h2 {
-            margin-top: 0;
-            color: #333;
-            font-size: 2rem;
+            gap: 1rem;
             margin-bottom: 1.5rem;
         }
 
-        .modal-content label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #4a5568;
-            font-size: 1.1rem;
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
         }
 
-        .modal-content input[type="text"],
-        .modal-content input[type="date"] {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 0.5rem;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            font-size: 1rem;
-        }
-        .modal-content input[type="text"]:focus,
-        .modal-content input[type="date"]:focus {
-            border-color: #4299e1;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-            outline: none;
+        @media (max-width: 992px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .modal-content button[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-        }
-
-        .modal-content button[type="submit"]:hover {
-            background-color: #0056b3;
-            transform: translateY(-1px);
-        }
-        .modal-content button[type="submit"]:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-        }
-
-        /* Header and Nav styles - Using your exact color #002d5d */
-        header {
-            background-color: #002d5d;
-            padding: 1rem 2rem;
+        .pagination-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem 1.25rem;
         }
 
-        header .logo img {
-            height: 60px;
-        }
-
-        header nav ul {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Navbar text size and boldness */
-        header nav ul li a,
-        header nav ul li button {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.15rem;
-            transition: color 0.2s ease;
-        }
-
-        header nav ul li a:hover,
-        header nav ul li button:hover {
-            color: #a0aec0;
-        }
-
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .hamburger .bar {
-            width: 30px;
-            height: 4px;
-            background-color: white;
-            border-radius: 2px;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 1rem;
-            }
-            header nav ul {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 80px;
-                left: 0;
-                width: 100%;
-                background-color: #002d5d;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                padding: 1rem 0;
-                text-align: center;
-            }
-
-            header nav ul.flex {
-                display: flex;
-            }
-
-            header nav ul li {
-                margin: 0.75rem 0;
-            }
-            header nav ul li a,
-            header nav ul li button {
-                font-size: 1rem;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-        }
-
-        /* Pagination styles */
         .pagination-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            background-color: white;
-            color: #374151;
+            padding: 0.4rem 0.85rem;
+            border-radius: var(--radius-sm);
+            background: var(--input-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition-fast);
         }
+
         .pagination-btn:hover:not(.disabled) {
-            background-color: #f3f4f6;
+            background: rgba(255, 255, 255, 0.1);
         }
+
         .pagination-btn.active {
-            background-color: #3b82f6;
+            background: var(--primary);
+            border-color: var(--primary);
             color: white;
-            border-color: #3b82f6;
         }
+
         .pagination-btn.disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
     </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col">
-    <header>
-        <div class="logo">
-            <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-16" />
-        </div>
-        <nav>
-            <div class="hamburger" onclick="toggleMenu()">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
-            <ul id="nav-links" class="hidden md:flex space-x-8">
-                <li><a href="index.html" class="text-white hover:text-gray-300 transition duration-200">Generate QR</a></li>
-                <li><a href="admin.html" class="text-white hover:text-gray-300 transition duration-200">Admin</a></li>
-                <li><a href="contact.html" class="text-white hover:text-gray-300 transition duration-200">Contact</a></li>
-                <li><button id="logout-btn-nav" class="bg-transparent border-none text-white cursor-pointer text-lg p-0 hover:text-gray-300 transition duration-200">Logout</button></li>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo">
+                <img src="img/Y S G_ (2).png" alt="YSG Logo" style="height: 48px;" />
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-plus-circle"></i> <span>បង្កើត QR Code</span></a></li>
+                <li><a href="admin.html" class="nav-link active"><i class="fas fa-tachometer-alt"></i> <span>អ្នកគ្រប់គ្រង</span></a></li>
+                <li><a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> <span>ទំនាក់ទំនង</span></a></li>
+                <li><button type="button" id="logout-btn-nav" class="btn btn-outline btn-sm"><i class="fas fa-sign-out-alt"></i> <span>ចាកចេញ</span></button></li>
             </ul>
-        </nav>
+        </div>
     </header>
 
-    <div class="container mx-auto p-6 flex-grow" id="admin-panel" style="display: none;">
-        <div class="sticky top-0 z-10 bg-gray-100 pb-4">
-            <div class="admin-header flex flex-col md:flex-row justify-between items-center mb-4">
-                <h2 class="text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">All Receipts (Admin)</h2>
-                <div class="action-buttons flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                    <button id="refresh-btn" onclick="refreshReceipts()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
-                        <i class="fas fa-sync-alt mr-2"></i> Refresh
-                    </button>
-                    <button id="export-csv-btn" onclick="exportToCsv()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
-                        <i class="fas fa-file-csv mr-2"></i> Export CSV
-                    </button>
-                    <button id="logout-btn" onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out flex items-center justify-center transform hover:-translate-y-1">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                    </button>
-                </div>
-            </div>
-
-            <div class="mb-4 bg-white p-4 rounded-xl shadow-lg border border-gray-200">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-blue-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                        <p class="text-lg font-medium text-blue-800">Total Receipts:</p>
-                        <span id="total-receipts-stat" class="text-2xl font-bold text-blue-700">0</span>
-                    </div>
-                    <div class="bg-green-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                        <p class="text-lg font-medium text-green-800">Receipts Today:</p>
-                        <span id="receipts-today-stat" class="text-2xl font-bold text-green-700">0</span>
-                    </div>
-                    <div class="bg-yellow-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                        <p class="text-lg font-medium text-yellow-800">Receipts This Month:</p>
-                        <span id="receipts-this-month-stat" class="text-2xl font-bold text-yellow-700">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <div class="flex flex-col md:flex-row gap-4 items-center">
-                    <input type="text" id="search-input" placeholder="Search by ID, Name, Phone, Location, or Product..." class="flex-grow p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-                    <input type="date" id="from-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-                    <input type="date" id="to-date-input" class="p-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-400 text-gray-700 text-lg">
-                    <button id="search-button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
-                        <i class="fas fa-search mr-2"></i> Search
-                    </button>
-                    <button id="clear-search-button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3.5 px-7 rounded-xl shadow-lg transition duration-300 ease-in-out w-full md:w-auto transform hover:-translate-y-1">
-                        <i class="fas fa-times mr-2"></i> Clear
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- Admin Content Area -->
+    <main id="admin-panel" class="dashboard-container" style="display: none;">
         
-        <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 mt-4">
-            <table class="min-w-full divide-y divide-gray-200 table-fixed">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('customerId')"> ID អតិថិជន <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('customerName')"> ឈ្មោះអតិថិជន <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('phoneNumber')"> លេខទូរស័ព្ទ <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('location')"> ទីតាំង <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-left text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('machineName')"> ឈ្មោះផលិតផល <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font cursor-pointer" onclick="sortReceipts('purchaseDate')"> កាលបរិច្ឆេទទិញ <i class="fas fa-sort text-sm ml-1"></i> </th>
-                        <th class="px-6 py-4 text-center text-lg font-bold text-gray-700 uppercase tracking-wider khmer-font">ផ្សេងៗ</th>
-                    </tr>
-                </thead>
-                <tbody id="receipts-body" class="bg-white divide-y divide-gray-200">
-                </tbody>
-            </table>
-            <p id="no-receipts-message" class="text-center py-6 text-gray-500 text-xl khmer-font" style="display: none;">រកមិនឃើញបង្កាន់ដៃដែលត្រូវគ្នានឹងការស្វែងរករបស់អ្នកទេ។</p>
-        </div>
-
-        <!-- Pagination Controls -->
-        <div class="flex justify-between items-center mt-6 bg-white p-4 rounded-lg shadow">
-            <div class="text-sm text-gray-700">
-                Showing <span id="showing-from">0</span> to <span id="showing-to">0</span> of 
-                <span id="total-records">0</span> entries
-            </div>
-            <div class="flex gap-2">
-                <button id="prev-page" class="pagination-btn disabled">
-                    Previous
-                </button>
-                <div id="page-numbers" class="flex gap-1">
-                    <!-- Page numbers will be inserted here -->
-                </div>
-                <button id="next-page" class="pagination-btn disabled">
-                    Next
-                </button>
-            </div>
+        <!-- Header Bar with Backup & Restore Buttons -->
+        <div class="action-bar" style="margin-bottom: 1.5rem;">
             <div>
-                <select id="page-size" class="border rounded p-2">
-                    <option value="10">10 per page</option>
-                    <option value="25">25 per page</option>
-                    <option value="50">50 per page</option>
-                    <option value="100">100 per page</option>
-                </select>
+                <h1 style="font-size: 1.8rem;">គ្រប់គ្រងបង្កាន់ដៃ (Admin Dashboard)</h1>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">មើល ស្វែងរក កែប្រែ និងទាញយកទិន្នន័យបង្កាន់ដៃ</p>
             </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <button type="button" id="btn-backup" onclick="downloadBackup()" class="btn btn-primary btn-sm" style="cursor: pointer;">
+                    <i class="fas fa-download"></i> រក្សាទុកទិន្នន័យ (Backup)
+                </button>
+                <button type="button" id="btn-restore" onclick="triggerRestore()" class="btn btn-outline btn-sm" style="border-color: var(--accent); color: var(--accent); cursor: pointer;">
+                    <i class="fas fa-upload"></i> ស្តារទិន្នន័យ (Restore)
+                </button>
+                <input type="file" id="restore-file-input" style="display: none;" accept=".json">
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Cards -->
+        <div class="stats-grid">
+            <div class="glass-card stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>បង្កាន់ដៃសរុប</h4>
+                    <div id="total-receipts-stat" class="stat-value">0</div>
+                </div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--secondary); border-color: rgba(16, 185, 129, 0.25);">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>បង្កាន់ដៃថ្ងៃនេះ</h4>
+                    <div id="receipts-today-stat" class="stat-value">0</div>
+                </div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent); border-color: rgba(245, 158, 11, 0.25);">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>បង្កាន់ដៃខែនេះ</h4>
+                    <div id="receipts-this-month-stat" class="stat-value">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="glass-card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div class="filter-grid">
+                <div class="input-wrapper">
+                    <input type="text" id="search-input" class="form-input" placeholder="ស្វែងរកតាម ID, ឈ្មោះ, លេខទូរស័ព្ទ, ទីតាំង, ផលិតផល..." />
+                    <i class="fas fa-search input-icon"></i>
+                </div>
+                <div class="input-wrapper">
+                    <input type="date" id="from-date-input" class="form-input no-icon" />
+                </div>
+                <div class="input-wrapper">
+                    <input type="date" id="to-date-input" class="form-input no-icon" />
+                </div>
+                <button type="button" id="search-button" class="btn btn-primary btn-sm" style="cursor: pointer;">
+                    <i class="fas fa-search"></i> ស្វែងរក
+                </button>
+                <button type="button" id="clear-search-button" class="btn btn-outline btn-sm" style="cursor: pointer;">
+                    <i class="fas fa-times"></i> សម្អាត
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Table Container -->
+        <div class="glass-card" style="padding: 1rem; overflow: hidden;">
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th style="cursor: pointer;" onclick="sortReceipts('customerId')">
+                                ID អតិថិជន <i class="fas fa-sort"></i>
+                            </th>
+                            <th style="cursor: pointer;" onclick="sortReceipts('customerName')">
+                                ឈ្មោះអតិថិជន <i class="fas fa-sort"></i>
+                            </th>
+                            <th style="cursor: pointer;" onclick="sortReceipts('phoneNumber')">
+                                លេខទូរស័ព្ទ <i class="fas fa-sort"></i>
+                            </th>
+                            <th style="cursor: pointer;" onclick="sortReceipts('location')">
+                                ទីតាំង <i class="fas fa-sort"></i>
+                            </th>
+                            <th style="cursor: pointer;" onclick="sortReceipts('machineName')">
+                                ឈ្មោះផលិតផល <i class="fas fa-sort"></i>
+                            </th>
+                            <th style="cursor: pointer;" onclick="sortReceipts('purchaseDate')">
+                                កាលបរិច្ឆេទទិញ <i class="fas fa-sort"></i>
+                            </th>
+                            <th style="text-align: center;">សកម្មភាព</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipts-body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="no-receipts-message" class="alert alert-danger" style="display: none; justify-content: center; margin: 1.5rem auto; max-width: 400px;">
+                <i class="fas fa-info-circle"></i> រកមិនឃើញបង្កាន់ដៃដែលត្រូវគ្នានឹងការស្វែងរករបស់អ្នកទេ។
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-container">
+                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                    បង្ហាញ <span id="showing-from" style="color: var(--text-main); font-weight: 700;">0</span> ដល់ 
+                    <span id="showing-to" style="color: var(--text-main); font-weight: 700;">0</span> នៃ 
+                    <span id="total-records" style="color: var(--text-main); font-weight: 700;">0</span> បង្កាន់ដៃ
+                </div>
+                <div style="display: flex; gap: 0.35rem; align-items: center;">
+                    <button type="button" id="prev-page" class="pagination-btn disabled">ថយក្រោយ</button>
+                    <div id="page-numbers" style="display: flex; gap: 0.25rem;"></div>
+                    <button type="button" id="next-page" class="pagination-btn disabled">បន្ទាប់</button>
+                </div>
+                <div>
+                    <select id="page-size" class="form-select no-icon" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; width: auto;">
+                        <option value="10">10 ក្នុងមួយទំព័រ</option>
+                        <option value="25">25 ក្នុងមួយទំព័រ</option>
+                        <option value="50">50 ក្នុងមួយទំព័រ</option>
+                        <option value="100">100 ក្នុងមួយទំព័រ</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loading-overlay" class="modal-overlay">
+        <div style="text-align: center; color: white;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+            <p style="margin-top: 1rem; font-weight: 600;">កំពុងដំណើរការ...</p>
         </div>
     </div>
 
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-spinner"></div>
-    </div>
+    <!-- Edit Receipt Modal -->
+    <div id="editReceiptModal" class="modal-overlay">
+        <div class="modal-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.4rem;"><i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i> កែប្រែបង្កាន់ដៃ</h2>
+                <button type="button" class="btn btn-outline btn-sm" id="closeModalButton" style="padding: 0.25rem 0.5rem;"><i class="fas fa-times"></i></button>
+            </div>
 
-    <div id="editReceiptModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="closeModalButton">&times;</span>
-            <h2 class="text-3xl font-bold mb-6 text-gray-800 khmer-font">កែប្រែបង្កាន់ដៃ</h2>
-            <form id="editReceiptForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <form id="editReceiptForm">
                 <input type="hidden" id="editReceiptId">
-                <div>
-                    <label for="editCustomerId" class="block text-base font-semibold text-gray-700 khmer-font">ID អតិថិជន:</label>
-                    <input type="text" id="editCustomerId" name="customerId" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">ID អតិថិជន</label>
+                        <input type="text" id="editCustomerId" class="form-input no-icon" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">កាលបរិច្ឆេទទិញ</label>
+                        <input type="date" id="editPurchaseDate" class="form-input no-icon" required />
+                    </div>
                 </div>
-                <div>
-                    <label for="editCustomerName" class="block text-base font-semibold text-gray-700 khmer-font">ឈ្មោះអតិថិជន:</label>
-                    <input type="text" id="editCustomerName" name="customerName" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
+
+                <div class="form-group">
+                    <label class="form-label">ឈ្មោះអតិថិជន</label>
+                    <input type="text" id="editCustomerName" class="form-input no-icon" required />
                 </div>
-                <div>
-                    <label for="editPhoneNumber" class="block text-base font-semibold text-gray-700 khmer-font">លេខទូរស័ព្ទ:</label>
-                    <input type="text" id="editPhoneNumber" name="phoneNumber" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">លេខទូរស័ព្ទ</label>
+                        <input type="text" id="editPhoneNumber" class="form-input no-icon" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ទីតាំង</label>
+                        <input type="text" id="editLocation" class="form-input no-icon" />
+                    </div>
                 </div>
-                <div>
-                    <label for="editLocation" class="block text-base font-semibold text-gray-700 khmer-font">ទីតាំង:</label>
-                    <input type="text" id="editLocation" name="location" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
+
+                <div class="form-group">
+                    <label class="form-label">ឈ្មោះផលិតផល</label>
+                    <input type="text" id="editMachineName" class="form-input no-icon" required />
                 </div>
-                <div>
-                    <label for="editMachineName" class="block text-base font-semibold text-gray-700 khmer-font">ឈ្មោះផលិតផល:</label>
-                    <input type="text" id="editMachineName" name="machineName" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
-                </div>
-                <div>
-                    <label for="editPurchaseDate" class="block text-base font-semibold text-gray-700 khmer-font">កាលបរិច្ឆេទទិញ:</label>
-                    <input type="date" id="editPurchaseDate" name="purchaseDate" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base khmer-font">
-                </div>
-                <div class="md:col-span-2 mt-4">
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">Save Changes</button>
+
+                <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-save"></i> រក្សាទុកការកែប្រែ
+                    </button>
+                    <button type="button" onclick="closeModal()" class="btn btn-outline">បោះបង់</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="messageBox" class="message-box">
-        <i id="messageIcon" class="message-icon"></i>
-        <p id="messageText" class="khmer-font"></p>
-        <button onclick="hideMessageBox()">OK</button>
+    <!-- Alert / Confirmation Modal -->
+    <div id="messageBox" class="modal-overlay">
+        <div class="modal-container" style="max-width: 420px; text-align: center;">
+            <div id="messageIcon" style="font-size: 3rem; margin-bottom: 1rem;"></div>
+            <p id="messageText" style="font-size: 1.05rem; margin-bottom: 1.5rem;"></p>
+            <div id="messageButtons" style="display: flex; justify-content: center; gap: 0.75rem;">
+                <button type="button" id="msg-ok-btn" class="btn btn-primary btn-sm" onclick="hideMessageBox()">យល់ព្រម (OK)</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Store current sort column and direction
-        let currentSortColumn = 'createdAt';
-        let currentSortDirection = 'desc';
-
-        // Pagination variables
-        let currentPage = 1;
-        let pageSize = 10;
-        let totalPages = 1;
-        let allReceipts = [];
-
-        // ========== MODAL FUNCTIONS ==========
-        function closeModal() {
-            console.log('Closing modal...');
-            document.getElementById('editReceiptModal').style.display = 'none';
-        }
-
-        function closeEditModal() {
-            closeModal();
-        }
-
-        // ========== MESSAGE BOX FUNCTIONS ==========
-        function showMessageBox(message, type, onConfirm = null) {
-            const messageBox = document.getElementById('messageBox');
-            const messageIcon = document.getElementById('messageIcon');
-            const messageText = document.getElementById('messageText');
-            const okButton = messageBox.querySelector('button');
-
-            messageText.textContent = message;
-            messageIcon.className = 'message-icon';
-            okButton.classList.remove('ml-2', 'bg-gray-500', 'hover:bg-gray-600', 'bg-green-600', 'hover:bg-green-700', 'bg-red-600', 'hover:bg-red-700', 'bg-blue-600', 'hover:bg-blue-700');
-            okButton.textContent = 'OK';
-            okButton.onclick = hideMessageBox;
-
-            const existingCancelButton = okButton.parentNode.querySelector('.ml-2');
-            if (existingCancelButton) {
-                existingCancelButton.remove();
-            }
-
-            if (type === 'success') {
-                messageIcon.classList.add('success', 'fas', 'fa-check-circle');
-                okButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
-            } else if (type === 'error') {
-                messageIcon.classList.add('error', 'fas', 'fa-times-circle');
-                okButton.classList.add('bg-red-600', 'hover:bg-red-700');
-            } else if (type === 'confirm') {
-                messageIcon.classList.add('confirm', 'fas', 'fa-question-circle');
-                okButton.textContent = 'Yes';
-                okButton.classList.add('bg-green-600', 'hover:bg-green-700', 'khmer-font');
-
-                const cancelButton = document.createElement('button');
-                cancelButton.textContent = 'No';
-                cancelButton.classList.add('ml-2', 'bg-gray-500', 'hover:bg-gray-600', 'text-white', 'font-semibold', 'py-3', 'px-6', 'rounded-xl', 'shadow-md', 'transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'khmer-font');
-                cancelButton.onclick = () => {
-                    hideMessageBox();
-                    if (onConfirm) onConfirm(false);
-                };
-                okButton.parentNode.appendChild(cancelButton);
-
-                okButton.onclick = () => {
-                    hideMessageBox();
-                    if (onConfirm) onConfirm(true);
-                };
-            }
-            messageBox.style.display = 'block';
-        }
-
-        function hideMessageBox() {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.style.display = 'none';
-            const okButton = messageBox.querySelector('button');
-            if (okButton && okButton.nextSibling && okButton.nextSibling.tagName === 'BUTTON') {
-                okButton.nextSibling.remove();
-            }
-        }
-
-        // ========== UTILITY FUNCTIONS ==========
-        function toggleMenu() {
-            document.getElementById("nav-links").classList.toggle("hidden");
-            document.getElementById("nav-links").classList.toggle("flex");
-        }
-
+        // Utility Functions First
         function formatDate(dateString) {
             if (!dateString) return "-";
             const date = new Date(dateString);
@@ -588,9 +317,244 @@
             return `${day}/${month}/${year}`;
         }
 
+        let currentSortColumn = 'createdAt';
+        let currentSortDirection = 'desc';
+
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+        let allReceipts = [];
+
+        // Global Action Functions
+        async function refreshReceipts(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.add('active');
+            try {
+                await loadReceipts();
+                showMessageBox("បានធ្វើឱ្យស្រស់ទិន្នន័យដោយជោគជ័យ!", "success");
+            } catch(err) {
+                console.error(err);
+                alert("មានបញ្ហាក្នុងការធ្វើឱ្យស្រស់ទិន្នន័យ!");
+            } finally {
+                setTimeout(() => {
+                    if (overlay) overlay.classList.remove('active');
+                }, 300);
+            }
+        }
+        window.refreshReceipts = refreshReceipts;
+
+        async function exportToCsv(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            
+            let receipts = allReceipts;
+            if (!receipts || receipts.length === 0) {
+                try {
+                    const res = await fetch("/api/receipts");
+                    if (res.ok) {
+                        receipts = await res.json();
+                        allReceipts = receipts;
+                    }
+                } catch (err) {
+                    console.error("Error fetching receipts for export:", err);
+                }
+            }
+
+            if (!receipts || receipts.length === 0) {
+                alert("គ្មានទិន្នន័យសម្រាប់ទាញយកទេ។ (No receipts available)");
+                return;
+            }
+
+            try {
+                const headers = ["ID អតិថិជន", "ឈ្មោះអតិថិជន", "លេខទូរស័ព្ទ", "ទីតាំង", "ឈ្មោះផលិតផល", "កាលបរិច្ឆេទទិញ"];
+                const rows = receipts.map(r => [
+                    `"${r.customerId || ''}"`,
+                    `"${r.customerName || ''}"`,
+                    `"${r.phoneNumber || ''}"`,
+                    `"${r.location || ''}"`,
+                    `"${r.machineName || ''}"`,
+                    `"${formatDate(r.purchaseDate)}"`
+                ]);
+
+                const csvContent = "\uFEFF" + headers.join(",") + "\n" + rows.map(row => row.join(",")).join("\n");
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `ysg_receipts_export_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    if (document.body.contains(link)) document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }, 200);
+                showMessageBox("ទាញយកទិន្នន័យ CSV ដោយជោគជ័យ!", "success");
+            } catch (err) {
+                console.error("CSV Export Error:", err);
+                alert("មានបញ្ហាក្នុងការទាញយក CSV: " + err.message);
+            }
+        }
+        window.exportToCsv = exportToCsv;
+
+        function downloadBackup(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            fetch('/api/backup')
+                .then(res => {
+                    if (!res.ok) throw new Error('Backup failed');
+                    return res.blob();
+                })
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `ysg_backup_${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        if (document.body.contains(a)) document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 200);
+                    showMessageBox("រក្សាទុកទិន្នន័យ (Backup) ដោយជោគជ័យ!", "success");
+                })
+                .catch(err => {
+                    console.error('Backup error:', err);
+                    alert("មានបញ្ហាក្នុងការទាញយក Backup: " + err.message);
+                });
+        }
+        window.downloadBackup = downloadBackup;
+
+        function triggerRestore(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            showMessageBox('ការស្តារទិន្នន័យនឹងបន្ថែម ឬកែប្រែទិន្នន័យដែលមានស្រាប់។ តើអ្នកចង់បន្តទេ?', 'confirm', (confirmed) => {
+                if (confirmed) {
+                    const input = document.getElementById('restore-file-input');
+                    if (input) input.click();
+                }
+            });
+        }
+        window.triggerRestore = triggerRestore;
+
+        async function handleRestore(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    const overlay = document.getElementById('loading-overlay');
+                    if (overlay) overlay.classList.add('active');
+
+                    const response = await fetch('/api/restore', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ backupData })
+                    });
+
+                    const result = await response.json();
+                    if (overlay) overlay.classList.remove('active');
+
+                    if (response.ok) {
+                        showMessageBox('ការស្តារទិន្នន័យបានជោគជ័យ! ' + (result.message || ''), 'success');
+                        loadReceipts();
+                    } else {
+                        showMessageBox('ការស្តារទិន្នន័យបានបរាជ័យ៖ ' + (result.message || ''), 'error');
+                    }
+                } catch (error) {
+                    const overlay = document.getElementById('loading-overlay');
+                    if (overlay) overlay.classList.remove('active');
+                    alert('ឯកសារមិនត្រឹមត្រូវ៖ ' + error.message);
+                }
+                input.value = '';
+            };
+            reader.readAsText(file);
+        }
+        window.handleRestore = handleRestore;
+
+        function closeModal() {
+            document.getElementById('editReceiptModal').classList.remove('active');
+        }
+
+        window.hideMessageBox = function() {
+            const messageBox = document.getElementById('messageBox');
+            if (messageBox) messageBox.classList.remove('active');
+        };
+
+        function hideMessageBox() {
+            window.hideMessageBox();
+        }
+
+        function showMessageBox(message, type, onConfirm = null) {
+            const messageBox = document.getElementById('messageBox');
+            const messageIcon = document.getElementById('messageIcon');
+            const messageText = document.getElementById('messageText');
+            const buttonContainer = document.getElementById('messageButtons');
+
+            messageText.textContent = message;
+            buttonContainer.innerHTML = '';
+
+            if (type === 'success' || type === 'error') {
+                messageIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-times-circle';
+                messageIcon.style.color = type === 'success' ? 'var(--secondary)' : 'var(--danger)';
+
+                const okBtn = document.createElement('button');
+                okBtn.type = 'button';
+                okBtn.className = type === 'success' ? 'btn btn-secondary btn-sm' : 'btn btn-danger btn-sm';
+                okBtn.textContent = 'យល់ព្រម (OK)';
+                okBtn.style.cursor = 'pointer';
+                okBtn.onclick = function(e) {
+                    if (e) e.stopPropagation();
+                    window.hideMessageBox();
+                };
+                okBtn.addEventListener('click', function(e) {
+                    if (e) e.stopPropagation();
+                    window.hideMessageBox();
+                });
+                buttonContainer.appendChild(okBtn);
+            } else if (type === 'confirm') {
+                messageIcon.className = 'fas fa-question-circle';
+                messageIcon.style.color = 'var(--accent)';
+
+                const yesBtn = document.createElement('button');
+                yesBtn.type = 'button';
+                yesBtn.className = 'btn btn-primary btn-sm';
+                yesBtn.textContent = 'យល់ព្រម (Yes)';
+                yesBtn.style.cursor = 'pointer';
+                yesBtn.onclick = function(e) {
+                    if (e) e.stopPropagation();
+                    window.hideMessageBox();
+                    if (onConfirm) onConfirm(true);
+                };
+                yesBtn.addEventListener('click', function(e) {
+                    if (e) e.stopPropagation();
+                    window.hideMessageBox();
+                    if (onConfirm) onConfirm(true);
+                });
+
+                const noBtn = document.createElement('button');
+                noBtn.type = 'button';
+                noBtn.className = 'btn btn-outline btn-sm';
+                noBtn.textContent = 'បោះបង់ (No)';
+                noBtn.style.cursor = 'pointer';
+                noBtn.onclick = function(e) {
+                    if (e) e.stopPropagation();
+                    window.hideMessageBox();
+                    if (onConfirm) onConfirm(false);
+                };
+                noBtn.addEventListener('click', function(e) {
+                    if (e) e.stopPropagation();
+                    window.hideMessageBox();
+                    if (onConfirm) onConfirm(false);
+                });
+
+                buttonContainer.appendChild(yesBtn);
+                buttonContainer.appendChild(noBtn);
+            }
+            messageBox.classList.add('active');
+        }
+
         function updateDashboardStats(receipts) {
             document.getElementById('total-receipts-stat').textContent = receipts.length;
-
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
@@ -603,21 +567,14 @@
             receipts.forEach(receipt => {
                 const purchaseDate = new Date(receipt.purchaseDate);
                 purchaseDate.setHours(0, 0, 0, 0);
-
-                if (purchaseDate.getTime() === today.getTime()) {
-                    receiptsToday++;
-                }
-
-                if (purchaseDate.getMonth() === currentMonth && purchaseDate.getFullYear() === currentYear) {
-                    receiptsThisMonth++;
-                }
+                if (purchaseDate.getTime() === today.getTime()) receiptsToday++;
+                if (purchaseDate.getMonth() === currentMonth && purchaseDate.getFullYear() === currentYear) receiptsThisMonth++;
             });
 
             document.getElementById('receipts-today-stat').textContent = receiptsToday;
             document.getElementById('receipts-this-month-stat').textContent = receiptsThisMonth;
         }
 
-        // ========== SORTING FUNCTIONS ==========
         function sortReceipts(column) {
             if (currentSortColumn === column) {
                 currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
@@ -625,20 +582,9 @@
                 currentSortColumn = column;
                 currentSortDirection = 'asc';
             }
-
-            document.querySelectorAll('th i.fas.fa-sort, th i.fas.fa-sort-up, th i.fas.fa-sort-down').forEach(icon => {
-                icon.className = 'fas fa-sort text-sm ml-1';
-            });
-
-            const sortIcon = document.querySelector(`th[onclick="sortReceipts('${column}')"] i`);
-            if (sortIcon) {
-                sortIcon.className = `fas fa-sort-${currentSortDirection} text-sm ml-1`;
-            }
-
             filterReceipts();
         }
 
-        // ========== PAGINATION FUNCTIONS ==========
         function initPagination() {
             document.getElementById('page-size').addEventListener('change', function(e) {
                 pageSize = parseInt(e.target.value);
@@ -663,68 +609,44 @@
 
         function updatePagination(totalRecords) {
             totalPages = Math.ceil(totalRecords / pageSize);
-            
             const from = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
             const to = Math.min(currentPage * pageSize, totalRecords);
-            
+
             document.getElementById('showing-from').textContent = from;
             document.getElementById('showing-to').textContent = to;
             document.getElementById('total-records').textContent = totalRecords;
-            
-            updatePageNumbers();
-            
-            document.getElementById('prev-page').disabled = currentPage === 1;
-            document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
-            
-            document.getElementById('prev-page').className = currentPage === 1 ? 
-                'pagination-btn disabled' : 'pagination-btn';
-            document.getElementById('next-page').className = (currentPage === totalPages || totalPages === 0) ? 
-                'pagination-btn disabled' : 'pagination-btn';
-        }
 
-        function updatePageNumbers() {
             const pageNumbers = document.getElementById('page-numbers');
             pageNumbers.innerHTML = '';
-            
-            if (totalPages === 0) return;
-            
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, startPage + 4);
-            
-            if (endPage - startPage < 4) {
-                startPage = Math.max(1, endPage - 4);
+            if (totalPages > 0) {
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + 4);
+                if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = i === currentPage ? 'pagination-btn active' : 'pagination-btn';
+                    btn.textContent = i;
+                    btn.onclick = () => { currentPage = i; filterReceipts(); };
+                    pageNumbers.appendChild(btn);
+                }
             }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.className = i === currentPage ? 
-                    'pagination-btn active' : 'pagination-btn';
-                pageBtn.textContent = i;
-                pageBtn.addEventListener('click', () => {
-                    currentPage = i;
-                    filterReceipts();
-                });
-                pageNumbers.appendChild(pageBtn);
-            }
+
+            document.getElementById('prev-page').classList.toggle('disabled', currentPage === 1);
+            document.getElementById('next-page').classList.toggle('disabled', currentPage === totalPages || totalPages === 0);
         }
 
-        // ========== SEARCH AND FILTER FUNCTIONS ==========
         function filterReceipts() {
-            console.log('Filtering receipts...');
-            
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             const fromDateStr = document.getElementById('from-date-input').value;
             const toDateStr = document.getElementById('to-date-input').value;
 
             const fromDate = fromDateStr ? new Date(fromDateStr) : null;
             const toDate = toDateStr ? new Date(toDateStr) : null;
-            
-            console.log('Search term:', searchTerm);
-            console.log('From date:', fromDate);
-            console.log('To date:', toDate);
 
-            let tempFilteredReceipts = allReceipts.filter(receipt => {
-                const matchesSearch = !searchTerm || 
+            let filtered = allReceipts.filter(receipt => {
+                const matchesSearch = !searchTerm ||
                     (receipt.customerId && receipt.customerId.toLowerCase().includes(searchTerm)) ||
                     (receipt.customerName && receipt.customerName.toLowerCase().includes(searchTerm)) ||
                     (receipt.phoneNumber && receipt.phoneNumber.toLowerCase().includes(searchTerm)) ||
@@ -735,48 +657,35 @@
                 if (fromDate || toDate) {
                     const purchaseDate = new Date(receipt.purchaseDate);
                     purchaseDate.setHours(0, 0, 0, 0);
-                    
-                    if (fromDate && toDate) {
-                        matchesDate = purchaseDate >= fromDate && purchaseDate <= toDate;
-                    } else if (fromDate) {
-                        matchesDate = purchaseDate >= fromDate;
-                    } else if (toDate) {
-                        matchesDate = purchaseDate <= toDate;
-                    }
+                    if (fromDate && toDate) matchesDate = purchaseDate >= fromDate && purchaseDate <= toDate;
+                    else if (fromDate) matchesDate = purchaseDate >= fromDate;
+                    else if (toDate) matchesDate = purchaseDate <= toDate;
                 }
 
                 return matchesSearch && matchesDate;
             });
 
-            console.log('Filtered results:', tempFilteredReceipts.length);
-
-            tempFilteredReceipts.sort((a, b) => {
+            filtered.sort((a, b) => {
                 let valA = a[currentSortColumn];
                 let valB = b[currentSortColumn];
-
                 if (currentSortColumn === 'purchaseDate' || currentSortColumn === 'createdAt') {
-                    valA = new Date(valA);
-                    valB = new Date(valB);
+                    valA = new Date(valA); valB = new Date(valB);
                 } else if (currentSortColumn === 'customerId') {
-                    valA = parseInt(valA, 10) || 0;
-                    valB = parseInt(valB, 10) || 0;
+                    valA = parseInt(valA, 10) || 0; valB = parseInt(valB, 10) || 0;
                 } else {
-                    valA = String(valA || '').toLowerCase();
-                    valB = String(valB || '').toLowerCase();
+                    valA = String(valA || '').toLowerCase(); valB = String(valB || '').toLowerCase();
                 }
-
                 if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
                 if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
                 return 0;
             });
 
             const startIndex = (currentPage - 1) * pageSize;
-            const endIndex = startIndex + pageSize;
-            const paginatedReceipts = tempFilteredReceipts.slice(startIndex, endIndex);
+            const paginated = filtered.slice(startIndex, startIndex + pageSize);
 
-            displayReceipts(paginatedReceipts);
-            updateDashboardStats(tempFilteredReceipts);
-            updatePagination(tempFilteredReceipts.length);
+            displayReceipts(paginated);
+            updateDashboardStats(filtered);
+            updatePagination(filtered.length);
         }
 
         function clearSearch() {
@@ -786,51 +695,45 @@
             currentSortColumn = 'createdAt';
             currentSortDirection = 'desc';
             currentPage = 1;
-            
-            document.querySelectorAll('th i.fas').forEach(icon => {
-                icon.className = 'fas fa-sort text-sm ml-1';
-            });
-            
             filterReceipts();
         }
 
-        // ========== DATA DISPLAY FUNCTIONS ==========
         function displayReceipts(receiptsToDisplay) {
             const body = document.getElementById("receipts-body");
             body.innerHTML = "";
             const noReceiptsMessage = document.getElementById('no-receipts-message');
 
             if (receiptsToDisplay.length === 0) {
-                noReceiptsMessage.style.display = 'block';
+                noReceiptsMessage.style.display = 'flex';
             } else {
                 noReceiptsMessage.style.display = 'none';
                 receiptsToDisplay.forEach(receipt => {
                     const formattedPhoneNumber = receipt.phoneNumber ? receipt.phoneNumber.replace(/\s*\/\s*/, '/<br>') : '';
 
                     body.innerHTML += `
-                        <tr id="receipt-${receipt._id}" class="hover:bg-gray-50 transition duration-150 ease-in-out">
-                            <td class="px-6 py-4 text-center text-base font-medium text-gray-900">${receipt.customerId}</td>
-                            <td class="px-6 py-4 text-base text-gray-700 break-words khmer-font-cell">${receipt.customerName}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-700">${formattedPhoneNumber}</td>
-                            <td class="px-6 py-4 text-base text-gray-700 break-words khmer-font-cell">${receipt.location || "-"}</td>
-                            <td class="px-6 py-4 text-base text-gray-700 break-words khmer-font-cell">${receipt.machineName}</td>
-                            <td class="px-6 py-4 text-center text-base text-gray-700">${formatDate(receipt.purchaseDate)}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-base font-medium">
-                                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                                    <button class="edit-btn bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition duration-150 ease-in-out transform hover:-translate-y-0.5 shadow-md khmer-font">
+                        <tr id="receipt-${receipt._id}">
+                            <td style="font-weight: 700; color: var(--primary);">${receipt.customerId}</td>
+                            <td>${receipt.customerName}</td>
+                            <td>${formattedPhoneNumber}</td>
+                            <td>${receipt.location || "-"}</td>
+                            <td>${receipt.machineName}</td>
+                            <td>${formatDate(receipt.purchaseDate)}</td>
+                            <td style="text-align: center;">
+                                <div style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button type="button" class="btn btn-outline btn-sm edit-btn" style="border-color: var(--accent); color: var(--accent);">
                                         <i class="fas fa-edit"></i> កែសម្រួល
                                     </button>
-                                    <button class="delete-btn bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition duration-150 ease-in-out transform hover:-translate-y-0.5 shadow-md khmer-font">
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn">
                                         <i class="fas fa-trash"></i> លុប
                                     </button>
-                                    <button class="download-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-150 ease-in-out transform hover:-translate-y-0.5 shadow-md khmer-font">
+                                    <button type="button" class="btn btn-secondary btn-sm download-btn">
                                         <i class="fas fa-download"></i> ទាញយក
                                     </button>
                                 </div>
                             </td>
                         </tr>`;
                 });
-                
+
                 body.querySelectorAll('.edit-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const row = event.target.closest('tr');
@@ -844,59 +747,42 @@
                         openEditModal(id, customerId, customerName, phoneNumber, location, machineName, purchaseDate);
                     });
                 });
-                
+
                 body.querySelectorAll('.delete-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const row = event.target.closest('tr');
-                        const id = row.id.replace('receipt-', '');
-                        deleteReceipt(id);
+                        deleteReceipt(row.id.replace('receipt-', ''));
                     });
                 });
-                
+
                 body.querySelectorAll('.download-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const row = event.target.closest('tr');
-                        const id = row.id.replace('receipt-', '');
-                        downloadReceipt(id);
+                        downloadReceipt(row.id.replace('receipt-', ''));
                     });
                 });
             }
         }
 
-        // ========== CRUD OPERATIONS ==========
         function loadReceipts() {
-            console.log('Loading receipts from API...');
-            fetch("/api/receipts")
+            return fetch("/api/receipts")
                 .then(res => {
                     if (res.status === 401) {
-                        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                        window.location.replace('/login.html');
                         return;
                     }
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch receipts');
-                    }
+                    if (!res.ok) throw new Error('Failed to fetch receipts');
                     return res.json();
                 })
                 .then(data => {
                     if (!data) return;
-                    console.log('Receipts loaded:', data.length);
                     allReceipts = data;
                     filterReceipts();
                 })
                 .catch(err => {
                     console.error("Error loading receipts:", err);
-                    showMessageBox("Error loading receipts. Please try again.", "error");
+                    showMessageBox("មានបញ្ហាក្នុងការផ្ទុកទិន្នន័យបង្កាន់ដៃ! សូមព្យាយាមម្តងទៀត។", "error");
                 });
-        }
-
-        function refreshReceipts() {
-            const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.style.display = 'flex';
-
-            setTimeout(() => {
-                loadReceipts();
-                loadingOverlay.style.display = 'none';
-            }, 1000);
         }
 
         function deleteReceipt(id) {
@@ -912,7 +798,7 @@
                         }
                     } catch (err) {
                         console.error(err);
-                        showMessageBox("An error occurred while deleting the receipt!", "error");
+                        showMessageBox("មានបញ្ហាក្នុងការលុបបង្កាន់ដៃ!", "error");
                     }
                 }
             });
@@ -927,58 +813,7 @@
             const formattedDate = purchaseDate.split('/').reverse().join('-');
             document.getElementById('editPurchaseDate').value = formattedDate;
             document.getElementById('editMachineName').value = machineName;
-            
-            document.getElementById('editReceiptModal').style.display = 'flex';
-        }
-
-        // ========== EXPORT FUNCTIONS ==========
-        function exportToCsv() {
-            const receiptsToExport = allReceipts.map(receipt => {
-                return {
-                    customerId: receipt.customerId,
-                    customerName: receipt.customerName,
-                    phoneNumber: receipt.phoneNumber,
-                    location: receipt.location,
-                    machineName: receipt.machineName,
-                    purchaseDate: formatDate(receipt.purchaseDate)
-                };
-            });
-
-            if (receiptsToExport.length === 0) {
-                showMessageBox("No data to export.", "error");
-                return;
-            }
-
-            const headers = [
-                "Customer ID", "Customer Name", "Phone Number", "Location",
-                "Machine Name", "Purchase Date"
-            ];
-
-            const rows = receiptsToExport.map(receipt => [
-                `"${receipt.customerId}"`,
-                `"${receipt.customerName}"`,
-                `"${receipt.phoneNumber}"`,
-                `"${receipt.location || ""}"`,
-                `"${receipt.machineName}"`,
-                `"${receipt.purchaseDate}"`
-            ]);
-
-            const csvContent = "\uFEFF" + headers.join(",") + "\n" + rows.map(row => row.join(",")).join("\n");
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", "receipts_export.csv");
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showMessageBox("Data exported to CSV successfully!", "success");
-            } else {
-                showMessageBox("Your browser does not support downloading files directly.", "error");
-            }
+            document.getElementById('editReceiptModal').classList.add('active');
         }
 
         function downloadReceipt(id) {
@@ -989,69 +824,48 @@
             }
 
             const container = document.createElement('div');
-            container.className = 'receipt-content p-8 bg-white rounded-lg shadow-xl max-w-md mx-auto';
-            container.style.fontFamily = 'Inter, sans-serif';
-            container.style.fontSize = '16px';
-            container.style.lineHeight = '1.75';
-            container.style.color = '#333';
-
-            const currentReceiptsInTable = Array.from(document.getElementById('receipts-body').children).map(row => {
-                 return {
-                    _id: row.id.replace('receipt-', ''),
-                    customerId: row.cells[0].textContent,
-                    customerName: row.cells[1].textContent,
-                    phoneNumber: row.cells[2].innerHTML,
-                    location: row.cells[3].textContent,
-                    machineName: row.cells[4].textContent,
-                    purchaseDate: row.cells[5].textContent
-                 };
-            });
-            const receiptDataForDownload = currentReceiptsInTable.find(r => r._id === id);
-            
-            const phoneNumberForDownloadDisplay = receiptDataForDownload ? receiptDataForDownload.phoneNumber : row.cells[2].innerHTML;
+            container.className = 'receipt-content';
+            container.style.padding = '2rem';
+            container.style.background = '#ffffff';
+            container.style.color = '#000000';
+            container.style.width = '420px';
+            container.style.fontFamily = "'Battambang', 'Plus Jakarta Sans', sans-serif";
 
             container.innerHTML = `
-                <div class="text-center mb-8">
-                    <img src="img/Y S G_ (2).png" alt="YSG Logo" class="h-24 mx-auto mb-4">
-                    <p class="font-bold text-2xl mb-2 text-gray-900">Yeung Shi Group Co.,Ltd</p>
-                    <p class="text-base text-gray-600">Phnom Penh, Cambodia</p>
-                    <div class="border-t-2 border-dashed border-gray-300 my-6"></div>
-                    <h2 class="text-3xl font-extrabold text-gray-800 khmer-font">Receipt Product</h2>
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <img src="img/Y S G_ (2).png" alt="YSG Logo" style="height: 60px; margin-bottom: 0.5rem;" />
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">Yeung Shi Group Co.,Ltd</h2>
+                    <p style="font-size: 0.85rem; color: #475569;">Phnom Penh, Cambodia</p>
+                    <hr style="border: none; border-top: 2px dashed #cbd5e1; margin: 1rem 0;" />
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #4f46e5;">បង្កាន់ដៃទិញទំនិញផ្លូវការ</h3>
                 </div>
-                <table class="w-full text-left border-collapse mb-8">
-                    <tbody>
-                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ID អតិថិជន</th><td class="py-3">${row.cells[0].textContent}</td></tr>
-                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ឈ្មោះអតិថិជន</th><td class="py-3">${row.cells[1].textContent}</td></tr>
-                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">លេខទូរស័ព្ទ</th><td class="py-3">${phoneNumberForDownloadDisplay}</td></tr>
-                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ទីតាំង</th><td class="py-3">${row.cells[3].textContent}</td></tr> 
-                        <tr class="border-b border-gray-200"><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">ឈ្មោះផលិតផល</th><td class="py-3">${row.cells[4].textContent}</td></tr>
-                        <tr><th class="py-3 pr-4 font-semibold text-gray-700 khmer-font">កាលបរិច្ឆេទទិញ</th><td class="py-3">${row.cells[5].textContent}</td></tr>
-                    </tbody>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;"><th style="text-align: left; padding: 0.5rem; color: #475569;">ID អតិថិជន</th><td style="padding: 0.5rem; font-weight: 700;">${row.cells[0].textContent}</td></tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;"><th style="text-align: left; padding: 0.5rem; color: #475569;">ឈ្មោះអតិថិជន</th><td style="padding: 0.5rem;">${row.cells[1].textContent}</td></tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;"><th style="text-align: left; padding: 0.5rem; color: #475569;">លេខទូរស័ព្ទ</th><td style="padding: 0.5rem;">${row.cells[2].innerHTML}</td></tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;"><th style="text-align: left; padding: 0.5rem; color: #475569;">ទីតាំង</th><td style="padding: 0.5rem;">${row.cells[3].textContent}</td></tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;"><th style="text-align: left; padding: 0.5rem; color: #475569;">ឈ្មោះផលិតផល</th><td style="padding: 0.5rem;">${row.cells[4].textContent}</td></tr>
+                    <tr><th style="text-align: left; padding: 0.5rem; color: #475569;">កាលបរិច្ឆេទទិញ</th><td style="padding: 0.5rem;">${row.cells[5].textContent}</td></tr>
                 </table>
-                <div class="border-t-2 border-dashed border-gray-300 my-6"></div>
-                <p class="text-center text-gray-700 font-medium text-lg khmer-font">Thank you for your purchase!</p>
+                <div style="text-align: center; border-top: 2px dashed #cbd5e1; padding-top: 1rem;">
+                    <p style="font-size: 0.9rem; font-weight: 600; color: #10b981;">សូមអរគុណចំពោះការគាំទ្ររបស់លោកអ្នក!</p>
+                </div>
             `;
 
             document.body.appendChild(container);
-            
-            html2canvas(container, {
-                scale: 2,
-                useCORS: true
-            }).then(canvas => {
+            html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
                 const image = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.href = image;
-                link.download = `receipt-${id}.png`;
+                link.download = `ysg_receipt_${id}.png`;
                 link.click();
                 document.body.removeChild(container);
-            }).catch(error => {
-                console.error("Error generating image for download:", error);
-                showMessageBox("Failed to generate receipt image for download.", "error");
+            }).catch(() => {
                 document.body.removeChild(container);
+                showMessageBox("មានបញ្ហាក្នុងការទាញយករូបភាព!", "error");
             });
         }
 
-        // ========== FORM HANDLING ==========
         document.getElementById('editReceiptForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const id = document.getElementById('editReceiptId').value;
@@ -1066,97 +880,89 @@
 
             fetch(`/api/receipts/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData),
             })
-            .then(response => {
-                if (response.ok) {
-                    showMessageBox('Receipt updated successfully!', "success");
+            .then(res => {
+                if (res.ok) {
+                    showMessageBox('កែប្រែបង្កាន់ដៃបានជោគជ័យ!', "success");
                     closeModal();
                     loadReceipts();
                 } else {
-                    showMessageBox('Failed to update receipt.', "error");
+                    showMessageBox('បរាជ័យក្នុងការកែប្រែបង្កាន់ដៃ។', "error");
                 }
             })
-            .catch(error => {
-                console.error('Error updating receipt:', error);
-                showMessageBox('An error occurred while updating the receipt.', "error");
-            });
+            .catch(() => showMessageBox('មានបញ្ហាក្នុងការកែប្រែ!', "error"));
         });
 
-        // ========== AUTHENTICATION AND INITIALIZATION ==========
         function logout() {
-            fetch('/logout', {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/login.html';
-                } else {
-                    showMessageBox('Failed to logout.', "error");
-                }
-            })
-            .catch(error => {
-                console.error('Error during logout:', error);
-                showMessageBox('An error occurred during logout.', "error");
-            });
+            fetch('/logout', { method: 'POST' })
+                .then(() => { window.location.replace('/login.html'); })
+                .catch(() => { window.location.replace('/login.html'); });
         }
 
-        // ========== PAGE INITIALIZATION ==========
-        document.addEventListener("DOMContentLoaded", () => {
-            // Add event listener for the close button
-            const closeButton = document.getElementById('closeModalButton');
-            if (closeButton) {
-                closeButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Close button clicked');
-                    closeModal();
-                });
-            }
-
-            // Add event listeners for search functionality
-            document.getElementById('search-button').addEventListener('click', filterReceipts);
-            document.getElementById('clear-search-button').addEventListener('click', clearSearch);
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    filterReceipts();
-                }
-            });
-
-            // Click outside modal to close
-            window.addEventListener('click', function(event) {
-                const modal = document.getElementById('editReceiptModal');
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Authentication check
+        function verifyAdminAuth() {
             fetch('/check-admin-auth')
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
                     if (data.authenticated) {
                         document.getElementById('admin-panel').style.display = 'block';
                         initPagination();
                         loadReceipts();
                     } else {
-                        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                        document.getElementById('admin-panel').style.display = 'none';
+                        window.location.replace('/login.html');
                     }
                 })
-                .catch(error => {
-                    console.error('Error checking authentication:', error);
-                    window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                .catch(() => {
+                    document.getElementById('admin-panel').style.display = 'none';
+                    window.location.replace('/login.html');
                 });
+        }
 
-            // Logout button in navigation
+        document.addEventListener("DOMContentLoaded", () => {
+            const closeButton = document.getElementById('closeModalButton');
+            if (closeButton) closeButton.addEventListener('click', closeModal);
+
+            document.getElementById('search-button').addEventListener('click', filterReceipts);
+            document.getElementById('clear-search-button').addEventListener('click', clearSearch);
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') filterReceipts();
+            });
+
+            const btnBackup = document.getElementById('btn-backup');
+            if (btnBackup) {
+                btnBackup.onclick = downloadBackup;
+                btnBackup.addEventListener('click', downloadBackup);
+            }
+
+            const btnRestore = document.getElementById('btn-restore');
+            if (btnRestore) {
+                btnRestore.onclick = triggerRestore;
+                btnRestore.addEventListener('click', triggerRestore);
+            }
+
+            const restoreInput = document.getElementById('restore-file-input');
+            if (restoreInput) {
+                restoreInput.addEventListener('change', function() { handleRestore(this); });
+            }
+
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('editReceiptModal');
+                if (event.target === modal) closeModal();
+                const msgBox = document.getElementById('messageBox');
+                if (event.target === msgBox) window.hideMessageBox();
+            });
+
+            verifyAdminAuth();
+
             document.getElementById('logout-btn-nav').addEventListener('click', logout);
         });
-    </script>
 
+        window.addEventListener("pageshow", function(event) {
+            verifyAdminAuth();
+        });
+    </script>
 </body>
 
 </html>

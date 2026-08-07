@@ -74,20 +74,23 @@ app.use((req, res, next) => {
     next();
 });
 
-// 3. DDoS Defense: Global Rate Limiting (150 requests per 15 min)
+// 3. DDoS Defense: Global Rate Limiting (1000 requests per 15 min, excluding static assets)
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 150,
+    max: 1000,
+    skip: (req) => {
+        return /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/i.test(req.path);
+    },
     message: { success: false, message: 'Too many requests from this IP. Please try again later.' },
     standardHeaders: true,
     legacyHeaders: false
 });
 app.use(globalLimiter);
 
-// 4. DDoS Defense: Strict Authentication Rate Limiter (5 attempts per 15 min)
+// 4. DDoS Defense: Strict Authentication Rate Limiter (10 attempts per 15 min)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
+    max: 10,
     message: { success: false, message: 'Too many login attempts. Your IP has been temporarily locked for 15 minutes.' },
     standardHeaders: true,
     legacyHeaders: false
